@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
-import { CustomButton } from '../src/components/CustomButton';
-import { CustomInput } from '../src/components/CustomInput';
-import { loginStyles } from '../src/styles/LoginStyles';
+import { CustomButton } from '../../src/components/CustomButton';
+import { CustomInput } from '../../src/components/CustomInput';
+import { loginStyles } from '../../src/styles/LoginStyles';
 // Importación de los servicios lógicos que interactúan directamente con Firebase
 import { useRouter } from 'expo-router';
-import { loginWithEmail, resetPassword } from '../src/services/AuthService';
+import { loginWithEmail, resetPassword } from '../../src/services/AuthService';
 
 export default function LoginScreen() {
   // ESTADOS (Hooks de React): Memoria temporal de la pantalla para capturar el texto del usuario

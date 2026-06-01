@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 
 // Reutilizamos tus componentes modulares y tus estilos base
-import { CustomButton } from '../src/components/CustomButton';
-import { CustomInput } from '../src/components/CustomInput';
-import { loginStyles } from '../src/styles/LoginStyles';
+import { CustomButton } from '../../src/components/CustomButton';
+import { CustomInput } from '../../src/components/CustomInput';
+import { loginStyles } from '../../src/styles/LoginStyles';
 
 // Importamos la función lógica que modificamos en el authService
-import { registerWithEmail } from '../src/services/AuthService';
+import { registerWithEmail } from '../../src/services/AuthService';
 
 export default function RegisterScreen() {
   const router = useRouter();
