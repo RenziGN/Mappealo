@@ -59,7 +59,7 @@ export default function RegisterScreen() {
 
   return (
     <View style={loginStyles.container}>
-      <Image source={require('../assets/images/MapaVacio2.png')}style={loginStyles.MapaFondo2}/>
+      <Image source={require('../../assets/images/MapaVacio2.png')}style={loginStyles.MapaFondo2}/>
       {/* 35% Superior: Dejamos el espacio libre para el mapa de fondo en el futuro */}
       <View style={loginStyles.headerContainer} />
 
@@ -69,7 +69,7 @@ export default function RegisterScreen() {
         
         {/* 🦉 El logo del búho posicionado arriba del título como marcaste en el Figma */}
         <Image 
-          source={require('../assets/images/Logo-mappealo.png')} 
+          source={require('../../assets/images/Logo-mappealo.png')} 
           style={[loginStyles.logo, { alignSelf: 'center', marginBottom: 15, width: 90, height: 90 }]} 
         />
 

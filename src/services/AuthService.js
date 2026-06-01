@@ -1,7 +1,6 @@
 // src/services/AuthService.js
 import {
-  createUserWithEmailAndPassword // 👈 Sumamos la función nativa de Firebase para registrar
-  ,
+  createUserWithEmailAndPassword,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword

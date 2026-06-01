@@ -30,6 +30,8 @@ export default function LoginScreen() {
       
       // 'await' pausa la ejecución de forma segura hasta que Firebase responda 'Ok' o tire un error
       const user = await loginWithEmail(email, password);
+
+      router.replace('/map.tsx')
       
       // Si la línea de arriba fue exitosa, se ejecuta esta alerta en el dispositivo
       Alert.alert('¡Bienvenido!', `Sesión iniciada con éxito.`);
@@ -70,9 +72,9 @@ export default function LoginScreen() {
       
       {/* Encabezado: Espacio superior reservado para la identidad visual de la app */}
       <View style={loginStyles.headerContainer}>
-        <Image source={require('../assets/images/MapaVacio2.png')} style={loginStyles.MapaFondo}
+        <Image source={require('../../assets/images/MapaVacio2.png')} style={loginStyles.MapaFondo}
        resizeMode='cover'/>
-        <Image source={require('../assets/images/Logo-mappealo.png')} style={loginStyles.logo} />
+        <Image source={require('../../assets/images/Logo-mappealo.png')} style={loginStyles.logo} />
       </View>
 
       {/* Formulario contenedor principal (Tarjeta blanca redondeada) */}
