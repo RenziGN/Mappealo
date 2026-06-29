@@ -18,7 +18,8 @@
     <link
     rel="stylesheet"
     href="../../assets/css/style.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    rel="stylesheet" >
 </head>
 
 <body>
@@ -26,6 +27,10 @@
     <div class="auth-container">
 
         <div class="auth-card">
+            <div class="logo-container">
+                <img src="../../assets/Img/LOGO MAPPEALO 1.png" alt="Logo Mappealo" class="auth-logo">
+            
+             </div>
 
             <h1 class="auth-title">
                 Iniciar Sesión
@@ -59,14 +64,16 @@
                     <label class="form-label">
                         Email
                     </label>
-
-                    <input
-                    name="email"
-                    id="email"
-                    type="email"
-                    class="form-control custom-input"
-                    placeholder="Ingresa tu correo electrónico"
-                    required>
+                     <div class="input-group-custom">
+                     <i class="bi bi-envelope input-icon"></i> <input
+                     name="email"
+                     id="email"
+                     type="email"
+                     class="form-control custom-input"
+                     placeholder="Email"
+                     required>
+                    </div>
+                    
 
                 </div>
 
@@ -75,14 +82,18 @@
                     <label class="form-label">
                         Contraseña
                     </label>
+                    <div class="input-group-custom">
+                     <i class="bi bi-lock input-icon"></i> <input
+                     name="password"
+                     id="password"
+                     type="password"
+                     class="form-control custom-input"
+                     placeholder="Contraseña"
+                     required>
+                    </div>
 
-                    <input
-                    name="password"
-                    id="password"
-                    type="password"
-                    class="form-control custom-input"
-                    placeholder="Ingresa tu contraseña"
-                    required>
+
+                    
 
                 </div>
 

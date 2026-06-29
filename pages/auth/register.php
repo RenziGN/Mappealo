@@ -8,6 +8,8 @@
     <title>Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    rel="stylesheet" >
 
 </head>
 
@@ -16,6 +18,10 @@
     <div class="auth-container">
 
         <div class="auth-card">
+             <div class="logo-container">
+                <img src="../../assets/Img/LOGO MAPPEALO 1.png" alt="Logo Mappealo" class="auth-logo">
+            
+             </div>
 
             <h1 class="auth-title">
                 Crear Cuenta
@@ -43,14 +49,17 @@
                     <label class="form-label" for="email">
                         Email
                     </label>
-
-                    <input
-                    name="email"
-                    id="email"
-                    type="email"
-                    class="form-control custom-input"
-                    placeholder="Ingresa tu correo electrónico"
-                    required>
+                    
+                    <div class="input-group-custom">
+                     <i class="bi bi-envelope input-icon"></i>
+                      <input
+                       name="email"
+                       id="email"
+                       type="email"
+                       class="form-control custom-input"
+                       placeholder="Ingresa tu correo electrónico"
+                       required>
+                    </div>
 
                 </div>
 
@@ -59,14 +68,17 @@
                     <label class="form-label" for="password">
                         Contraseña
                     </label>
-
-                    <input
-                    name="password"
-                    id="password"
-                    type="password"
-                    class="form-control custom-input"
-                    placeholder="Ingresa tu contraseña"
-                    required>
+                    
+                    <div class="input-group-custom">
+                     <i class="bi bi-lock input-icon"></i>
+                     <input
+                     name="password"
+                     id="password"
+                     type="password"
+                     class="form-control custom-input"
+                     placeholder="Ingresa tu contraseña"
+                     required>
+                    </div>
 
                 </div>
 
@@ -75,14 +87,18 @@
                     <label class="form-label" for="confirmPassword">
                         Repetir Contraseña
                     </label>
+                    <div class="input-group-custom">
+                     <i class="bi bi-lock input-icon"></i>
 
-                    <input
-                    name="confirmPassword"
-                    id="confirmPassword"
-                    type="password"
-                    class="form-control custom-input"
-                    placeholder="Repite tu contraseña"
-                    required>
+                     <input
+                     name="confirmPassword"
+                     id="confirmPassword"
+                     type="password"
+                     class="form-control custom-input"
+                     placeholder="Repite tu contraseña"
+                     required>
+                    </div> 
+            
 
                 </div>
 
