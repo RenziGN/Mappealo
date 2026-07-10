@@ -102,6 +102,10 @@
                     Iniciar sesión
 
                 </button>
+                  <a href="../../handler/auth/guest_handler.php" class="btn btn-outline-secondary w-100 mt-2">
+                   <i class="bi bi-person-bounding-box me-2"></i>
+                   Ingresar como Invitado
+                  </a>
 
             </form>
 
