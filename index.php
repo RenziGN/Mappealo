@@ -16,7 +16,9 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mappealo - Home</title>
-    
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+       crossorigin=""/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -26,9 +28,10 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
     <div class="web-wrapper">
         
-       <main class="map-view">
+       <main >
             
-            <div id="map-canvas"></div>
+             <div id="map"></div>
+
 
             <div class="search-box">
                 <div class="card shadow rounded-4 border-0 p-2">
@@ -129,7 +132,9 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
         </main>
     </div>
-
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./assets/js/map.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    
 </body>
 </html>

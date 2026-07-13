@@ -6,19 +6,27 @@ body, html {
     font-family: sans-serif;
 }
 
+#map {
+    
+    height: 200vh;
+    width: 100%;
+}
+
+.leaflet-control-zoom-in {
+    display: none !important;
+}
+
+.leaflet-control-zoom-out {
+    display: none !important;
+}
+
+
 .web-wrapper {
     height: 100vh;
     width: 100vw;
     position: relative;
 }
-.map-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #e5e3df; 
-}
+
 /*Mapa*/
 #map-canvas {
     width: 100%;
