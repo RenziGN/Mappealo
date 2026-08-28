@@ -1,0 +1,131 @@
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('../../assets/Img/Fondo-Mapa.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 30px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.auth-logo {
+    width: 90px;
+    height: auto;
+}
+
+.auth-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+}
+
+.input-group-custom {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #9ca3af;
+    font-size: 1.1rem;
+    z-index: 10;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+.custom-input {
+    height: 48px;
+    padding-left: 45px;
+    border-radius: 25px;
+    border: 1px solid #e5e7eb;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.custom-input:focus {
+    background-color: #ffffff;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.custom-btn {
+    height: 48px;
+    border-radius: 25px;
+    background: #16AAE0;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.custom-btn:hover {
+    background: #138496;
+    color: white;
+}
+
+.custom-btn:active {
+    transform: scale(0.98);
+}
+
+.bottom-text {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.bottom-text a {
+    text-decoration: none;
+    color: #17a2b8;
+    font-weight: bold;
+}
+
+.bottom-text a:hover {
+    text-decoration: underline;
+}

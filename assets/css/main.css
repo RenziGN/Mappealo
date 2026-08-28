@@ -1,0 +1,1757 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --azul: #000e40;
+    --azul-claro: #15265c;
+    --celeste: #4ec6c0;
+    --naranja: #ff6300;
+
+    --rojo: #ef4444;
+    --verde: #20a66a;
+    --amarillo: #f59e0b;
+
+    --fondo: #f7f8fc;
+    --texto: #172033;
+    --texto-secundario: #70798c;
+    --borde: #e4e7ee;
+    --gris-claro: #9ba3b2;
+
+    /*-azul-2: #15265c; Reemplazar por azul claro*/
+}
+
+body {
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    overflow: hidden;
+}
+
+/* =========================================================
+   MAPA
+========================================================= */
+
+.mapa {
+    position: fixed;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            125deg,
+            #dce6d8,
+            #eef1eb 45%,
+            #d9e1d9
+        );
+
+    overflow: hidden;
+}
+
+
+.mapa-grid {
+    position: absolute;
+    inset: -100px;
+
+    opacity: .35;
+
+    background-image:
+        linear-gradient(
+            25deg,
+            transparent 47%,
+            #fff 48%,
+            #fff 51%,
+            transparent 52%
+        ),
+        linear-gradient(
+            105deg,
+            transparent 47%,
+            #fff 48%,
+            #fff 51%,
+            transparent 52%
+        );
+
+    background-size:
+        300px 300px,
+        220px 220px;
+
+    transform: rotate(-5deg);
+}
+
+
+/* =========================================================
+   MARCADORES
+========================================================= */
+
+.marker {
+    position: absolute;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, .2);
+}
+
+.marker i {
+    transform: rotate(45deg);
+}
+
+.marker-red {
+    background: var(--rojo);
+}
+
+.marker-orange {
+    background: var(--naranja);
+}
+
+.marker-yellow {
+    background: var(--amarillo);
+}
+
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(4, 12, 35, .55);
+
+    backdrop-filter: blur(5px);
+}
+
+
+/* =========================================================
+   ESTILOS GENERALES DE POPUP
+========================================================= */
+
+.popup,
+.reporte {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    background: white;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   POPUP DE CREACIÓN
+========================================================= */
+
+.popup {
+    width: min(
+        720px,
+        calc(100vw - 30px)
+    );
+
+    max-height:
+        calc(100vh - 30px);
+
+    box-shadow:
+        0 30px 90px rgba(0, 0, 0, .30);
+}
+
+
+/* =========================================================
+   POPUP DE REPORTE
+========================================================= */
+
+.reporte {
+    width: min(
+        680px,
+        calc(100vw - 32px)
+    );
+
+    max-height:
+        calc(100vh - 40px);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, .3);
+}
+
+
+/* =========================================================
+   HEADERS
+========================================================= */
+
+.popup-header,
+.reporte-header {
+    background: var(--azul);
+    color: white;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* Header creación */
+
+.popup-header {
+    padding: 22px 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--azul),
+            var(--azul-claro)
+        );
+
+    align-items: flex-start;
+}
+
+/* Header visualización */
+
+.reporte-header {
+    height: 68px;
+    padding: 0 22px;
+}
+
+
+/* =========================================================
+   BOTONES DE CERRAR
+========================================================= */
+
+.cerrar,
+.btn-cerrar {
+    width: 38px;
+    height: 38px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.1);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition: .2s;
+}
+
+.cerrar {
+    width: 37px;
+    height: 37px;
+    font-size: 17px;
+}
+
+.cerrar:hover,
+.btn-cerrar:hover {
+    background: rgba(255,255,255,.2);
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.form-content,
+.reporte-content {
+    overflow-y: auto;
+}
+
+.form-content {
+    padding: 25px;
+}
+
+.reporte-content {
+    padding: 24px;
+}
+
+
+/* Scrollbar común */
+
+.form-content::-webkit-scrollbar,
+.reporte-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.form-content::-webkit-scrollbar-thumb,
+.reporte-content::-webkit-scrollbar-thumb {
+    background: #d6dae2;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   TÍTULOS
+========================================================= */
+
+.popup-header h1,
+.titulo-container h1 {
+    color: var(--azul);
+}
+
+.popup-header h1 {
+    color: white;
+
+    font-size: 25px;
+
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.titulo-container h1 {
+    font-size: 27px;
+    line-height: 1.2;
+
+    margin-bottom: 7px;
+}
+
+
+/* =========================================================
+   ELEMENTOS DE TEXTO
+========================================================= */
+
+.popup-header p {
+    font-size: 12px;
+    color: rgba(255,255,255,.65);
+}
+
+.brand {
+    color: var(--celeste);
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.tabs {
+    display: flex;
+
+    border-bottom:
+        1px solid var(--borde);
+
+    padding: 0 22px;
+
+    background: white;
+}
+
+.tab {
+    position: relative;
+
+    border: none;
+    background: none;
+
+    padding: 16px 22px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    color: var(--texto-secundario);
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.tab.active {
+    color: var(--naranja);
+}
+
+.tab.active::after {
+    content: "";
+
+    position: absolute;
+
+    bottom: -1px;
+
+    left: 15px;
+    right: 15px;
+
+    height: 3px;
+
+    background: var(--naranja);
+
+    border-radius: 3px 3px 0 0;
+}
+
+
+/* =========================================================
+   CAMPOS DEL FORMULARIO
+========================================================= */
+
+.field {
+    margin-bottom: 19px;
+}
+
+.field label {
+    display: block;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    color: #30394d;
+
+    margin-bottom: 7px;
+}
+
+.required {
+    color: var(--naranja);
+}
+
+.field input,
+.field select,
+.field textarea {
+    width: 100%;
+
+    border:
+        1px solid var(--borde);
+
+    border-radius: 10px;
+
+    padding: 12px 13px;
+
+    background: white;
+    color: var(--texto);
+
+    outline: none;
+
+    font-size: 12px;
+
+    transition: .2s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    border-color: var(--celeste);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(78,198,192,.12);
+}
+
+.field small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--texto-secundario);
+
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.field textarea {
+    height: 120px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.grid-2 {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+
+.section-title {
+    display: flex;
+
+    gap: 13px;
+
+    margin: 8px 0 18px;
+}
+
+.section-title > span {
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: #fff1e9;
+    color: var(--naranja);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.section-title h2 {
+    font-size: 15px;
+
+    color: var(--azul);
+
+    margin-bottom: 3px;
+}
+
+.section-title p {
+    font-size: 11px;
+    color: var(--texto-secundario);
+}
+
+
+/* =========================================================
+   SUBSECCIONES
+========================================================= */
+
+.subsection {
+    padding: 17px;
+
+    margin: 15px 0 25px;
+
+    border:
+        1px solid var(--borde);
+
+    border-radius: 15px;
+
+    background: #fafbfc;
+}
+
+.subsection-title {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+}
+
+.subsection-title > i {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e9fafa;
+    color: var(--celeste);
+}
+
+.subsection-title h3 {
+    font-size: 12px;
+    color: var(--azul);
+}
+
+.subsection-title span {
+    font-size: 10px;
+    color: var(--texto-secundario);
+}
+
+
+/* =========================================================
+   UBICACIÓN
+========================================================= */
+
+.location-box {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px;
+
+    margin-bottom: 16px;
+
+    border:
+        1px solid #d9e8e8;
+
+    border-radius: 13px;
+
+    background: #f4fbfb;
+}
+
+.location-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #dff6f5;
+    color: var(--celeste);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.location-box > div:nth-child(2) {
+    flex: 1;
+}
+
+.location-box strong {
+    display: block;
+    font-size: 11px;
+}
+
+.location-box p {
+    font-size: 10px;
+    color: var(--texto-secundario);
+
+    margin-top: 3px;
+}
+
+.map-button {
+    border: none;
+
+    background: var(--azul);
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 9px 12px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.private {
+    float: right;
+
+    color: var(--verde);
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FECHA
+========================================================= */
+
+.date-row {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr auto;
+
+    gap: 8px;
+
+    align-items: center;
+}
+
+.live-toggle {
+    display: flex !important;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin: 0 !important;
+
+    white-space: nowrap;
+}
+
+.live-toggle input {
+    display: none;
+}
+
+.switch {
+    width: 32px;
+    height: 18px;
+
+    border-radius: 20px;
+
+    background: #d6dbe3;
+
+    position: relative;
+}
+
+.switch::after {
+    content: "";
+
+    position: absolute;
+
+    width: 14px;
+    height: 14px;
+
+    top: 2px;
+    left: 2px;
+
+    background: white;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   RADIO
+========================================================= */
+
+.radio-options {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+}
+
+.radio-card {
+    padding: 12px;
+
+    border:
+        1px solid var(--borde);
+
+    border-radius: 9px;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    font-size: 11px !important;
+}
+
+.radio-card input {
+    display: none;
+}
+
+.radio-card.active {
+    border-color: var(--celeste);
+
+    background: #effafa;
+
+    color: var(--azul);
+}
+
+
+/* =========================================================
+   PREGUNTAS / GRAVEDAD
+========================================================= */
+
+.questions {
+    border:
+        1px solid var(--borde);
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    margin-bottom: 25px;
+}
+
+.question {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 15px;
+
+    border-bottom:
+        1px solid var(--borde);
+}
+
+.question:last-child {
+    border-bottom: none;
+}
+
+.question strong {
+    display: block;
+
+    font-size: 11px;
+}
+
+.question span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: var(--texto-secundario);
+}
+
+.yes-no {
+    display: flex;
+
+    flex-shrink: 0;
+
+    gap: 4px;
+}
+
+.yes-no button {
+    border:
+        1px solid var(--borde);
+
+    background: white;
+
+    padding: 7px 12px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+
+    cursor: pointer;
+}
+
+.yes-no button.selected {
+    background: var(--azul);
+
+    color: white;
+
+    border-color: var(--azul);
+}
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+.upload {
+    border:
+        1.5px dashed #ccd2dc;
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    text-align: center;
+
+    margin-bottom: 18px;
+}
+
+.upload-icon {
+    width: 43px;
+    height: 43px;
+
+    margin: 0 auto 9px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eefafa;
+    color: var(--celeste);
+
+    border-radius: 12px;
+}
+
+.upload strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: var(--azul);
+}
+
+.upload > span {
+    display: block;
+
+    font-size: 9px;
+
+    color: var(--texto-secundario);
+
+    margin: 4px 0 12px;
+}
+
+.upload button {
+    padding: 8px 13px;
+
+    border:
+        1px solid var(--borde);
+
+    border-radius: 8px;
+
+    background: white;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   CONTACTO
+========================================================= */
+
+.contact-box {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 13px;
+
+    background: #f7f8fb;
+
+    border-radius: 12px;
+
+    margin-bottom: 17px;
+}
+
+.contact-icon {
+    width: 35px;
+    height: 35px;
+
+    border-radius: 9px;
+
+    background: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--celeste);
+}
+
+.contact-box > div:nth-child(2) {
+    flex: 1;
+}
+
+.contact-box strong {
+    font-size: 11px;
+}
+
+.contact-box p {
+    font-size: 9px;
+
+    color: var(--texto-secundario);
+
+    margin-top: 3px;
+}
+
+.login-button {
+    border: none;
+
+    background: var(--azul);
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 8px 11px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CONFIRMACIÓN
+========================================================= */
+
+.confirmation {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+    font-size: 10px;
+
+    color: var(--texto-secundario);
+
+    line-height: 1.4;
+
+    margin-bottom: 18px;
+}
+
+.confirmation input {
+    margin-top: 2px;
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.form-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    padding-top: 5px;
+}
+
+.form-actions button,
+.reporte-footer button {
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    font-weight: 800;
+}
+
+.form-actions button {
+    height: 41px;
+
+    padding: 0 17px;
+
+    font-size: 10px;
+}
+
+.reporte-footer button {
+    height: 42px;
+
+    padding: 0 15px;
+
+    font-size: 11px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.cancelar,
+.btn-secundario {
+    background: white;
+
+    border:
+        1px solid var(--borde);
+
+    color: var(--texto-secundario);
+}
+
+.publicar,
+.btn-principal {
+    background: var(--naranja);
+
+    border: none;
+
+    color: white;
+
+    box-shadow:
+        0 5px 15px
+        rgba(255, 99, 0, .25);
+}
+
+.btn-principal:hover {
+    filter: brightness(.95);
+}
+
+
+/* =========================================================
+   POPUP — VISUALIZACIÓN DE REPORTE
+========================================================= */
+
+.categoria {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: .8px;
+}
+
+.categoria-icon {
+    width: 35px;
+    height: 35px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.12);
+
+    color: var(--naranja);
+
+    font-size: 15px;
+}
+
+.titulo-container {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 20px;
+
+    margin-bottom: 18px;
+}
+
+.ubicacion {
+    font-size: 13px;
+
+    color: var(--texto-secundario);
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+.ubicacion i {
+    color: var(--naranja);
+}
+
+.nivel-peligro {
+    flex-shrink: 0;
+
+    padding: 7px 11px;
+
+    border-radius: 8px;
+
+    background: #fee2e2;
+    color: #dc2626;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: .7px;
+}
+
+
+/* =========================================================
+   CONFIABILIDAD
+========================================================= */
+
+.confiabilidad {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    border:
+        1px solid var(--borde);
+
+    border-radius: 13px;
+
+    margin-bottom: 13px;
+}
+
+.confiabilidad-info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.confiabilidad-titulo {
+    font-size: 12px;
+    font-weight: 700;
+
+    color: var(--texto);
+}
+
+.confiabilidad-texto {
+    font-size: 11px;
+
+    color: var(--verde);
+}
+
+.estrellas {
+    display: flex;
+    align-items: center;
+
+    gap: 3px;
+
+    color: #d9dde5;
+}
+
+.estrellas .activa {
+    color: #f6b91a;
+}
+
+.estrellas span {
+    margin-left: 7px;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--texto);
+}
+
+
+/* =========================================================
+   FECHA DEL REPORTE
+========================================================= */
+
+.fecha {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 12px;
+
+    color: var(--texto-secundario);
+
+    margin-bottom: 23px;
+}
+
+.fecha i {
+    color: var(--celeste);
+}
+
+
+/* =========================================================
+   SECCIONES DEL REPORTE
+========================================================= */
+
+.seccion {
+    margin-bottom: 23px;
+}
+
+.seccion-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+.seccion h2 {
+    font-size: 14px;
+
+    color: var(--azul);
+
+    margin-bottom: 10px;
+}
+
+.seccion-header h2 {
+    margin-bottom: 0;
+}
+
+.tipo-evidencia {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 11px;
+
+    color: var(--texto-secundario);
+}
+
+
+/* =========================================================
+   EVIDENCIA
+========================================================= */
+
+.evidencia {
+    width: 100%;
+}
+
+.video-placeholder {
+    position: relative;
+
+    height: 280px;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    background: #101828;
+}
+
+.video-placeholder img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    opacity: .82;
+}
+
+.play-button {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 62px;
+    height: 62px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.95);
+
+    color: var(--azul);
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.3);
+}
+
+.duracion {
+    position: absolute;
+
+    right: 12px;
+    bottom: 12px;
+
+    padding: 5px 8px;
+
+    border-radius: 5px;
+
+    background: rgba(0,0,0,.7);
+
+    color: white;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   DESCRIPCIÓN
+========================================================= */
+
+.descripcion {
+    font-size: 13px;
+
+    line-height: 1.65;
+
+    color: #596276;
+}
+
+
+/* =========================================================
+   VEHÍCULO
+========================================================= */
+
+.vehiculo {
+    display: grid;
+
+    grid-template-columns:
+        170px 1fr;
+
+    gap: 16px;
+
+    padding: 12px;
+
+    border:
+        1px solid var(--borde);
+
+    border-radius: 14px;
+}
+
+.vehiculo-imagen {
+    height: 125px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+}
+
+.vehiculo-imagen img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.vehiculo-datos {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 13px;
+}
+
+.dato {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.dato span {
+    font-size: 10px;
+
+    color: #8991a1;
+
+    text-transform: uppercase;
+
+    letter-spacing: .5px;
+}
+
+.dato strong {
+    font-size: 12px;
+
+    color: var(--texto);
+}
+
+
+/* =========================================================
+   INFORMACIÓN ADICIONAL
+========================================================= */
+
+.informacion-adicional {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+
+    margin-bottom: 5px;
+}
+
+.info-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    border-radius: 11px;
+
+    background: #f7f8fb;
+}
+
+.info-item > i {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--celeste);
+
+    font-size: 12px;
+}
+
+.info-item div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.info-item span {
+    font-size: 9px;
+
+    color: #8a92a2;
+
+    text-transform: uppercase;
+}
+
+.info-item strong {
+    font-size: 11px;
+
+    color: var(--texto);
+}
+
+
+/* =========================================================
+   FOOTER DEL REPORTE
+========================================================= */
+
+.textarea-footer {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    color:
+        var(--gris-claro);
+
+    font-size:
+        9px;
+
+    margin-top:
+        5px;
+}
+
+.reporte-footer {
+    padding: 15px 22px;
+
+    border-top:
+        1px solid var(--borde);
+
+    background: white;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   COMUNITARIO
+========================================================= */
+
+.incident-types {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 9px;
+}
+
+.incident-card {
+    text-align: left;
+
+    border:
+        1px solid var(--borde);
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 14px;
+
+    cursor: pointer;
+}
+
+.incident-card i {
+    display: block;
+
+    color: var(--celeste);
+
+    margin-bottom: 9px;
+
+    font-size: 17px;
+}
+
+.incident-card strong {
+    display: block;
+
+    font-size: 11px;
+
+    color: var(--azul);
+}
+
+.incident-card span {
+    display: block;
+
+    font-size: 9px;
+
+    color: var(--texto-secundario);
+
+    line-height: 1.4;
+
+    margin-top: 4px;
+}
+
+.incident-card.active {
+    border:
+        1.5px solid var(--celeste);
+
+    background: #f1fbfb;
+}
+
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+
+.hidden {
+    display: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .popup,
+    .reporte {
+        width: calc(100vw - 16px);
+
+        max-height: calc(100vh - 16px);
+
+        border-radius: 18px;
+    }
+
+
+    /* Popup creación */
+
+    .popup-header {
+        padding: 18px;
+    }
+
+    .form-content {
+        padding: 18px;
+    }
+
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .date-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .live-toggle {
+        grid-column: span 2;
+    }
+
+    .incident-types {
+        grid-template-columns: 1fr;
+    }
+
+    .question {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .yes-no {
+        width: 100%;
+    }
+
+    .yes-no button {
+        flex: 1;
+    }
+
+    .location-box {
+        flex-wrap: wrap;
+    }
+
+    .map-button {
+        width: 100%;
+    }
+
+    .form-actions {
+        position: sticky;
+
+        bottom: -18px;
+
+        margin: 0 -18px;
+
+        padding: 12px 18px;
+
+        background: white;
+
+        border-top:
+            1px solid var(--borde);
+
+        z-index: 10;
+    }
+
+    .cancelar {
+        display: none;
+    }
+
+    .publicar {
+        flex: 1;
+    }
+
+
+    /* Popup visualización */
+
+    .reporte-content {
+        padding: 18px;
+    }
+
+    .titulo-container h1 {
+        font-size: 22px;
+    }
+
+    .video-placeholder {
+        height: 210px;
+    }
+
+    .vehiculo {
+        grid-template-columns: 1fr;
+    }
+
+    .vehiculo-imagen {
+        height: 180px;
+    }
+
+    .informacion-adicional {
+        grid-template-columns: 1fr;
+    }
+
+    .reporte-footer {
+        padding: 12px;
+    }
+
+    .btn-secundario {
+        display: none !important;
+    }
+
+    .btn-principal {
+        flex: 1;
+        justify-content: center;
+    }
+}
