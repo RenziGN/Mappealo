@@ -137,8 +137,42 @@
     object-fit: contain;
     opacity: 0.8;
 }
+/* ==========================================
+   MODAL / POPUP Y OVERLAY
+========================================== */
 
-.popup,
+/* Fondo oscuro detrás del modal */
 .overlay {
     display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    backdrop-filter: blur(2px);
+}
+
+/* Contenedor del popup centrado en pantalla */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Ocultar elementos auxiliares */
+.hidden {
+    display: none !important;
 }

@@ -29,19 +29,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($errors)) {
-        try {
-            $sql = "INSERT INTO users (email, password, is_admin) VALUES (:email, :password, :is_admin)";
-            $stmt = $connection->prepare($sql);
-            $stmt->bindValue(':email', $email);
-            $stmt->bindValue(':password', password_hash($password, PASSWORD_BCRYPT));
-            $stmt->bindValue(':is_admin', $isAdmin);            
-            $stmt->execute();
-            header("Location: ../../pages/auth/login.php");
-            $_SESSION['success'] = "Registro exitoso. Ahora puedes iniciar sesión.";
-            exit;
-        } catch (PDOException $e) {
-            $db_error = "Error al guardar en la base de datos: " . $e->getMessage();
-        }
+    try {
+        // 1. Si tu formulario no tiene campo para "nombre_usuario", extraemos la primera parte del email como fallback
+        $nombre_usuario = isset($_POST['nombre_usuario']) && !empty(trim($_POST['nombre_usuario'])) 
+            ? trim($_POST['nombre_usuario']) 
+            : explode('@', $email)[0];
+
+        // 2. Consulta adaptada al nuevo modelo de base de datos
+        $sql = "INSERT INTO usuario (nombre_usuario, email, password, es_admin) 
+                VALUES (:nombre_usuario, :email, :password, :es_admin)";
+                
+        $stmt = $connection->prepare($sql);
+        $stmt->bindValue(':nombre_usuario', $nombre_usuario);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':password', password_hash($password, PASSWORD_BCRYPT));
+        $stmt->bindValue(':es_admin', $isAdmin ?? 0);            
+        $stmt->execute();
+
+        // 3. Guardar el mensaje en la sesión ANTES de hacer la redirección
+        $_SESSION['success'] = "Registro exitoso. Ahora puedes iniciar sesión.";
+        header("Location: ../../pages/auth/login.php");
+        exit;
+    } catch (PDOException $e) {
+        $db_error = "Error al guardar en la base de datos: " . $e->getMessage();
+        // Si querés ver el error exacto en pantalla si falla:
+        // echo $db_error; exit;
+    }
 
         
     }else{

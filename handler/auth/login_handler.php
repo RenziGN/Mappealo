@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($errors)) {
         try {
-            $sql = "SELECT * FROM users WHERE email = :email";
+            $sql = "SELECT * FROM usuario WHERE email = :email";
             $stmt = $connection->prepare($sql);
             $stmt->bindValue(':email', $email);
             $stmt->execute();

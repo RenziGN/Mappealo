@@ -7,12 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.querySelector(".popup");
     const overlay = document.querySelector(".overlay");
     const cerrar = document.querySelector(".cerrar");
-
     const tabs = document.querySelectorAll(".tab");
     const tabContents = document.querySelectorAll(".tab-content");
-
     const delitoTab = document.querySelector(".delito");
     const comunitarioTab = document.querySelector(".comunitario");
+    const btnReportar = document.querySelector(".report-box button");
+    btnReportar?.addEventListener("click", () => {
+        popup.style.display = "block";
+        overlay.style.display = "block";
+    });
 
     let currentTab = "delito";
 
@@ -426,86 +429,69 @@ document.addEventListener("DOMContentLoaded", () => {
        BOTÓN CANCELAR
     ===================================================== */
 
-    const cancelar =
-        document.querySelectorAll(".cancelar");
+    const cancelarButtons = document.querySelectorAll(".cancelar");
 
-
-    cancelar.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const confirmar =
-                confirm(
-                    "¿Querés cancelar el reporte? Se perderán los datos ingresados."
-                );
-
-            if (!confirmar) return;
-
+      cancelarButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        if (confirm("¿Querés cancelar el reporte? Se perderán los datos ingresados.")) {
             resetForm();
-
-        });
-
+            popup.style.display = "none";
+            overlay.style.display = "none";
+        }
     });
+   });
 
 
     /* =====================================================
        PUBLICAR
     ===================================================== */
 
-    const publicarButtons =
-        document.querySelectorAll(".publicar");
+const publicarButtons = document.querySelectorAll(".publicar");
 
+publicarButtons.forEach(button => {
+    button.addEventListener("click", async () => {
+        const validacion = validarFormulario();
 
-    publicarButtons.forEach(button => {
+        if (!validacion.valido) {
+            alert(validacion.mensaje);
+            return;
+        }
 
-        button.addEventListener("click", async () => {
+        const reporte = obtenerReporte();
 
-            const validacion =
-                validarFormulario();
+        // Asignar las coordenadas seleccionadas en el mapa
+        if (window.coordenadasSeleccionadas) {
+            reporte.latitud = window.coordenadasSeleccionadas.lat;
+            reporte.longitud = window.coordenadasSeleccionadas.lng;
+        } else {
+            alert("Por favor seleccioná una ubicación en el mapa antes de publicar.");
+            return;
+        }
 
-            if (!validacion.valido) {
+        try {
+            const response = await fetch("api/crear_reporte.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(reporte)
+            });
 
-                alert(
-                    validacion.mensaje
-                );
+            const data = await response.json();
 
-                return;
+            if (data.status === "success") {
+                alert("¡Reporte publicado con éxito!");
+                resetForm();
+                window.location.reload();
+            } else {
+                alert("Error: " + (data.message || "No se pudo guardar el reporte"));
             }
-
-
-            const reporte =
-                obtenerReporte();
-
-
-            console.log(
-                "REPORTE:",
-                reporte
-            );
-
-
-            /*
-             * FUTURA API
-             *
-             * await fetch("/api/reportes", {
-             *     method: "POST",
-             *     headers: {
-             *         "Content-Type":
-             *             "application/json"
-             *     },
-             *     body: JSON.stringify(reporte)
-             * });
-             */
-
-
-            alert(
-                "Reporte preparado correctamente.\n\n" +
-                "Revisá la consola para ver los datos."
-            );
-
-        });
-
+        } catch (error) {
+            console.error("Error al enviar reporte:", error);
+            alert("Error de conexión al guardar el reporte.");
+        }
     });
-
+});
 
     /* =====================================================
        VALIDACIÓN
@@ -1030,71 +1016,23 @@ document.addEventListener("DOMContentLoaded", () => {
        RESET
     ===================================================== */
 
-    function resetForm() {
+   function resetForm() {
+    document.querySelectorAll(".popup input[type='text'], .popup input[type='date'], .popup input[type='time'], .popup textarea").forEach(el => {
+        el.value = "";
+    });
 
-        document
-            .querySelectorAll(
-                "input, textarea, select"
-            )
-            .forEach(element => {
+    document.querySelectorAll(".popup input[type='checkbox'], .popup input[type='radio']").forEach(el => {
+        el.checked = false;
+    });
 
-                if (
-                    element.type === "checkbox" ||
-                    element.type === "radio"
-                ) {
-
-                    element.checked = false;
-
-                }
-                else {
-
-                    element.value = "";
-
-                }
-
-            });
-
-
-        document
-            .querySelectorAll(
-                ".selected"
-            )
-            .forEach(element =>
-                element.classList.remove(
-                    "selected"
-                )
-            );
-
-
-        document
-            .querySelectorAll(
-                ".radio-card"
-            )
-            .forEach(element =>
-                element.classList.remove(
-                    "active"
-                )
-            );
-
-
-        document
-            .querySelectorAll(
-                ".incident-card"
-            )
-            .forEach(element =>
-                element.classList.remove(
-                    "active"
-                )
-            );
-
-
-        document
-            .querySelector(
-                ".popup"
-            )
-            .style.display = "none";
-
-    }
+    document.querySelectorAll(".popup .selected").forEach(el => el.classList.remove("selected"));
+    document.querySelectorAll(".popup .radio-card.active").forEach(el => el.classList.remove("active"));
+    
+    // Restaurar textos de ubicación
+    document.querySelectorAll('.location-box p').forEach(p => {
+        p.textContent = "Seleccioná una ubicación en el mapa o ingresá una dirección.";
+    });
+}
 
 
 });
