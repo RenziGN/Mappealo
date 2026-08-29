@@ -55,36 +55,6 @@ body {
 }
 
 
-.mapa-grid {
-    position: absolute;
-    inset: -100px;
-
-    opacity: .35;
-
-    background-image:
-        linear-gradient(
-            25deg,
-            transparent 47%,
-            #fff 48%,
-            #fff 51%,
-            transparent 52%
-        ),
-        linear-gradient(
-            105deg,
-            transparent 47%,
-            #fff 48%,
-            #fff 51%,
-            transparent 52%
-        );
-
-    background-size:
-        300px 300px,
-        220px 220px;
-
-    transform: rotate(-5deg);
-}
-
-
 /* =========================================================
    MARCADORES
 ========================================================= */
@@ -1755,3 +1725,4 @@ body {
         justify-content: center;
     }
 }
+

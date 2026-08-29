@@ -26,57 +26,122 @@ $user = $_SESSION['user'];
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+       crossorigin=""/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/home.css">
 
 </head>
 
-<body class="container py-5">
+<body>
 
-    <div class="card p-4">
-
-        <h1>
-            Bienvenido,
-            <?php if($user['is_admin']): ?>
-                Administrador <?= htmlspecialchars($user['email']) ?>
-            <?php else: ?>
-                Usuario <?= htmlspecialchars($user['email']) ?>
-            <?php endif; ?>
+<main >
             
-        </h1>
-
-        <p>
-            Has iniciado sesión correctamente. ¿Qué deseas hacer ahora?
-        </p>
-
-        <?php if($user['is_admin']): ?>
-
-            <a
-            href="pages/admin/user_list.php"
-            class="btn btn-primary">
-
-                Ir al panel de administración de usuarios
-
-            </a>
-
-        <?php endif; ?>
-
-        <a
-        href="handler/auth/logout_handler.php"
-        class="btn btn-danger">
-
-            Cerrar sesión
-
-        </a>
+             <div id="map"></div>
 
 
+            <div class="search-box">
+                <div class="card shadow rounded-4 border-0 p-2">
+                    <div class="input-group align-items-center">
+                        
+                        <div class="dropdown me-2">
+                            <button class="btn btn-link text-dark p-2 border-0" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-list fs-4"></i>
+                            </button>
+                            
+                            <ul class="dropdown-menu shadow border-0 mt-2">
+                                <li>
+                                    <span class="dropdown-item-text fw-bold border-bottom pb-2">
+                                        <i class="fa-solid fa-circle-user me-2 text-primary"></i>
+                                        <?php 
+                                        if ($is_guest) {
+                                            echo "Invitado";
+                                        } else if ($user['is_admin']) {
+                                            echo "Admin: " . $user['email'];
+                                        } else {
+                                            echo "Usuario: " . $user['email'];
+                                        }
+                                        ?>
+                                    </span>
+                                </li>
+                                
+                                <?php if ($user['is_admin'] && !$is_guest) { ?>
+                                    <li>
+                                        <a class="dropdown-item mt-2" href="pages/admin/user_list.php">
+                                            <i class="fa-solid fa-gear me-2"></i>Panel Admin
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php } ?>
+                                
+                                <li>
+                                    <a class="dropdown-item text-danger mt-2" href="handler/auth/logout_handler.php">
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
-    </div>
+                        <input type="text" class="form-control border-0 ps-1" placeholder="Buscar en Mappealo...">
+                        
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-muted"></i></span>
+                        
+                        <span class="input-group-text bg-transparent border-0 pre-logo-search">
+                            <img src="assets/Img/LOGO MAPPEALO 1.png" alt="Mappealo" class="img-search-logo">
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-    <!-- MAPA DE FONDO -->
+            <div class="filter-bar">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-dark btn-sm rounded-pill px-3 shadow-sm">Todo</button>
+                    
+                    <button class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
+                        <img src="assets/Img/ladron-icon.png" alt="Robos" class="img-filtro"> Robos
+                    </button>
+                    
+                    <button class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
+                        <img src="assets/Img/comunidad.png" alt="Comunidad" class="img-filtro"> Comunidad
+                    </button>
+                </div>
+            </div>
 
-<main class="mapa">
-    <div class="mapa-grid"></div>
-</main>
+            <div class="report-box">
+                <button class="btn btn-primary btn-lg shadow rounded-pill px-4 py-2">
+                    <i class="bi bi-plus-lg me-2"></i> REPORTAR ALERTA
+                </button>
+            </div>
+
+            <div class="sidebar-buttons">
+                <button class="btn-circle btn-police" title="Policía">
+                    <img src="assets/Img/policia.png" alt="Policía" class="img-vehiculo">
+                </button>
+                <button class="btn-circle btn-ambulance" title="Ambulancia">
+                    <img src="assets/Img/ambulancia.png" alt="Ambulancia" class="img-vehiculo">
+                </button>
+                <button class="btn-circle btn-fire" title="Bomberos">
+                    <img src="assets/Img/bombero.png" alt="Bomberos" class="img-vehiculo">
+                </button>
+            </div>
+
+            <div class="bottom-buttons">
+                <button class="btn btn-light shadow-sm">
+                    <img src="assets/Img/fuego.png" alt="Calor" class="img-fuego"> Calor
+                </button>
+                <button class="btn btn-light shadow-sm" title="Centrar">
+                    <i class="bi bi-geo-fill me-1"></i> Centrar
+                </button>
+                <button class="btn-circle btn-sos" title="S.O.S Emergencias">
+                    <i class="bi bi-telephone-fill fs-5"></i>
+                </button>
+            </div>
+
+        </main>
 
 <div class="overlay"></div>
 
@@ -630,8 +695,12 @@ $user = $_SESSION['user'];
 
 </section>
 
-<script src="assets/js/post_form.js"></script>
     
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./assets/js/map.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="./assets/js/post_form.js"></script>
 
 </body>
 </html>

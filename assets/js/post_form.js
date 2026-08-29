@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================================== */
 
     const popup = document.querySelector(".popup");
+    const overlay = document.querySelector(".overlay");
     const cerrar = document.querySelector(".cerrar");
 
     const tabs = document.querySelectorAll(".tab");
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cerrar?.addEventListener("click", () => {
         popup.style.display = "none";
+        overlay.style.display = "none";
     });
 
 
