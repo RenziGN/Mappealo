@@ -10,6 +10,7 @@ if(!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 ?>
 
 <!DOCTYPE html>
@@ -518,7 +519,7 @@ $user = $_SESSION['user'];
 
                         <i class="fa-solid fa-road"></i>
 
-                        <strong>Obstrucción</strong>
+                        <strong>Obstruccion</strong>
 
                         <span>
                             Corte de calle, obra,
@@ -697,10 +698,10 @@ $user = $_SESSION['user'];
 
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="./assets/js/map.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="./assets/js/post_form.js"></script>
+    <script src="./assets/js/map.js"></script>
 
 </body>
 </html>

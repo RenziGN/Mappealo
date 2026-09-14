@@ -33,6 +33,9 @@ map.on('click', function(e) {
         lng: e.latlng.lng
     };
 
+    popup.style.display = "block";
+        overlay.style.display = "block";
+    
     if (seleccionMarker) {
         seleccionMarker.setLatLng(e.latlng);
     } else {

@@ -1,11 +1,12 @@
+const popup = document.querySelector(".popup");
+const overlay = document.querySelector(".overlay");
+
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        ELEMENTOS PRINCIPALES
     ===================================================== */
 
-    const popup = document.querySelector(".popup");
-    const overlay = document.querySelector(".overlay");
     const cerrar = document.querySelector(".cerrar");
     const tabs = document.querySelectorAll(".tab");
     const tabContents = document.querySelectorAll(".tab-content");
