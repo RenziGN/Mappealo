@@ -30,6 +30,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
        crossorigin=""/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -131,7 +132,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
             </div>
 
             <div class="bottom-buttons">
-                <button class="btn btn-light shadow-sm">
+                <button id="btnCalor" class="btn btn-light shadow-sm">
                     <img src="assets/Img/fuego.png" alt="Calor" class="img-fuego"> Calor
                 </button>
                 <button class="btn btn-light shadow-sm" title="Centrar">
@@ -698,6 +699,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="./assets/js/post_form.js"></script>

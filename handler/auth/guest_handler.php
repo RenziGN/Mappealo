@@ -7,7 +7,7 @@ session_regenerate_id(true);
 
 
 $_SESSION['user'] = [
-    'id' => 'guest_' . uniqid(),        
+    'id_usuario' => 0,
     'email' => 'invitado@mappealo.com',  
     'is_admin' => 0,                    
     'rol' => 'guest'                  

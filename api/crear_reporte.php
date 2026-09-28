@@ -24,19 +24,34 @@ if (!$input) {
 }
 
 try {
-    $connection->beginTransaction();
+    $esInvitado = is_array($_SESSION['user']) && ($_SESSION['user']['rol'] ?? null) === 'guest';
+    $idUsuario = $esInvitado
+        ? 0
+        : (is_array($_SESSION['user'])
+            ? ($_SESSION['user']['id_usuario'] ?? $_SESSION['user']['id'] ?? null)
+            : ($_SESSION['user_id'] ?? $_SESSION['id_usuario'] ?? null));
 
-    //  Obtener ID del usuario logueado
-    $idUsuario = null;
-    if (is_array($_SESSION['user'])) {
-        $idUsuario = $_SESSION['user']['id_usuario'] ?? $_SESSION['user']['id'] ?? null;
-    } else {
-        $idUsuario = $_SESSION['user_id'] ?? $_SESSION['id_usuario'] ?? null;
+    if (!$esInvitado && !filter_var($idUsuario, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])) {
+        http_response_code(401);
+        echo json_encode(['status' => 'error', 'message' => 'Iniciá sesión nuevamente para publicar un reporte.']);
+        exit;
     }
 
-    if (!$idUsuario) {
-        $stmtUser = $connection->query("SELECT id_usuario FROM usuario LIMIT 1");
-        $idUsuario = $stmtUser->fetchColumn() ?: 1;
+    $connection->beginTransaction();
+
+    if ($esInvitado) {
+        $connection->exec("SET SESSION sql_mode = CONCAT_WS(',', @@SESSION.sql_mode, 'NO_AUTO_VALUE_ON_ZERO')");
+        $stmtGuest = $connection->prepare("SELECT id_usuario FROM usuario WHERE id_usuario = 0");
+        $stmtGuest->execute();
+        if ($stmtGuest->fetchColumn() === false) {
+            $stmtGuestInsert = $connection->prepare("\n                INSERT IGNORE INTO usuario (id_usuario, nombre_usuario, email, password, es_admin)\n                VALUES (0, 'Invitado', 'guest-id-0@mappealo.invalid', :password, 0)\n            ");
+            $stmtGuestInsert->execute([':password' => password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT)]);
+
+            $stmtGuest->execute();
+            if ($stmtGuest->fetchColumn() === false) {
+                throw new PDOException('No se pudo crear el usuario invitado con id_usuario 0.');
+            }
+        }
     }
 
     //  Insertar en tabla: ubicacion
