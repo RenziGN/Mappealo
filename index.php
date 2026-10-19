@@ -101,16 +101,49 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
             <div class="filter-bar">
                 <div class="d-flex gap-2">
-                    <button class="btn btn-dark btn-sm rounded-pill px-3 shadow-sm">Todo</button>
+                    <button id="btnFiltroTodo" class="btn btn-dark btn-sm rounded-pill px-3 shadow-sm">Todo</button>
                     
-                    <button class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
+                    <button id="btnFiltroRobos" class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
                         <img src="assets/Img/ladron-icon.png" alt="Robos" class="img-filtro"> Robos
                     </button>
                     
-                    <button class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
+                    <button id="btnFiltroComunidad" class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
                         <img src="assets/Img/comunidad.png" alt="Comunidad" class="img-filtro"> Comunidad
                     </button>
                 </div>
+                <!-- Deslizador de Subtipos de Robos -->
+                <div id="subfiltros-robos" class="panel-subfiltros d-none">
+                    <label class="subfiltro-item">
+                        <input type="checkbox" class="filtro-subtipo" data-cat="delito" value="Robo a mano armada" checked>
+                        <span>A mano armada</span>
+                    </label>
+                    <label class="subfiltro-item">
+                        <input type="checkbox" class="filtro-subtipo" data-cat="delito" value="Hurto / Arrebato en vía pública" checked>
+                        <span>Hurto / Arrebato</span>
+                    </label>
+                    <label class="subfiltro-item">
+                        <input type="checkbox" class="filtro-subtipo" data-cat="delito" value="Robo de vehículo / Motochorros" checked>
+                        <span>Vehículo / Motochorros</span>
+                    </label>
+                </div>
+
+                <!-- Deslizador de Subtipos de Comunidad -->
+                <div id="subfiltros-comunidad" class="panel-subfiltros d-none">
+                    <label class="subfiltro-item">
+                        <input type="checkbox" class="filtro-subtipo" data-cat="comunitario" value="Luminaria rota" checked>
+                        <span>Luminaria rota</span>
+                    </label>
+                    <label class="subfiltro-item">
+                        <input type="checkbox" class="filtro-subtipo" data-cat="comunitario" value="Bache / Calle anegada" checked>
+                        <span>Bache / Calle anegada</span>
+                    </label>
+                    <label class="subfiltro-item">
+                        <input type="checkbox" class="filtro-subtipo" data-cat="comunitario" value="Basura acumulada" checked>
+                        <span>Basura acumulada</span>
+                    </label>
+                </div>
+
+                
             </div>
 
             <div class="report-box">
@@ -230,18 +263,12 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     <span class="required">*</span>
                 </label>
 
-                <select>
-                    <option value="">Seleccionar tipo de robo</option>
-
-                    <option>Robo de vehículo</option>
-                    <option>Robo en hogar</option>
-                    <option>Robo en comercio</option>
-                    <option>Robo en vía pública</option>
-                    <option>Robo de bicicleta / moto</option>
-                    <option>Robo de autopartes</option>
-                    <option>Otro</option>
-
-                </select>
+                 <select>
+                  <option value="">Seleccionar tipo de robo</option>
+                  <option value="Robo a mano armada">Robo a mano armada</option>
+                  <option value="Hurto / Arrebato en vía pública">Hurto / Arrebato en vía pública</option>
+                  <option value="Robo de vehículo / Motochorros">Robo de vehículo / Motochorros</option>
+                 </select>
 
                 <small>
                     El tipo de robo será utilizado para ponderar
@@ -515,47 +542,23 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                 </label>
 
                 <div class="incident-types">
-
-                    <button class="incident-card active">
-
-                        <i class="fa-solid fa-road"></i>
-
-                        <strong>Obstruccion</strong>
-
-                        <span>
-                            Corte de calle, obra,
-                            árbol caído.
-                        </span>
-
-                    </button>
-
-
-                    <button class="incident-card">
-
+                    <button type="button" class="incident-card active">
                         <i class="fa-solid fa-lightbulb"></i>
-
-                        <strong>Luminaria</strong>
-
-                        <span>
-                            Falta de iluminación
-                            o cortes de luz.
-                        </span>
-
+                        <strong>Luminaria rota</strong>
+                        <span>Falta total o parcial de iluminación en la vía pública.</span>
                     </button>
 
-
-                    <button class="incident-card">
-
-                        <i class="fa-solid fa-tree"></i>
-
-                        <strong>Espacios verdes</strong>
-
-                        <span>
-                            Poda, ramas o residuos.
-                        </span>
-
+                    <button type="button" class="incident-card">
+                        <i class="fa-solid fa-road"></i>
+                        <strong>Bache / Calle anegada</strong>
+                        <span>Pozo peligroso o calle intransitable.</span>
                     </button>
 
+                    <button type="button" class="incident-card">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <strong>Basura acumulada</strong>
+                        <span>Microbasural o residuos que obstruyen la vereda.</span>
+                    </button>
                 </div>
 
             </div>

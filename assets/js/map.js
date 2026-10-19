@@ -381,7 +381,6 @@ map.on('zoomend', function() {
         dibujarZonasCalor();
     }
 });
-
 const btnCalor = document.getElementById('btnCalor');
 
 btnCalor.addEventListener('click', function () {
@@ -431,3 +430,80 @@ btnCalor.addEventListener('click', function () {
         zonasBaseCalor = [];
     }
 });
+
+// ==========================================
+// CONTROL DE CAPAS Y FILTROS POR SUBTIPO
+// ==========================================
+
+const btnFiltroTodo = document.getElementById('btnFiltroTodo');
+const btnFiltroRobos = document.getElementById('btnFiltroRobos');
+const btnFiltroComunidad = document.getElementById('btnFiltroComunidad');
+const panelRobos = document.getElementById('subfiltros-robos');
+const panelComunidad = document.getElementById('subfiltros-comunidad');
+
+function actualizarEstilosFiltro(botonActivo) {
+    [btnFiltroTodo, btnFiltroRobos, btnFiltroComunidad].forEach(btn => {
+        btn.classList.remove('btn-dark');
+        btn.classList.add('btn-white', 'bg-white', 'border');
+    });
+    botonActivo.classList.add('btn-dark');
+    botonActivo.classList.remove('btn-white', 'bg-white', 'border');
+}
+
+// Muestra u oculta las capas en el mapa segun la categoria
+function filtrarCategoriasPrincipales(categoria) {
+    gruposReportes.forEach((grupo, clave) => {
+        const [cat] = clave.split(':');
+
+        if (categoria === 'todo') {
+            if (!map.hasLayer(grupo)) map.addLayer(grupo);
+        } else if (cat === categoria) {
+            if (!map.hasLayer(grupo)) map.addLayer(grupo);
+        } else {
+            if (map.hasLayer(grupo)) map.removeLayer(grupo);
+        }
+    });
+}
+// boton "Todo" 
+btnFiltroTodo.addEventListener('click', () => {
+    actualizarEstilosFiltro(btnFiltroTodo);
+    panelRobos.classList.add('d-none');
+    panelComunidad.classList.add('d-none');
+    filtrarCategoriasPrincipales('todo');
+});
+
+// boton "Robos"
+btnFiltroRobos.addEventListener('click', () => {
+    actualizarEstilosFiltro(btnFiltroRobos);
+    panelComunidad.classList.add('d-none');
+    panelRobos.classList.toggle('d-none');
+    filtrarCategoriasPrincipales('delito');
+});
+
+// boton "Comunidad"
+btnFiltroComunidad.addEventListener('click', () => {
+    actualizarEstilosFiltro(btnFiltroComunidad);
+    panelRobos.classList.add('d-none');
+    panelComunidad.classList.toggle('d-none');
+    filtrarCategoriasPrincipales('comunitario');
+});
+
+// Filtrado de las subclases
+document.querySelectorAll('.filtro-subtipo').forEach(checkbox => {
+    checkbox.addEventListener('change', (e) => {
+        const cat = e.target.getAttribute('data-cat').trim();
+        const subtipo = e.target.value.trim();
+        const clave = `${cat}:${subtipo}`;
+
+        if (gruposReportes.has(clave)) {
+            const grupo = gruposReportes.get(clave);
+            if (e.target.checked) {
+                if (!map.hasLayer(grupo)) map.addLayer(grupo);
+            } else {
+                if (map.hasLayer(grupo)) map.removeLayer(grupo);
+            }
+        }
+    });
+});
+
+
