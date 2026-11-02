@@ -35,7 +35,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" href="assets/css/home.css?v=4">
 
 </head>
 
@@ -50,43 +50,9 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                 <div class="card shadow rounded-4 border-0 p-2">
                     <div class="input-group align-items-center">
                         
-                        <div class="dropdown me-2">
-                            <button class="btn btn-link text-dark p-2 border-0" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-list fs-4"></i>
-                            </button>
-                            
-                            <ul class="dropdown-menu shadow border-0 mt-2">
-                                <li>
-                                    <span class="dropdown-item-text fw-bold border-bottom pb-2">
-                                        <i class="fa-solid fa-circle-user me-2 text-primary"></i>
-                                        <?php 
-                                        if ($is_guest) {
-                                            echo "Invitado";
-                                        } else if ($user['is_admin']) {
-                                            echo "Admin: " . $user['email'];
-                                        } else {
-                                            echo "Usuario: " . $user['email'];
-                                        }
-                                        ?>
-                                    </span>
-                                </li>
-                                
-                                <?php if ($user['is_admin'] && !$is_guest) { ?>
-                                    <li>
-                                        <a class="dropdown-item mt-2" href="pages/admin/user_list.php">
-                                            <i class="fa-solid fa-gear me-2"></i>Panel Admin
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php } ?>
-                                
-                                <li>
-                                    <a class="dropdown-item text-danger mt-2" href="handler/auth/logout_handler.php">
-                                        <i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <button class="btn btn-link text-dark p-2 border-0 me-2" type="button" id="btnAbrirDrawer">
+                           <i class="bi bi-list fs-4"></i>
+                        </button>
 
                         <input type="text" class="form-control border-0 ps-1" placeholder="Buscar en Mappealo...">
                         
@@ -708,5 +674,215 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <script src="./assets/js/post_form.js"></script>
     <script src="./assets/js/map.js"></script>
 
+    <!-- Overlay oscuro de fondo -->
+<div id="drawer-overlay" class="drawer-overlay d-none"></div>
+
+<!-- Panel Lateral Nav-Drawer -->
+<aside id="nav-drawer" class="nav-drawer">
+    <!-- Cabecera dinámica -->
+    <?php if (!$is_guest): ?>
+        <?php 
+            $email_completo = $user['email'] ?? 'Usuario';
+            $alias_usuario = explode('@', $email_completo)[0];
+        ?>
+        <div class="drawer-header verified">
+            <div class="avatar-container">
+                <i class="fa-solid fa-circle-user avatar-icon"></i>
+                <span class="badge-verified"><i class="fa-solid fa-check"></i></span>
+            </div>
+            <div class="user-meta">
+                <h3 title="<?= htmlspecialchars($email_completo) ?>">
+                    <?= htmlspecialchars($alias_usuario) ?>
+                </h3>
+                <span class="user-role-badge">Usuario verificado</span>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="drawer-header guest">
+            <div class="avatar-container">
+                <i class="fa-solid fa-circle-user avatar-icon"></i>
+            </div>
+            <div class="user-meta">
+                <h3>Invitado</h3>
+                <div class="auth-links">
+                    <a href="pages/auth/login.php" class="link-auth">Iniciar sesión</a>
+                    <span class="auth-divider">o</span>
+                    <a href="pages/auth/register.php" class="link-auth">Crear una cuenta</a>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Secciones de Navegación -->
+    <div class="drawer-body">
+        
+        <!-- Alertas Vecinales -->
+        <div class="drawer-section">
+            <h4 class="section-title">Alertas vecinales</h4>
+            
+            <a href="#mis-reportes" class="drawer-item" id="btnDrawerMisReportes">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Tus reportes</span>
+            </a>
+
+            <button type="button" class="drawer-item" id="btnDrawerCargarRobo">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Cargar delito</span>
+            </button>
+            <button type="button" class="drawer-item" id="btnDrawerCargarComunitario">
+                <i class="fa-solid fa-bullhorn"></i>
+                <span>Cargar reporte barrial</span>
+            </button>
+        </div>
+
+        <!-- Capas del Mapa -->
+        <div class="drawer-section">
+            <h4 class="section-title">Capas del mapa</h4>
+            <div class="drawer-toggle-item">
+                <div class="toggle-info">
+                    <i class="fa-solid fa-fire text-danger"></i>
+                    <span>Mapa de calor</span>
+                </div>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="toggleDrawerCalor">
+                </div>
+            </div>
+
+            <div class="drawer-toggle-item">
+                <div class="toggle-info">
+                    <i class="fa-solid fa-draw-polygon text-primary"></i>
+                    <span>Jurisdicciones / Zonas</span>
+                </div>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="toggleDrawerJurisdiccion">
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergencias Rápidas compactas -->
+        <div class="drawer-section">
+            <h4 class="section-title">Emergencias directas</h4>
+            <div class="sos-grid">
+                <a href="tel:911" class="sos-chip police">
+                    <i class="fa-solid fa-shield"></i>
+                    <span>911</span>
+                </a>
+                <a href="tel:107" class="sos-chip ambulance">
+                    <i class="fa-solid fa-truck-medical"></i>
+                    <span>107</span>
+                </a>
+                <a href="tel:100" class="sos-chip fire">
+                    <i class="fa-solid fa-fire-extinguisher"></i>
+                    <span>100</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Administración -->
+        <?php if (!empty($user['is_admin']) && !$is_guest): ?>
+            <div class="drawer-section">
+                <h4 class="section-title">Administración</h4>
+                <a href="pages/admin/user_list.php" class="drawer-item admin-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Panel de Control</span>
+                </a>
+            </div>
+        <?php endif; ?>
+
+        <!-- Botón de Cerrar Sesión inferior para usuarios autenticados -->
+        <!-- Botón inferior para salir / cerrar sesión -->
+        <!-- Botón inferior para cerrar sesión -->
+        <div class="drawer-section mt-auto pt-2">
+          <a href="handler/auth/logout_handler.php" class="drawer-item text-danger bg-danger-subtle">
+         <i class="fa-solid fa-right-from-bracket text-danger"></i>
+         <span class="text-danger fw-bold">Cerrar sesión</span>
+          </a>
+        </div>
+
+    </div>
+
+    <!-- Pie del Drawer -->
+    <!-- Pie del Drawer -->
+    <div class="drawer-footer">
+     <span class="brand-text d-flex align-items-center justify-content-center gap-2">
+        <img src="assets/Img/LOGO MAPPEALO 1.png" alt="Logo Mappealo" class="drawer-logo">
+        <span>MAPPEALO<sup>&reg;</sup></span>
+     </span>
+    </div>
+</aside>
+
+<script>
+  const isGuest = <?= json_encode($is_guest) ?>;
+  const navDrawer = document.getElementById('nav-drawer');
+  const drawerOverlay = document.getElementById('drawer-overlay');
+  const btnAbrirDrawer = document.getElementById('btnAbrirDrawer');
+
+  function alternarNavDrawer() {
+      if (!navDrawer) return;
+      const isOpen = navDrawer.classList.contains('open');
+      if (isOpen) {
+          navDrawer.classList.remove('open');
+          drawerOverlay?.classList.add('d-none');
+      } else {
+          navDrawer.classList.add('open');
+          drawerOverlay?.classList.remove('d-none');
+      }
+  }
+
+  btnAbrirDrawer?.addEventListener('click', (e) => {
+      e.preventDefault();
+      alternarNavDrawer();
+  });
+
+  drawerOverlay?.addEventListener('click', alternarNavDrawer);
+
+  // Apertura de reportes para ambos perfiles
+  function dispararFormulario(tipo) {
+      alternarNavDrawer();
+
+      if (tipo === 'delito') {
+          document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+          document.querySelector('.tabs .tab:first-child')?.classList.add('active');
+          document.querySelector('.tab-content.delito')?.classList.remove('hidden');
+          document.querySelector('.tab-content.comunitario')?.classList.add('hidden');
+      } else {
+          document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+          document.querySelector('.tabs .tab:nth-child(2)')?.classList.add('active');
+          document.querySelector('.tab-content.delito')?.classList.add('hidden');
+          document.querySelector('.tab-content.comunitario')?.classList.remove('hidden');
+      }
+
+      // Abre el popup existente
+      document.querySelector('.report-box button')?.click();
+  }
+
+  document.getElementById('btnDrawerCargarRobo')?.addEventListener('click', () => dispararFormulario('delito'));
+  document.getElementById('btnDrawerCargarComunitario')?.addEventListener('click', () => dispararFormulario('comunitario'));
+
+  // Manejo de "Tus reportes"
+  document.getElementById('btnDrawerMisReportes')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      alternarNavDrawer();
+      if (isGuest) {
+          alert("Al estar como invitado, tus reportes son anónimos. Creá una cuenta o iniciá sesión para administrarlos y seguir su estado.");
+      } else {
+          alert("Próximamente: Historial de tus alertas publicadas.");
+      }
+  });
+
+  // Switch de mapa de calor sincronizado con el botón flotante inferior
+  document.getElementById('toggleDrawerCalor')?.addEventListener('change', () => {
+      document.getElementById('btnCalor')?.click();
+  });
+
+  // Switch de jurisdicciones
+  document.getElementById('toggleDrawerJurisdiccion')?.addEventListener('change', (e) => {
+      if (typeof window.toggleCapaJurisdicciones === 'function') {
+          window.toggleCapaJurisdicciones(e.target.checked);
+      } else {
+          console.log("Capa de jurisdicciones:", e.target.checked);
+      }
+  });
+</script>
 </body>
 </html>

@@ -265,3 +265,256 @@
 .hidden {
     display: none !important;
 }
+/* =====================================================
+   NAV-DRAWER (PANEL LATERAL)
+===================================================== */
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 9998 !important;
+    transition: opacity 0.3s ease;
+}
+
+.nav-drawer {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 290px !important;
+    max-width: 85vw !important;
+    height: 100vh !important;
+    background-color: #ffffff !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25) !important;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    overflow: hidden;
+}
+
+.nav-drawer.open {
+    transform: translateX(0) !important;
+}
+
+/* Cabecera */
+.drawer-header {
+    background-color: #0b2536;
+    padding: 24px 18px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom-right-radius: 24px;
+}
+
+.avatar-container {
+    position: relative;
+    font-size: 52px;
+    color: #4da8da;
+    line-height: 1;
+}
+
+.badge-verified {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #d49a37;
+    color: #ffffff;
+    font-size: 11px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #0b2536;
+}
+
+.user-meta {
+    overflow: hidden;
+}
+
+.user-meta h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.user-role-badge {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    display: block;
+    margin-top: 2px;
+}
+
+.auth-links {
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+.link-auth {
+    color: #cbd5e1;
+    text-decoration: underline;
+    font-size: 0.8rem;
+}
+
+.link-auth:hover {
+    color: #ffffff;
+}
+
+.auth-divider {
+    color: #94a3b8;
+    margin: 0 4px;
+}
+
+/* Cuerpo y Secciones */
+.drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #334155;
+    margin: 0 0 8px 6px;
+}
+
+.drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    background-color: #f0f7fb;
+    border: none;
+    border-radius: 10px;
+    color: #0284c7;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.drawer-item:hover {
+    background-color: #e0f2fe;
+    transform: translateX(3px);
+}
+
+.drawer-item i {
+    font-size: 1.1rem;
+}
+
+/* Switches de Capas */
+.drawer-toggle-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    background-color: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.drawer-toggle-item .toggle-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.drawer-toggle-item .toggle-info i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Grilla de Emergencias */
+.sos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.sos-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.sos-chip i {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+.sos-chip:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+.sos-chip.police {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.sos-chip.ambulance {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.sos-chip.fire {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.admin-item {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+/* Pie del menú */
+.drawer-footer {
+    padding: 16px;
+    text-align: center;
+    border-top: 1px solid #f1f5f9;
+}
+
+.drawer-logo{
+    width:28px;
+    height:28px;
+}
+
+.drawer-footer .brand-text {
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #0b2536;
+    font-size: 1rem;
+}
