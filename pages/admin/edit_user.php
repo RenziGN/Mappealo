@@ -4,7 +4,7 @@ require_once '../../config/connection.php';
 
 if (
     !isset($_SESSION['user']) ||
-    $_SESSION['user']['is_admin'] === 0
+    empty($_SESSION['user']['is_admin'])
 ) {
     $_SESSION['errors'] = ["Acceso denegado. Solo los administradores pueden acceder a esta página. Hemos cerrado tu sesión por seguridad."];
     header("Location: ../auth/login.php");
@@ -20,8 +20,8 @@ if (
 }
 
 $sql =
-"SELECT * FROM users
-WHERE id = :id";
+"SELECT id_usuario, nombre_usuario, email, es_admin FROM usuario
+WHERE id_usuario = :id AND id_usuario <> 0";
 
 $stmt = $connection->prepare($sql);
 
@@ -95,7 +95,7 @@ if (!$user) {
 
                 <?php endif; ?>
 
-                <form method="POST" id="editUserForm" action="../../handler/admin/edit_user_handler.php?id=<?= $id ?>">
+                <form method="POST" id="editUserForm" action="../../handler/admin/edit_user_handler.php?id=<?= (int) $id ?>">
 
                     <div class="mb-3">
 
@@ -123,7 +123,7 @@ if (!$user) {
                         class="form-check-input"
                         id="is_admin"
 
-                        <?= $user['is_admin'] === 1
+                        <?= (int) $user['es_admin'] === 1
                         ? 'checked'
                         : '' ?>>
 

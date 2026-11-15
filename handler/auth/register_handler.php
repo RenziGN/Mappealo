@@ -51,9 +51,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: ../../pages/auth/login.php");
         exit;
     } catch (PDOException $e) {
-        $db_error = "Error al guardar en la base de datos: " . $e->getMessage();
-        // Si querés ver el error exacto en pantalla si falla:
-        // echo $db_error; exit;
+        // 23000 = violación de clave única (el email ya está registrado)
+        $_SESSION['errors'] = [
+            $e->getCode() === '23000'
+                ? "Ya existe una cuenta con ese correo electrónico."
+                : "Error al guardar en la base de datos. Intentá nuevamente."
+        ];
+        header("Location: ../../pages/auth/register.php");
+        exit;
     }
 
         

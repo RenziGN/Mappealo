@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,8 +38,8 @@
                 <strong>Ocurrieron los siguientes errores:</strong>
                 <ul>
                     <?php foreach ($_SESSION['errors'] as $error): ?>
-                        <li><?php echo $error; ?></li>
-                    <?php endforeach; $_SESSION = [];?>
+                        <li><?php echo htmlspecialchars($error); ?></li>
+                    <?php endforeach; unset($_SESSION['errors']); ?>
                 </ul>
             </div>
             <?php endif; ?>

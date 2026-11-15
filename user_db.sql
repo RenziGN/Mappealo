@@ -264,10 +264,10 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `nombre_usuario`, `email`, `password`, `fecha_registro`, `cuenta_verificada`, `es_admin`) VALUES
-(0, 'invitado', 'invitado@mappealo.com', 'invitado', '2026-09-28 15:30:08', 0, 0),
-(1, 'admin_general', 'admin@mappealo.com', 'admin1234', '2026-09-28 15:30:08', 1, 1),
-(2, 'carlos_gomez', 'carlos@gmail.com', 'clave123', '2026-09-28 15:30:08', 1, 0),
-(3, 'mariana_lopez', 'mariana@gmail.com', 'pass456', '2026-09-28 15:30:08', 1, 0);
+(0, 'invitado', 'invitado@mappealo.com', '$2y$10$z3fz.51.hMuqIG78SWHLruURenP3c2Sjey4qUpPG0Czse.1x63i6u', '2026-09-28 15:30:08', 0, 0),
+(1, 'admin_general', 'admin@mappealo.com', '$2y$10$HDNLcIcbmGdZiLPEhvOsiuRCZy687H4Xvx/wQMG26iyjEi6XAEYxa', '2026-09-28 15:30:08', 1, 1),
+(2, 'carlos_gomez', 'carlos@gmail.com', '$2y$10$F7L9tC.2LT008Cr7KdCYvO6M.izVWOmASOO9ZzgcU5g5nLCThFuW6', '2026-09-28 15:30:08', 1, 0),
+(3, 'mariana_lopez', 'mariana@gmail.com', '$2y$10$BUDWJeha0mcMoPRHQidnYuzYie8xBSnSM2uh0U6JDv3O420dxhjYe', '2026-09-28 15:30:08', 1, 0);
 
 -- --------------------------------------------------------
 
