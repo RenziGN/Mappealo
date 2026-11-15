@@ -19,7 +19,7 @@ if ($filtro === 'denunciados') {
 }
 
 if ($busqueda !== '') {
-    $condiciones[] = "(r.descripcion LIKE :q OR u.nombre_usuario LIKE :q OR ub.direccion LIKE :q)";
+    $condiciones[] = "(r.descripcion LIKE :q OR u.nombre_usuario LIKE :q OR tr.nombre LIKE :q OR ti.nombre LIKE :q OR ub.direccion LIKE :q)";
     $parametros[':q'] = '%' . $busqueda . '%';
 }
 
@@ -57,12 +57,9 @@ $filtros = ['todos' => 'Todos', 'denunciados' => 'Con denuncias', 'delito' => 'D
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reportes · Administración</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?php admin_head('Reportes'); ?>
 </head>
-<body class="bg-light">
+<body class="admin-body">
 <div class="container py-4">
 
     <?php admin_nav($connection, 'reportes'); ?>
@@ -79,7 +76,7 @@ $filtros = ['todos' => 'Todos', 'denunciados' => 'Con denuncias', 'delito' => 'D
         </div>
         <div class="col">
             <input type="hidden" name="filtro" value="<?= admin_e($filtro) ?>">
-            <input type="search" name="q" value="<?= admin_e($busqueda) ?>" class="form-control form-control-sm" placeholder="Buscar por descripción, usuario o dirección">
+            <input type="search" name="q" value="<?= admin_e($busqueda) ?>" class="form-control form-control-sm" placeholder="Buscar por descripción, usuario, tipo de reporte o dirección">
         </div>
         <div class="col-auto">
             <button class="btn btn-sm btn-primary">Buscar</button>

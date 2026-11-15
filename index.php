@@ -38,7 +38,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/home.css?v=7">
+    <link rel="stylesheet" href="assets/css/home.css?v=10">
 
 </head>
 
@@ -57,10 +57,12 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                            <i class="bi bi-list fs-4"></i>
                         </button>
 
-                        <input type="text" class="form-control border-0 ps-1" placeholder="Buscar en Mappealo...">
-                        
+                        <input type="search" id="buscadorMapa" class="form-control border-0 ps-1" placeholder="Buscar en Mappealo..." aria-label="Buscar reportes por descripción, usuario o tipo" autocomplete="off">
+
+                        <span id="resultadoBusqueda" class="resultado-busqueda d-none" role="status" aria-live="polite"></span>
+                        <button type="button" id="btnLimpiarBusqueda" class="input-group-text bg-transparent border-0 d-none" title="Limpiar búsqueda"><i class="bi bi-x-circle-fill text-muted"></i></button>
                         <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-muted"></i></span>
-                        
+
                         <span class="input-group-text bg-transparent border-0 pre-logo-search">
                             <img src="assets/Img/LOGO MAPPEALO 1.png" alt="Mappealo" class="img-search-logo">
                         </span>
@@ -151,7 +153,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                 <button id="btnCentrar" class="btn btn-light shadow-sm" title="Centrar en mi ubicación">
                     <i class="bi bi-geo-fill me-1"></i> Centrar
                 </button>
-                <button class="btn-circle btn-sos" title="S.O.S Emergencias">
+                <button type="button" id="btnSos" class="btn-circle btn-sos" title="Llamar al 911" aria-label="Llamar al 911 (emergencias)">
                     <i class="bi bi-telephone-fill fs-5"></i>
                 </button>
             </div>
@@ -179,6 +181,22 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
             </button>
         </header>
         <div id="modal-reporte-cuerpo" class="modal-reporte-cuerpo"></div>
+    </section>
+</div>
+
+<div id="modal-historial" class="modal-reporte d-none" role="dialog" aria-modal="true" aria-labelledby="modal-historial-titulo">
+    <div class="modal-reporte-fondo" data-cerrar-historial></div>
+    <section class="modal-reporte-caja">
+        <header class="modal-reporte-header">
+            <div>
+                <span class="modal-reporte-categoria historial">Alertas vecinales</span>
+                <h2 id="modal-historial-titulo">Tus reportes</h2>
+            </div>
+            <button type="button" class="modal-reporte-cerrar" data-cerrar-historial title="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+        <div id="modal-historial-cuerpo" class="modal-reporte-cuerpo"></div>
     </section>
 </div>
 
@@ -721,6 +739,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <script src="./assets/js/map.js"></script>
     <script src="./assets/js/comisarias.js"></script>
     <script src="./assets/js/reporte_detalle.js"></script>
+    <script src="./assets/js/historial.js"></script>
 
     <!-- Overlay oscuro de fondo -->
 <div id="drawer-overlay" class="drawer-overlay d-none"></div>
@@ -911,10 +930,8 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
   document.getElementById('btnDrawerMisReportes')?.addEventListener('click', (e) => {
       e.preventDefault();
       alternarNavDrawer();
-      if (isGuest) {
-          alert("Al estar como invitado, tus reportes son anónimos. Creá una cuenta o iniciá sesión para administrarlos y seguir su estado.");
-      } else {
-          alert("Próximamente: Historial de tus alertas publicadas.");
+      if (typeof window.abrirHistorialReportes === 'function') {
+          window.abrirHistorialReportes();
       }
   });
 
@@ -929,6 +946,12 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
           window.toggleCapaJurisdicciones(e.target.checked);
       } else {
           console.log("Capa de jurisdicciones:", e.target.checked);
+      }
+  });
+
+  document.getElementById('btnSos')?.addEventListener('click', () => {
+      if (confirm("¿Llamar al 911 (Policía)?\n\nUsalo solo ante una emergencia real.")) {
+          window.location.href = 'tel:911';
       }
   });
 </script>

@@ -261,7 +261,13 @@ function cargarReportesEnMapa() {
                     const claveGrupo = `${rep.categoria || 'otro'}:${tipoReporte}`;
 
                     const marker = L.marker([parseFloat(rep.latitud), parseFloat(rep.longitud)], { icon: icono });
-                    obtenerGrupoReporte(claveGrupo, tipoReporte, esDelito).addLayer(marker);
+                    const grupoMarcador = obtenerGrupoReporte(claveGrupo, tipoReporte, esDelito);
+                    grupoMarcador.addLayer(marker);
+                    marcadoresBusqueda.push({
+                        marker,
+                        grupo: grupoMarcador,
+                        texto: normalizarBusqueda(`${rep.descripcion || ''} ${rep.nombre_usuario || ''} ${titulo}`)
+                    });
 
                     const cantidadCalificaciones = parseInt(rep.cantidad_calificaciones, 10) || 0;
                     const cantidadComentarios = parseInt(rep.cantidad_comentarios, 10) || 0;
@@ -292,10 +298,89 @@ function cargarReportesEnMapa() {
                 if (calorActivo) {
                     generarMapaCalor(window.reportesMapa);
                 }
+
+                aplicarBusqueda(buscadorMapa?.value || '');
             }
         })
         .catch(err => console.error("Error al cargar reportes:", err));
 }
+
+const marcadoresBusqueda = [];
+const buscadorMapa = document.getElementById('buscadorMapa');
+const btnLimpiarBusqueda = document.getElementById('btnLimpiarBusqueda');
+const resultadoBusqueda = document.getElementById('resultadoBusqueda');
+let temporizadorBusqueda = null;
+
+function normalizarBusqueda(texto) {
+    return String(texto || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function aplicarBusqueda(consulta) {
+    const palabras = normalizarBusqueda(consulta).split(' ').filter(Boolean);
+    const coincidencias = [];
+
+    marcadoresBusqueda.forEach(item => {
+        const coincide = palabras.every(p => item.texto.includes(p));
+
+        if (coincide) {
+            coincidencias.push(item.marker);
+            if (!item.grupo.hasLayer(item.marker)) item.grupo.addLayer(item.marker);
+        } else if (item.grupo.hasLayer(item.marker)) {
+            item.grupo.removeLayer(item.marker);
+        }
+    });
+
+    btnLimpiarBusqueda?.classList.toggle('d-none', palabras.length === 0);
+
+    if (resultadoBusqueda) {
+        if (palabras.length === 0) {
+            resultadoBusqueda.classList.add('d-none');
+        } else {
+            resultadoBusqueda.classList.remove('d-none');
+            resultadoBusqueda.classList.toggle('sin-resultados', coincidencias.length === 0);
+            resultadoBusqueda.textContent = coincidencias.length === 0
+                ? 'Sin resultados'
+                : `${coincidencias.length} ${coincidencias.length === 1 ? 'resultado' : 'resultados'}`;
+            resultadoBusqueda.title = coincidencias.length === 0
+                ? 'No hay reportes que coincidan con la búsqueda.'
+                : 'Presioná Enter para ver los resultados en el mapa.';
+        }
+    }
+
+    return coincidencias;
+}
+
+buscadorMapa?.addEventListener('input', () => {
+    clearTimeout(temporizadorBusqueda);
+    temporizadorBusqueda = setTimeout(() => aplicarBusqueda(buscadorMapa.value), 150);
+});
+
+buscadorMapa?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(temporizadorBusqueda);
+        const coincidencias = aplicarBusqueda(buscadorMapa.value);
+        if (coincidencias.length === 1) {
+            map.setView(coincidencias[0].getLatLng(), 18);
+        } else if (coincidencias.length > 1) {
+            map.fitBounds(L.latLngBounds(coincidencias.map(m => m.getLatLng())), { padding: [60, 60], maxZoom: 17 });
+        }
+    } else if (e.key === 'Escape' && buscadorMapa.value) {
+        buscadorMapa.value = '';
+        aplicarBusqueda('');
+    }
+});
+
+btnLimpiarBusqueda?.addEventListener('click', () => {
+    buscadorMapa.value = '';
+    aplicarBusqueda('');
+    buscadorMapa.focus();
+});
 
 cargarReportesEnMapa();
 

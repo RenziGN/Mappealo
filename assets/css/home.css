@@ -1188,3 +1188,248 @@ body.modal-reporte-abierto {
         border-radius: 16px 16px 0 0;
     }
 }
+
+.modal-reporte-categoria.historial {
+    color: #0d6efd;
+}
+
+.historial-resumen {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.historial-resumen div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 4px;
+    background: #f4f7fe;
+    border-radius: 12px;
+}
+
+.historial-resumen strong {
+    font-size: 20px;
+    line-height: 1.1;
+    color: #0d6efd;
+}
+
+.historial-resumen span {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.historial-filtros {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.historial-filtros button {
+    border: 1px solid #dee2e6;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.historial-filtros button.activo {
+    background: #212529;
+    border-color: #212529;
+    color: #ffffff;
+}
+
+.historial-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.historial-item {
+    border: 1px solid #eef0f3;
+    border-left: 4px solid #20a66a;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+}
+
+.historial-item.delito {
+    border-left-color: #c0392b;
+}
+
+.historial-item-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.historial-categoria {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #20a66a;
+}
+
+.historial-item.delito .historial-categoria {
+    color: #c0392b;
+}
+
+.historial-estado {
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 2px 8px;
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.historial-estado.verificado {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.historial-estado.rechazado {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.historial-tipo {
+    display: block;
+    font-size: 14px;
+    margin-top: 2px;
+}
+
+.historial-descripcion {
+    margin: 2px 0 6px;
+    font-size: 13px;
+    color: #495057;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.historial-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.historial-meta i {
+    color: #adb5bd;
+    margin-right: 3px;
+}
+
+.historial-pie {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #495057;
+}
+
+.historial-acciones {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.historial-acciones button {
+    border: none;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #f1f3f5;
+    color: #0d6efd;
+}
+
+.historial-acciones .btn-historial-detalle {
+    background: #0d6efd;
+    color: #ffffff;
+}
+
+.historial-vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 18px 8px;
+}
+
+.historial-vacio i {
+    font-size: 36px;
+    color: #0d6efd;
+    margin-bottom: 8px;
+}
+
+.historial-vacio p {
+    font-size: 13px;
+    color: #6c757d;
+    margin: 4px 0 12px;
+}
+
+.btn-historial-nuevo {
+    border: none;
+    border-radius: 999px;
+    background: #0d6efd;
+    color: #ffffff;
+    padding: 8px 18px;
+    font-weight: 600;
+}
+
+.historial-resaltado {
+    animation: historialPulso 1s ease-in-out infinite;
+}
+
+@keyframes historialPulso {
+    0%, 100% { stroke-opacity: 1; }
+    50% { stroke-opacity: 0.25; }
+}
+
+@media (max-width: 576px) {
+    .historial-resumen {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .historial-acciones {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .historial-acciones button {
+        flex: 1;
+    }
+}
+
+.resultado-busqueda {
+    flex-shrink: 0;
+    align-self: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #e7f0ff;
+    color: #0d6efd;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.resultado-busqueda.sin-resultados {
+    background: #fdecec;
+    color: #b02a37;
+}
+
+#buscadorMapa::-webkit-search-cancel-button {
+    display: none;
+}
+
+#btnLimpiarBusqueda {
+    cursor: pointer;
+}

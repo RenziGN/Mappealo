@@ -42,12 +42,9 @@ uasort($porReporte, fn($a, $b) => [count($b['denuncias']), $b['ultima']] <=> [co
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Denuncias · Administración</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?php admin_head('Denuncias'); ?>
 </head>
-<body class="bg-light">
+<body class="admin-body">
 <div class="container py-4">
 
     <?php admin_nav($connection, 'denuncias'); ?>

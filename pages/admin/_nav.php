@@ -55,28 +55,53 @@ function admin_nav(PDO $connection, string $activa): void
     $denunciados = (int) $connection->query("SELECT COUNT(DISTINCT id_reporte) FROM advertencia")->fetchColumn();
 
     $pestanas = [
-        'reportes' => ['reportes.php', 'Reportes', null],
-        'denuncias' => ['denuncias.php', 'Denuncias', $denunciados],
-        'comentarios' => ['comentarios.php', 'Comentarios', null],
-        'calificaciones' => ['calificaciones.php', 'Calificaciones', null],
-        'usuarios' => ['user_list.php', 'Usuarios', null],
+        'reportes' => ['reportes.php', 'Reportes', 'fa-map-location-dot', null],
+        'denuncias' => ['denuncias.php', 'Denuncias', 'fa-flag', $denunciados],
+        'comentarios' => ['comentarios.php', 'Comentarios', 'fa-comments', null],
+        'calificaciones' => ['calificaciones.php', 'Calificaciones', 'fa-star', null],
+        'usuarios' => ['user_list.php', 'Usuarios', 'fa-users', null],
     ];
+    $email = $_SESSION['user']['email'] ?? '';
     ?>
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <h1 class="h3 mb-0">Panel de administración</h1>
-        <a href="../../index.php" class="btn btn-outline-primary btn-sm">Volver al mapa</a>
-    </div>
-    <ul class="nav nav-tabs mb-4 flex-nowrap overflow-auto">
-        <?php foreach ($pestanas as $clave => [$url, $texto, $contador]): ?>
-            <li class="nav-item">
-                <a class="nav-link text-nowrap <?= $clave === $activa ? 'active' : '' ?>" href="<?= $url ?>">
-                    <?= $texto ?>
-                    <?php if ($contador): ?>
-                        <span class="badge rounded-pill text-bg-danger ms-1"><?= $contador ?></span>
-                    <?php endif; ?>
-                </a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+    <header class="admin-hero">
+        <div class="admin-hero-marca">
+            <img src="../../assets/Img/LOGO%20MAPPEALO%201.png" alt="Mappealo" class="admin-hero-logo">
+            <div>
+                <span class="admin-hero-brand">MAPPEALO</span>
+                <h1>Panel de administración</h1>
+                <span class="admin-hero-usuario"><i class="fa-solid fa-circle-user me-1"></i><?= admin_e($email) ?></span>
+            </div>
+        </div>
+        <div class="admin-hero-acciones">
+            <a href="../../index.php" class="btn-hero-mapa"><i class="fa-solid fa-map"></i> Volver al mapa</a>
+            <a href="../../handler/auth/logout_handler.php" class="btn-hero-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
+        </div>
+    </header>
+    <nav>
+        <ul class="admin-tabs">
+            <?php foreach ($pestanas as $clave => [$url, $texto, $icono, $contador]): ?>
+                <li>
+                    <a class="<?= $clave === $activa ? 'active' : '' ?>" href="<?= $url ?>" <?= $clave === $activa ? 'aria-current="page"' : '' ?>>
+                        <i class="fa-solid <?= $icono ?>"></i> <?= $texto ?>
+                        <?php if ($contador): ?>
+                            <span class="badge-tab"><?= $contador ?></span>
+                        <?php endif; ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </nav>
+    <?php
+}
+
+function admin_head(string $titulo): void
+{
+    ?>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= admin_e($titulo) ?> · Mappealo Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/admin.css?v=3">
     <?php
 }
