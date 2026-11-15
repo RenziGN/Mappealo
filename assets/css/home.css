@@ -84,18 +84,6 @@
     z-index: 1000;
 }
 
-/* Botonera de emergencias vertical a la derecha */
-.sidebar-buttons {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
 /* Base para botones circulares */
 .btn-circle {
     width: 50px;
@@ -113,16 +101,6 @@
     background-color: #f8f9fa;
 }
 
-/* Clases individuales de botones */
-.btn-police {
-
-}
-.btn-ambulance {
-
-}
-.btn-fire {
-
-}
 .btn-sos {
     background-color: #e80606; 
     color: #ffffff;
@@ -154,14 +132,6 @@
     width: 16px ;
     height: 16px ;
     margin-right: 5px;
-    object-fit: contain;
-}
-
-.img-vehiculo {
-    width: 26px ;  
-    height: 26px ;
-    max-width: 100%;
-    max-height: 100%;
     object-fit: contain;
 }
 
@@ -517,4 +487,704 @@
     letter-spacing: 1px;
     color: #0b2536;
     font-size: 1rem;
+}
+.btn-comisarias i {
+    color: #1a56db;
+    margin-right: 4px;
+}
+
+.btn-comisarias.activo {
+    background: #1a56db !important;
+    border-color: #1a56db !important;
+    color: #ffffff !important;
+}
+
+.btn-comisarias.activo i {
+    color: #ffffff;
+}
+
+.panel-comisarias {
+    width: min(340px, calc(100vw - 40px));
+    max-height: calc(100vh - 260px);
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+    padding: 12px 14px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    animation: slideDownFilter 0.22s ease-out;
+}
+
+.panel-comisarias-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.panel-comisarias-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.panel-comisarias-header span {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.btn-cerrar-panel {
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+}
+
+.aviso-comisarias {
+    font-size: 11px;
+    color: #664d03;
+    background: #fff3cd;
+    border-radius: 8px;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+}
+
+.lista-comisarias {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+}
+
+.item-comisaria {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.item-comisaria + .item-comisaria {
+    border-top: 1px solid #f0f0f0;
+}
+
+.item-comisaria:hover {
+    background: #f4f7fe;
+}
+
+.item-comisaria.mas-cercana {
+    background: #eaf1ff;
+}
+
+.item-comisaria-info strong {
+    display: block;
+    font-size: 13px;
+}
+
+.item-comisaria-info small {
+    display: block;
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.badge-cercana {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffffff;
+    background: #1a56db;
+    border-radius: 10px;
+    padding: 1px 7px;
+    margin: 2px 0;
+}
+
+.item-comisaria-lado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.item-comisaria-lado .distancia {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a56db;
+}
+
+.item-comisaria-acciones {
+    display: flex;
+    gap: 6px;
+}
+
+.item-comisaria-acciones a {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f1f3f5;
+    color: #1a56db;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.item-comisaria-acciones a:hover {
+    background: #1a56db;
+    color: #ffffff;
+}
+
+.incluir-postas {
+    margin-top: 8px;
+}
+
+.fuente-datos {
+    margin-top: 6px;
+    font-size: 10px;
+    color: #adb5bd;
+}
+
+.icono-comisaria {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a56db;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    font-size: 15px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+
+.icono-posta {
+    background: #5b6b8c;
+    font-size: 11px;
+}
+
+.popup-comisaria {
+    min-width: 190px;
+    font-family: sans-serif;
+}
+
+.popup-comisaria-tipo {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1a56db;
+}
+
+.popup-comisaria h4 {
+    margin: 4px 0 6px;
+    font-size: 14px;
+}
+
+.popup-comisaria p {
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: #333;
+}
+
+.popup-comisaria-acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+.location-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.location-actions .map-button i {
+    margin-right: 4px;
+}
+
+.map-button-secundario {
+    background: #ffffff;
+    color: var(--azul, #1a56db);
+    border: 1px solid currentColor;
+}
+
+@media (max-width: 768px) {
+    .location-actions {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .location-actions .map-button {
+        flex: 1;
+    }
+}
+
+#map.modo-seleccion,
+#map.modo-seleccion .leaflet-interactive {
+    cursor: crosshair;
+}
+
+.banner-seleccion {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100vw - 32px);
+    padding: 10px 14px;
+    background: #212529;
+    color: #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    font-size: 13px;
+}
+
+.banner-seleccion button {
+    border: none;
+    background: #ffffff;
+    color: #212529;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 576px) {
+
+    .search-box {
+        top: 16px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+    }
+
+    .filter-bar {
+        top: 92px;
+        left: 12px;
+        right: 12px;
+    }
+
+    .filter-bar > .d-flex {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .filter-bar > .d-flex::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-bar > .d-flex > .btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .panel-subfiltros {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .panel-comisarias {
+        width: 100%;
+        max-height: calc(100vh - 290px);
+    }
+
+    .report-box {
+        left: 12px;
+        right: 12px;
+        bottom: 16px;
+    }
+
+    .report-box .btn {
+        width: 100%;
+    }
+
+    .bottom-buttons {
+        right: 12px;
+        bottom: 80px;
+        gap: 10px;
+    }
+}
+
+.popup-reporte-resumen {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #444;
+}
+
+.btn-ver-reporte {
+    width: 100%;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    background: #0d6efd;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-ver-reporte:hover {
+    background: #0b5ed7;
+}
+
+.modal-reporte {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-reporte.d-none {
+    display: none !important;
+}
+
+.modal-reporte-fondo {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+}
+
+.modal-reporte-caja {
+    position: relative;
+    width: min(520px, 100%);
+    max-height: calc(100vh - 32px);
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.modal-reporte-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #eef0f3;
+}
+
+.modal-reporte-header h2 {
+    margin: 2px 0 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.modal-reporte-categoria {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.modal-reporte-categoria.delito {
+    color: #c0392b;
+}
+
+.modal-reporte-categoria.comunitario {
+    color: #20a66a;
+}
+
+.modal-reporte-cerrar {
+    border: none;
+    background: #f1f3f5;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.modal-reporte-cuerpo {
+    padding: 16px 18px 20px;
+    overflow-y: auto;
+}
+
+.detalle-descripcion {
+    font-size: 14px;
+    color: #212529;
+    margin-bottom: 10px;
+    white-space: pre-line;
+}
+
+.detalle-meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 6px;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.detalle-meta li {
+    margin-bottom: 3px;
+}
+
+.detalle-meta i {
+    width: 16px;
+    color: #adb5bd;
+}
+
+.detalle-seccion {
+    border-top: 1px solid #eef0f3;
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+.detalle-seccion h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.detalle-gris {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.detalle-resumen-calificacion {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.detalle-estrellas {
+    color: #f5a623;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.detalle-calificar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #495057;
+}
+
+.selector-estrellas {
+    display: flex;
+}
+
+.selector-estrellas .estrella {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    line-height: 1;
+    padding: 0 2px;
+    color: #d0d5dd;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.selector-estrellas .estrella.activa {
+    color: #f5a623;
+}
+
+.selector-estrellas .estrella:hover {
+    transform: scale(1.15);
+}
+
+.lista-comentarios {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.lista-comentarios li {
+    padding: 8px 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 6px;
+}
+
+.lista-comentarios li.sin-comentarios {
+    background: transparent;
+    padding: 0;
+}
+
+.comentario-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.comentario-meta span {
+    color: #adb5bd;
+    font-size: 11px;
+}
+
+.lista-comentarios p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.form-comentario textarea,
+.form-denuncia textarea,
+.form-denuncia select {
+    width: 100%;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    resize: vertical;
+}
+
+.form-comentario-pie {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.form-comentario-pie .contador {
+    font-size: 11px;
+    color: #adb5bd;
+}
+
+.form-comentario-pie button {
+    border: none;
+    background: #0d6efd;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-comentario-pie button:disabled {
+    opacity: 0.6;
+}
+
+.btn-abrir-denuncia {
+    border: none;
+    background: transparent;
+    color: #c0392b;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0;
+}
+
+.form-denuncia label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.form-denuncia select {
+    margin-bottom: 6px;
+}
+
+.form-denuncia-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.form-denuncia-acciones button {
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.btn-cancelar-denuncia {
+    background: #f1f3f5;
+    color: #495057;
+}
+
+.btn-enviar-denuncia {
+    background: #c0392b;
+    color: #ffffff;
+}
+
+.detalle-invitado {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #f4f7fe;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+.detalle-invitado > i {
+    color: #0d6efd;
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.detalle-invitado p {
+    margin: 2px 0 6px;
+    color: #495057;
+}
+
+.detalle-invitado-links {
+    display: flex;
+    gap: 14px;
+}
+
+.detalle-invitado-links a {
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.detalle-mensaje {
+    font-size: 13px;
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+}
+
+.detalle-mensaje.ok {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.detalle-mensaje.error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+body.modal-reporte-abierto {
+    overflow: hidden;
+}
+
+@media (max-width: 576px) {
+    .modal-reporte {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .modal-reporte-caja {
+        width: 100%;
+        max-height: 88vh;
+        border-radius: 16px 16px 0 0;
+    }
 }

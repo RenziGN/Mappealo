@@ -51,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: ../../pages/auth/login.php");
         exit;
     } catch (PDOException $e) {
-        // 23000 = violación de clave única (el email ya está registrado)
         $_SESSION['errors'] = [
             $e->getCode() === '23000'
                 ? "Ya existe una cuenta con ese correo electrónico."

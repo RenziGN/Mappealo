@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once '../../config/connection.php';
+require_once '../../config/auth.php';
+require_once __DIR__ . '/_nav.php';
 
 if (
     !isset($_SESSION['user']) ||
@@ -24,28 +26,14 @@ if (
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Usuarios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios · Administración</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body class="container py-5">
+<body class="container py-4 bg-light">
 
-    <div class="d-flex
-    justify-content-between
-    align-items-center
-    mb-4">
-
-        <h1>Lista de Usuarios</h1>
-
-        <a
-        href="../../index.php"
-        class="btn btn-outline-primary">
-
-            Volver al Inicio
-
-        </a>
-
-    </div>
+    <?php admin_nav($connection, 'usuarios'); ?>
 
     <?php if (isset($_SESSION['errors'])  && !empty($_SESSION['errors'])): ?>
     <div class="alert alert-danger">

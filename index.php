@@ -18,6 +18,9 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
 <head>
 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Home</title>
 
     <link
@@ -35,7 +38,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/home.css?v=4">
+    <link rel="stylesheet" href="assets/css/home.css?v=7">
 
 </head>
 
@@ -76,6 +79,10 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     <button id="btnFiltroComunidad" class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
                         <img src="assets/Img/comunidad.png" alt="Comunidad" class="img-filtro"> Comunidad
                     </button>
+
+                    <button id="btnFiltroComisarias" class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border btn-comisarias" title="Comisarías de Ituzaingó">
+                        <i class="fa-solid fa-building-shield"></i> Comisarías
+                    </button>
                 </div>
                 <!-- Deslizador de Subtipos de Robos -->
                 <div id="subfiltros-robos" class="panel-subfiltros d-none">
@@ -109,24 +116,31 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     </label>
                 </div>
 
+                <div id="panel-comisarias" class="panel-comisarias d-none">
+                    <div class="panel-comisarias-header">
+                        <div>
+                            <h3>Comisarías cercanas</h3>
+                            <span>Partido de Ituzaingó</span>
+                        </div>
+                        <button type="button" id="btnCerrarComisarias" class="btn-cerrar-panel" title="Cerrar">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <div id="aviso-comisarias" class="aviso-comisarias d-none"></div>
+                    <ul id="lista-comisarias" class="lista-comisarias"></ul>
+                    <label class="subfiltro-item incluir-postas">
+                        <input type="checkbox" id="chkIncluirPostas">
+                        <span>Incluir postas y puestos policiales</span>
+                    </label>
+                    <small class="fuente-datos">Datos: © colaboradores de OpenStreetMap</small>
+                </div>
+
                 
             </div>
 
             <div class="report-box">
                 <button class="btn btn-primary btn-lg shadow rounded-pill px-4 py-2">
-                    <i class="bi bi-plus-lg me-2"></i> REPORTAR ALERTA
-                </button>
-            </div>
-
-            <div class="sidebar-buttons">
-                <button class="btn-circle btn-police" title="Policía">
-                    <img src="assets/Img/policia.png" alt="Policía" class="img-vehiculo">
-                </button>
-                <button class="btn-circle btn-ambulance" title="Ambulancia">
-                    <img src="assets/Img/ambulancia.png" alt="Ambulancia" class="img-vehiculo">
-                </button>
-                <button class="btn-circle btn-fire" title="Bomberos">
-                    <img src="assets/Img/bombero.png" alt="Bomberos" class="img-vehiculo">
+                    <i class="bi bi-plus-lg me-2"></i>  CARGAR REPORTE
                 </button>
             </div>
 
@@ -134,7 +148,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                 <button id="btnCalor" class="btn btn-light shadow-sm">
                     <img src="assets/Img/fuego.png" alt="Calor" class="img-fuego"> Calor
                 </button>
-                <button class="btn btn-light shadow-sm" title="Centrar">
+                <button id="btnCentrar" class="btn btn-light shadow-sm" title="Centrar en mi ubicación">
                     <i class="bi bi-geo-fill me-1"></i> Centrar
                 </button>
                 <button class="btn-circle btn-sos" title="S.O.S Emergencias">
@@ -145,6 +159,28 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
         </main>
 
 <div class="overlay"></div>
+
+<div id="banner-seleccion" class="banner-seleccion d-none">
+    <i class="fa-solid fa-map-pin"></i>
+    <span>Tocá el mapa para marcar la ubicación del reporte</span>
+    <button type="button" id="btnCancelarSeleccion">Cancelar</button>
+</div>
+
+<div id="modal-reporte" class="modal-reporte d-none" role="dialog" aria-modal="true" aria-labelledby="modal-reporte-titulo">
+    <div class="modal-reporte-fondo" data-cerrar-detalle></div>
+    <section class="modal-reporte-caja">
+        <header class="modal-reporte-header">
+            <div>
+                <span id="modal-reporte-categoria" class="modal-reporte-categoria"></span>
+                <h2 id="modal-reporte-titulo">Reporte</h2>
+            </div>
+            <button type="button" class="modal-reporte-cerrar" data-cerrar-detalle title="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+        <div id="modal-reporte-cuerpo" class="modal-reporte-cuerpo"></div>
+    </section>
+</div>
 
 
 <!-- ==============================
@@ -323,9 +359,14 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
                 </div>
 
-                <button class="map-button">
-                    Seleccionar
-                </button>
+                <div class="location-actions">
+                    <button type="button" class="map-button btn-mi-ubicacion">
+                        <i class="fa-solid fa-location-crosshairs"></i> Mi ubicación
+                    </button>
+                    <button type="button" class="map-button map-button-secundario btn-elegir-en-mapa">
+                        <i class="fa-solid fa-map-pin"></i> Elegir en el mapa
+                    </button>
+                </div>
 
             </div>
 
@@ -596,9 +637,14 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
                 </div>
 
-                <button class="map-button">
-                    Seleccionar
-                </button>
+                <div class="location-actions">
+                    <button type="button" class="map-button btn-mi-ubicacion">
+                        <i class="fa-solid fa-location-crosshairs"></i> Mi ubicación
+                    </button>
+                    <button type="button" class="map-button map-button-secundario btn-elegir-en-mapa">
+                        <i class="fa-solid fa-map-pin"></i> Elegir en el mapa
+                    </button>
+                </div>
 
             </div>
 
@@ -673,6 +719,8 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     
     <script src="./assets/js/post_form.js"></script>
     <script src="./assets/js/map.js"></script>
+    <script src="./assets/js/comisarias.js"></script>
+    <script src="./assets/js/reporte_detalle.js"></script>
 
     <!-- Overlay oscuro de fondo -->
 <div id="drawer-overlay" class="drawer-overlay d-none"></div>
@@ -782,7 +830,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
         <?php if (!empty($user['is_admin']) && !$is_guest): ?>
             <div class="drawer-section">
                 <h4 class="section-title">Administración</h4>
-                <a href="pages/admin/user_list.php" class="drawer-item admin-item">
+                <a href="pages/admin/reportes.php" class="drawer-item admin-item">
                     <i class="fa-solid fa-gear"></i>
                     <span>Panel de Control</span>
                 </a>

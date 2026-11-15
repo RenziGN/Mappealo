@@ -23,7 +23,10 @@ try {
                 ELSE 'otro'
             END AS categoria,
             tr.nombre AS tipo_robo,
-            ti.nombre AS tipo_incidente
+            ti.nombre AS tipo_incidente,
+            (SELECT ROUND(AVG(v.valor), 1) FROM valoracion v WHERE v.id_reporte = r.id_reporte) AS promedio_calificacion,
+            (SELECT COUNT(*) FROM valoracion v WHERE v.id_reporte = r.id_reporte) AS cantidad_calificaciones,
+            (SELECT COUNT(*) FROM comentario c WHERE c.id_reporte = r.id_reporte) AS cantidad_comentarios
         FROM reporte r
         INNER JOIN usuario u ON r.id_usuario = u.id_usuario
         INNER JOIN ubicacion ub ON r.id_ubicacion = ub.id_ubicacion

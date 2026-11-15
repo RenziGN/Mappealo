@@ -35,7 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['user'] = [
                     'id_usuario' => (int) $user['id_usuario'],
                     'email' => $user['email'],
-                    // La columna en la tabla usuario se llama es_admin
                     'is_admin' => (int) $user['es_admin']
                 ];
                 header("Location: ../../index.php");

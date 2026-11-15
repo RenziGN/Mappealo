@@ -403,26 +403,18 @@ document.addEventListener("DOMContentLoaded", () => {
        SELECCIONAR UBICACIÓN
     ===================================================== */
 
-    const mapButtons =
-        document.querySelectorAll(".map-button");
-
-
-    mapButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            /*
-             * Acá posteriormente podés abrir
-             * un selector sobre MapLibre,
-             * Leaflet o Google Maps.
-             */
-
-            alert(
-                "Acá se abrirá el selector de ubicación del mapa."
-            );
-
+    document.querySelectorAll(".btn-mi-ubicacion").forEach(button => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.usarUbicacionActualEnReporte?.();
         });
+    });
 
+    document.querySelectorAll(".btn-elegir-en-mapa").forEach(button => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.iniciarSeleccionEnMapa?.();
+        });
     });
 
 
