@@ -16,6 +16,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
+map.attributionControl.setPrefix(false);
+
 // Icono personalizado para delito / robo
 const ladronIcon = L.icon({
     iconUrl: 'assets/Img/ladron-icon.png',

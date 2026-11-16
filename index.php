@@ -51,7 +51,7 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="stylesheet" href="assets/css/main.css?v=4">
-    <link rel="stylesheet" href="assets/css/home.css?v=15">
+    <link rel="stylesheet" href="assets/css/home.css?v=16">
 
 </head>
 
