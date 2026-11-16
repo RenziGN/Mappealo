@@ -42,8 +42,9 @@ try {
         LEFT JOIN incidente_comunitario ic ON r.id_reporte = ic.id_reporte
         LEFT JOIN tipo_incidente ti ON ic.id_tipo_incidente = ti.id_tipo_incidente
         WHERE r.id_reporte = :id
+          AND (r.estado <> 'rechazado' OR r.id_usuario = :yo OR :admin = 1)
     ");
-    $stmt->execute([':id' => $idReporte]);
+    $stmt->execute([':id' => $idReporte, ':yo' => $idUsuario ?? -1, ':admin' => es_admin() ? 1 : 0]);
     $reporte = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$reporte) {

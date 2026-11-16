@@ -6,6 +6,9 @@ $idUsuario = requerir_usuario_registrado_api();
 $datos = leer_json_post();
 
 require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/limites.php';
+
+limitar_api($connection, 'calificacion', 30, 300);
 
 $idReporte = filter_var($datos['id_reporte'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 $valor = filter_var($datos['valor'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 5]]);

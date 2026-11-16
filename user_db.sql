@@ -246,13 +246,29 @@ INSERT INTO `ubicacion` (`id_ubicacion`, `latitud`, `longitud`, `direccion`) VAL
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `intento_acceso`
+--
+
+CREATE TABLE `intento_acceso` (
+  `id_intento` int(11) NOT NULL AUTO_INCREMENT,
+  `accion` varchar(30) NOT NULL,
+  `clave` char(64) NOT NULL,
+  `momento` datetime NOT NULL,
+  PRIMARY KEY (`id_intento`),
+  KEY `accion_clave_momento` (`accion`,`clave`,`momento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuario`
 --
 
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL,
   `nombre_usuario` varchar(100) NOT NULL,
-  `email` varchar(150) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `email_indice` char(64) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT current_timestamp(),
   `cuenta_verificada` tinyint(1) NOT NULL DEFAULT 0,
@@ -363,7 +379,8 @@ ALTER TABLE `ubicacion`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `email_indice` (`email_indice`);
 
 --
 -- Indices de la tabla `valoracion`

@@ -1,136 +1,70 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../../config/auth.php';
 
-require_once '../../config/connection.php';
+requerir_admin();
 
+require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../config/cifrado.php';
 
-if (
-    !isset($_SESSION['user']) ||
-    !$_SESSION['user']['is_admin']
-) {
-
-    $_SESSION['errors'] = [
-        "Acceso denegado. Solo los administradores pueden acceder a esta página."
-    ];
-
-    header("Location: ../../pages/auth/login.php");
-
-    exit;
-}
-
-$id = $_GET['id'] ?? null;
-
-if (!$id) {
-
-    $_SESSION['errors'] = [
-        "El ID de usuario no fue proporcionado."
-    ];
-
+function volver_a_usuarios(string $tipo, $mensaje): void
+{
+    $_SESSION[$tipo] = $mensaje;
     header("Location: ../../pages/admin/user_list.php");
-
     exit;
 }
 
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-
-    header("Location: ../../pages/admin/user_list.php");
-
-    exit;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_valido($_POST['csrf_token'] ?? null)) {
+    volver_a_usuarios('errors', ["La acción no es válida o la sesión expiró. Intentá nuevamente."]);
 }
 
+$id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+if ($id === false) {
+    volver_a_usuarios('errors', ["El ID de usuario no es válido."]);
+}
+
+$email = normalizar_email((string) ($_POST['email'] ?? ''));
+$isAdmin = isset($_POST['is_admin']) ? 1 : 0;
 $errors = [];
 
-
-$email =
-trim($_POST['email'] ?? '');
-
-$isAdmin =
-isset($_POST['is_admin'])
-? 1
-: 0;
-
-
-if (empty($email)) {
-
-    $errors[] =
-    "El email es obligatorio.";
-
-} elseif (
-    !filter_var(
-        $email,
-        FILTER_VALIDATE_EMAIL
-    )
-) {
-
-    $errors[] =
-    "Formato de email inválido.";
+if ($email === '') {
+    $errors[] = "El email es obligatorio.";
+} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 150) {
+    $errors[] = "Formato de email inválido.";
 }
 
-if (empty($errors)) {
+if ($id === usuario_actual_id() && $isAdmin === 0) {
+    $errors[] = "No podés quitarte el rol de administrador a vos mismo.";
+}
 
-    try {
+if ($errors) {
+    volver_a_usuarios('errors', $errors);
+}
 
-        $updateSql =
-        "UPDATE usuario
-        SET
-            email = :email,
-            es_admin = :is_admin
-        WHERE id_usuario = :id AND id_usuario <> 0";
+try {
+    $stmt = $connection->prepare("
+        UPDATE usuario
+        SET email = :email, email_indice = :indice, es_admin = :is_admin
+        WHERE id_usuario = :id AND id_usuario <> 0
+    ");
+    $stmt->execute([
+        ':email' => cifrar($email),
+        ':indice' => indice_email($email),
+        ':is_admin' => $isAdmin,
+        ':id' => $id,
+    ]);
 
-        $updateStmt =
-        $connection->prepare($updateSql);
-
-        $updateStmt->bindValue(
-            ':email',
-            $email
-        );
-
-        $updateStmt->bindValue(
-            ':is_admin',
-            $isAdmin,
-            PDO::PARAM_INT
-        );
-
-        $updateStmt->bindValue(
-            ':id',
-            $id,
-            PDO::PARAM_INT
-        );
-
-        $updateStmt->execute();
-
-        $_SESSION['success'] =
-        "Usuario actualizado exitosamente.";
-
-        header(
-            "Location: ../../pages/admin/user_list.php"
-        );
-
-        exit;
-
-    } catch(PDOException $e) {
-
-        $_SESSION['errors'] = [
-            "Error al actualizar usuario."
-        ];
-
-        header(
-            "Location: ../../pages/admin/user_list.php"
-        );
-
-        exit;
+    if ($id === usuario_actual_id()) {
+        $_SESSION['user']['email'] = $email;
     }
 
-} else {
-
-    $_SESSION['errors'] = $errors;
-
-    header(
-            "Location: ../../pages/admin/user_list.php"
-    );
-
-    exit;
+    volver_a_usuarios('success', "Usuario actualizado exitosamente.");
+} catch (PDOException $e) {
+    if ($e->getCode() !== '23000') {
+        error_log('Mappealo - editar usuario: ' . $e->getMessage());
+    }
+    volver_a_usuarios('errors', [
+        $e->getCode() === '23000' ? "Ya existe otra cuenta con ese correo." : "Error al actualizar usuario."
+    ]);
 }
-?>

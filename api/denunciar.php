@@ -6,6 +6,9 @@ $idUsuario = requerir_usuario_registrado_api();
 $datos = leer_json_post();
 
 require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/limites.php';
+
+limitar_api($connection, 'denuncia', 10, 3600);
 
 $motivosValidos = [
     'Información falsa',

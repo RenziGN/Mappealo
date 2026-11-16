@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php
+require_once __DIR__ . '/../../config/auth.php';
+require_once __DIR__ . '/../../config/limites.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,10 +11,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="../../assets/css/auth.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    rel="stylesheet" >
+    rel="stylesheet" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
 
 </head>
 
@@ -45,6 +48,7 @@
             <?php endif; ?>
 
             <form action="../../handler/auth/register_handler.php" method="POST" id="registerForm">
+                <?= campos_antibot('registro') ?>
 
                 <div class="mb-3">
 
@@ -127,7 +131,7 @@
     </div>
 
     <script src="../../assets/js/validate_user.js"></script>
-    <script src="../../assets/js/check_register.js"></script>
+    <script src="../../assets/js/check_register.js?v=2"></script>
 
 </body>
 </html>

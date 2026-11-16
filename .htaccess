@@ -1,0 +1,34 @@
+Options -Indexes
+ServerSignature Off
+DirectoryIndex index.php
+
+# Archivos que nunca se sirven por la web: ocultos (.git, .vscode, .htaccess),
+# volcados de la base, documentos y respaldos.
+<FilesMatch "(^\.(?!well-known)|\.(sql|md|xlsx|ini|log|bak|example)$)">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Carpetas ocultas y carpetas internas del proyecto
+    RewriteRule (^|/)\.(?!well-known/) - [F]
+    RewriteRule ^(config|docs)(/|$) - [F]
+
+    # Forzar HTTPS cuando la app está publicada (no en localhost ni en la red local)
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|\[::1\]|192\.168\.|10\.)
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(self), camera=(), microphone=(), payment=()"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https://*.tile.openstreetmap.org https://unpkg.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+    Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+</IfModule>

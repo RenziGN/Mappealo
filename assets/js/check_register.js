@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!email) { valid = false; msg += 'El campo Email es obligatorio.\n'; }
         if (!isValidEmail(email)) { valid = false; msg += 'El formato del Email es inválido.\n'; }
         if (!password) { valid = false; msg += 'El campo Contraseña es obligatorio.\n'; }
-        if (!isValidPassword(password)) { valid = false; msg += 'La contraseña debe tener al menos 5 caracteres.\n'; }
+        if (password.length < 8 || password.length > 72) { valid = false; msg += 'La contraseña debe tener entre 8 y 72 caracteres.\n'; }
         if (!confirmPassword) { valid = false; msg += 'El campo Repetir Contraseña es obligatorio.\n'; }
         if (password !== confirmPassword) { valid = false; msg += 'Las contraseñas no coinciden.\n'; }
 

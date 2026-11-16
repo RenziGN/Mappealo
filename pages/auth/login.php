@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php
+require_once __DIR__ . '/../../config/auth.php';
+require_once __DIR__ . '/../../config/limites.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,13 +16,13 @@
 
     <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-    rel="stylesheet">
+    rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 
     <link
     rel="stylesheet"
     href="../../assets/css/auth.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    rel="stylesheet" >
+    rel="stylesheet" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
 </head>
 
 <body>
@@ -58,6 +61,7 @@
             <?php endif; ?>
 
             <form action="../../handler/auth/login_handler.php" method="POST" id="loginForm">
+                <?= campos_antibot('login') ?>
 
                 <div class="mb-3">
 

@@ -1,14 +1,19 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../../config/auth.php';
 
-// Elimina todas las variables de sesión
 $_SESSION = [];
 
-// Destruye la sesión
+$cookie = session_get_cookie_params();
+setcookie(session_name(), '', [
+    'expires' => time() - 3600,
+    'path' => $cookie['path'],
+    'secure' => $cookie['secure'],
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+
 session_destroy();
 
-// Redirige al login
 header("Location: ../../pages/auth/login.php");
-
 exit;

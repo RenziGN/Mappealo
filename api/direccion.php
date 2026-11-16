@@ -14,6 +14,11 @@ if ($lat === false || $lng === false) {
     responder_json(400, ['status' => 'error', 'message' => 'Coordenadas inválidas.']);
 }
 
+require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/limites.php';
+
+limitar_api($connection, 'direccion', 30, 60);
+
 $clave = round($lat, 5) . ',' . round($lng, 5);
 $cache = $_SESSION['direcciones'] ?? [];
 

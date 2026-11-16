@@ -1,6 +1,12 @@
 <?php
 // api/get_reportes.php
 
+require_once __DIR__ . '/../config/auth.php';
+
+if (!isset($_SESSION['user'])) {
+    responder_json(401, ['status' => 'error', 'message' => 'Sesión no iniciada.']);
+}
+
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../config/connection.php';
@@ -57,9 +63,10 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    error_log('Mappealo - listar reportes: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status'  => 'error',
-        'message' => 'Error al consultar la base de datos: ' . $e->getMessage()
+        'message' => 'Error al consultar la base de datos.'
     ]);
 }

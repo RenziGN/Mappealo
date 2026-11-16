@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../config/auth.php';
 requerir_admin();
 require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../config/cifrado.php';
 require_once __DIR__ . '/_nav.php';
 require_once __DIR__ . '/../../config/credibilidad.php';
 
@@ -26,6 +27,9 @@ if ($id !== false) {
     ");
     $stmt->execute([':id' => $id]);
     $reporte = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($reporte) {
+        $reporte['email'] = descifrar($reporte['email']) ?? '';
+    }
 }
 
 if (!$reporte) {
@@ -45,6 +49,10 @@ $denuncias = $consultar("
     FROM advertencia a INNER JOIN usuario u ON a.id_usuario = u.id_usuario
     WHERE a.id_reporte = :id ORDER BY a.fecha DESC
 ");
+foreach ($denuncias as &$denuncia) {
+    $denuncia['email'] = descifrar($denuncia['email']) ?? '';
+}
+unset($denuncia);
 $calificaciones = $consultar("
     SELECT v.id_valoracion, v.valor, v.fecha, u.nombre_usuario
     FROM valoracion v INNER JOIN usuario u ON v.id_usuario = u.id_usuario

@@ -1,43 +1,42 @@
 <?php
-session_start();
 
-require_once '../../config/connection.php';
+require_once __DIR__ . '/../../config/auth.php';
 
-if (
-    !isset($_SESSION['user']) ||
-    empty($_SESSION['user']['is_admin'])
-) {
-    $_SESSION['errors'] = ["Acceso denegado. Solo los administradores pueden acceder a esta página. Hemos cerrado tu sesión por seguridad."];
-    header("Location: ../../pages/auth/login.php");
+requerir_admin();
+
+require_once __DIR__ . '/../../config/connection.php';
+
+function volver_a_usuarios(string $tipo, string $mensaje): void
+{
+    $_SESSION[$tipo] = $tipo === 'errors' ? [$mensaje] : $mensaje;
+    header("Location: ../../pages/admin/user_list.php");
     exit;
-}else{
+}
 
-    $id = $_GET['id'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_valido($_POST['csrf_token'] ?? null)) {
+    volver_a_usuarios('errors', "La acción no es válida o la sesión expiró. Intentá nuevamente.");
+}
 
-    if (!$id) {
-        $_SESSION['errors'] = ["El ID de usuario no fue proporcionado."];
-        header("Location: ../../pages/admin/user_list.php");
-        exit;
-    }
-    
+$id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+if ($id === false) {
+    volver_a_usuarios('errors', "El ID de usuario no es válido.");
+}
+
+if ($id === usuario_actual_id()) {
+    volver_a_usuarios('errors', "No podés eliminar tu propia cuenta desde el panel.");
 }
 
 try {
-    $sql = "DELETE FROM usuario WHERE id_usuario = :id AND id_usuario <> 0";
-    $stmt = $connection->prepare($sql);
-    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt = $connection->prepare("DELETE FROM usuario WHERE id_usuario = :id AND id_usuario <> 0");
+    $stmt->execute([':id' => $id]);
 
-    $_SESSION['success'] = "Usuario ID: " . (int) $id . " | Eliminado exitosamente.";
-    header("Location: ../../pages/admin/user_list.php");
-    exit;
+    if ($stmt->rowCount() === 0) {
+        volver_a_usuarios('errors', "El usuario no existe.");
+    }
 
+    volver_a_usuarios('success', "Usuario ID: $id | Eliminado exitosamente.");
 } catch (PDOException $e) {
-    $_SESSION['errors'] = ["Error al eliminar el usuario: " . $e->getMessage()];
-    header("Location: ../../pages/admin/user_list.php");
-    exit;
+    error_log('Mappealo - eliminar usuario: ' . $e->getMessage());
+    volver_a_usuarios('errors', "No se pudo eliminar el usuario.");
 }
-
-
-
-

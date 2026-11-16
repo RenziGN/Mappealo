@@ -1,48 +1,31 @@
 <?php
-session_start();
-require_once '../../config/connection.php';
-require_once '../../config/auth.php';
+require_once __DIR__ . '/../../config/auth.php';
+
+requerir_admin();
+
+require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../config/cifrado.php';
 require_once __DIR__ . '/_nav.php';
 
-if (
-    !isset($_SESSION['user']) ||
-    empty($_SESSION['user']['is_admin'])
-) {
-    $_SESSION['errors'] = ["Acceso denegado. Solo los administradores pueden acceder a esta página. Hemos cerrado tu sesión por seguridad."];
-    header("Location: ../auth/login.php");
-    exit;
-}else{
-    $id = $_GET['id'] ?? null;
+$id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 
-    if (!$id) {
-        $_SESSION['errors'] = ["El ID de usuario no fue proporcionado."];
-        header("Location: ../../pages/admin/user_list.php");
-        exit;
-    }
+if ($id === false) {
+    $_SESSION['errors'] = ["El ID de usuario no fue proporcionado."];
+    header("Location: user_list.php");
+    exit;
 }
 
-$sql =
-"SELECT id_usuario, nombre_usuario, email, es_admin FROM usuario
-WHERE id_usuario = :id AND id_usuario <> 0";
-
-$stmt = $connection->prepare($sql);
-
-$stmt->bindValue(
-    ':id',
-    $id,
-    PDO::PARAM_INT
-);
-
-$stmt->execute();
-
+$stmt = $connection->prepare("SELECT id_usuario, nombre_usuario, email, es_admin FROM usuario WHERE id_usuario = :id AND id_usuario <> 0");
+$stmt->execute([':id' => $id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
     $_SESSION['errors'] = ["El usuario no fue encontrado."];
-    header("Location: ../../pages/admin/user_list.php");
+    header("Location: user_list.php");
     exit;
 }
 
+$user['email'] = descifrar($user['email']) ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -91,7 +74,10 @@ if (!$user) {
 
                 <?php endif; ?>
 
-                <form method="POST" id="editUserForm" action="../../handler/admin/edit_user_handler.php?id=<?= (int) $id ?>">
+                <form method="POST" id="editUserForm" action="../../handler/admin/edit_user_handler.php">
+
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                    <input type="hidden" name="id" value="<?= (int) $id ?>">
 
                     <div class="mb-3">
 

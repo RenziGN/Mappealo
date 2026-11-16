@@ -1,8 +1,36 @@
 <?php
 
+function conexion_segura(): bool
+{
+    return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
+}
+
 if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    session_name('MAPPEALOSESSID');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => conexion_segura(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
     session_start();
 }
+
+header_remove('X-Powered-By');
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+// Cualquier error no previsto se registra en el log y el usuario ve un mensaje genérico
+set_exception_handler(function (Throwable $e): void {
+    error_log('Mappealo - ' . get_class($e) . ': ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine());
+    if (!headers_sent()) {
+        http_response_code(500);
+    }
+    echo 'Ocurrió un error inesperado. Intentá nuevamente más tarde.';
+});
 
 function usuario_actual_id(): ?int
 {

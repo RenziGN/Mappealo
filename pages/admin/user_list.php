@@ -1,26 +1,21 @@
 <?php
-session_start();
-require_once '../../config/connection.php';
-require_once '../../config/auth.php';
+require_once __DIR__ . '/../../config/auth.php';
+
+requerir_admin();
+
+require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../config/cifrado.php';
 require_once __DIR__ . '/_nav.php';
-require_once '../../config/credibilidad.php';
+require_once __DIR__ . '/../../config/credibilidad.php';
 
-if (
-    !isset($_SESSION['user']) ||
-    empty($_SESSION['user']['is_admin'])
-) {
-    $_SESSION['errors'] = ["Acceso denegado. Solo los administradores pueden acceder a esta página. Hemos cerrado tu sesión por seguridad."];
-    header("Location: ../auth/login.php");
-    exit;
-}else{
-    $sql = "SELECT id_usuario, nombre_usuario, email, es_admin FROM usuario WHERE id_usuario <> 0 ORDER BY id_usuario";
+$stmt = $connection->prepare("SELECT id_usuario, nombre_usuario, email, es_admin FROM usuario WHERE id_usuario <> 0 ORDER BY id_usuario");
+$stmt->execute();
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $connection->prepare($sql);
-
-    $stmt->execute();
-
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($users as &$fila) {
+    $fila['email'] = descifrar($fila['email']) ?? '(no se pudo leer)';
 }
+unset($fila);
 ?>
 
 <!DOCTYPE html>
@@ -67,10 +62,12 @@ if (
                         <a href="edit_user.php?id=<?= (int) $user['id_usuario'] ?>" class="btn btn-warning btn-sm">
                             <i class="fa-solid fa-pen"></i> Editar
                         </a>
-                        <a href="../../handler/admin/delete_user_handler.php?id=<?= (int) $user['id_usuario'] ?>" class="btn btn-danger btn-sm"
-                           onclick="return confirm('¿Eliminar al usuario <?= htmlspecialchars(addslashes($user['email']), ENT_QUOTES) ?>? También se borran sus reportes, comentarios y calificaciones.');">
-                            <i class="fa-solid fa-trash"></i> Eliminar
-                        </a>
+                        <form method="POST" action="../../handler/admin/delete_user_handler.php" class="d-inline"
+                              onsubmit="return confirm('¿Eliminar al usuario <?= htmlspecialchars(addslashes($user['email']), ENT_QUOTES) ?>? También se borran sus reportes, comentarios y calificaciones.');">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                            <input type="hidden" name="id" value="<?= (int) $user['id_usuario'] ?>">
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                        </form>
                     </td>
                 </tr>
             <?php endforeach; ?>
