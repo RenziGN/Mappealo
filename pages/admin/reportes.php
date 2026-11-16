@@ -11,7 +11,11 @@ $busqueda = trim((string) ($_GET['q'] ?? ''));
 $condiciones = [];
 $parametros = [];
 
-if ($filtro === 'denunciados') {
+if ($filtro === 'pendientes') {
+    $condiciones[] = "r.estado = 'pendiente'";
+} elseif ($filtro === 'rechazados') {
+    $condiciones[] = "r.estado = 'rechazado'";
+} elseif ($filtro === 'denunciados') {
     $condiciones[] = "(SELECT COUNT(*) FROM advertencia a WHERE a.id_reporte = r.id_reporte) > 0";
 } elseif ($filtro === 'delito') {
     $condiciones[] = "rb.id_reporte IS NOT NULL";
@@ -68,7 +72,7 @@ $estadisticas = $connection->query("
 ")->fetch(PDO::FETCH_ASSOC);
 $bajaCredibilidad = count(array_filter($credibilidades, fn($c) => ($c['nivel']['clave'] ?? '') === 'baja'));
 
-$filtros = ['todos' => 'Todos', 'denunciados' => 'Con denuncias', 'baja_credibilidad' => 'Baja credibilidad', 'delito' => 'Delitos', 'comunitario' => 'Comunitarios'];
+$filtros = ['todos' => 'Todos', 'pendientes' => 'Pendientes', 'denunciados' => 'Con denuncias', 'baja_credibilidad' => 'Baja credibilidad', 'delito' => 'Delitos', 'comunitario' => 'Comunitarios', 'rechazados' => 'Rechazados'];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -141,6 +145,7 @@ $filtros = ['todos' => 'Todos', 'denunciados' => 'Con denuncias', 'baja_credibil
                     <td class="celda-reporte">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <span class="admin-id">#<?= (int) $r['id_reporte'] ?></span>
+                            <?= admin_estado($r['estado']) ?>
                             <span class="badge <?= $r['categoria'] === 'delito' ? 'text-bg-danger' : 'text-bg-success' ?>"><?= admin_e(ucfirst($r['categoria'])) ?></span>
                         </div>
                         <strong class="d-block"><?= admin_e($r['tipo']) ?></strong>

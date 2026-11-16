@@ -87,6 +87,27 @@ $siNo = fn($v) => $v === null ? '-' : ((int) $v ? 'Sí' : 'No');
                         "¿Borrar el reporte #$id? También se borran sus comentarios, calificaciones y denuncias. No se puede deshacer.") ?>
                 </div>
             </div>
+            <?php $estadoActual = strtolower((string) $reporte['estado']); ?>
+            <div class="admin-revision mt-3">
+                <div>
+                    <span class="small text-muted d-block">Revisión del reporte</span>
+                    <?= admin_estado($estadoActual) ?>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <?php if ($estadoActual !== 'verificado'): ?>
+                        <?= admin_form_accion('cambiar_estado', ['id' => $id, 'estado' => 'verificado'], '<i class="fa-solid fa-circle-check"></i> Verificar', 'btn btn-sm btn-success',
+                            "¿Marcar el reporte #$id como verificado?") ?>
+                    <?php endif; ?>
+                    <?php if ($estadoActual !== 'rechazado'): ?>
+                        <?= admin_form_accion('cambiar_estado', ['id' => $id, 'estado' => 'rechazado'], '<i class="fa-solid fa-ban"></i> Rechazar', 'btn btn-sm btn-outline-danger',
+                            "¿Rechazar el reporte #$id? Deja de mostrarse en el mapa, pero no se borra.") ?>
+                    <?php endif; ?>
+                    <?php if ($estadoActual !== 'pendiente'): ?>
+                        <?= admin_form_accion('cambiar_estado', ['id' => $id, 'estado' => 'pendiente'], '<i class="fa-solid fa-rotate-left"></i> Volver a pendiente', 'btn btn-sm btn-outline-primary',
+                            "¿Volver a poner el reporte #$id como pendiente?") ?>
+                    <?php endif; ?>
+                </div>
+            </div>
             <p class="mt-3 mb-3" style="white-space: pre-line;"><?= admin_e($reporte['descripcion']) ?></p>
             <dl class="row small mb-0">
                 <dt class="col-sm-3">Publicado por</dt>

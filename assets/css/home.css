@@ -1904,3 +1904,17 @@ body.modal-reporte-abierto {
     font-size: 10px;
     color: #70798c;
 }
+
+.historial-acciones .btn-historial-borrar {
+    background: #fdecec;
+    color: #c0262d;
+}
+
+.historial-acciones .btn-historial-borrar:hover {
+    background: #c0262d;
+    color: #ffffff;
+}
+
+.historial-acciones .btn-historial-borrar:disabled {
+    opacity: 0.5;
+}

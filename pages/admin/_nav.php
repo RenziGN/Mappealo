@@ -30,6 +30,18 @@ function admin_credibilidad(?array $cred, bool $conTexto = true): string
     return '<span class="badge ' . $clase . '" title="Índice de credibilidad (0 a 100)"><i class="fa-solid fa-shield-halved me-1"></i>' . $texto . (int) $cred['puntaje'] . '</span>';
 }
 
+function admin_estado(?string $estado): string
+{
+    $estado = strtolower((string) $estado);
+    $datos = [
+        'verificado' => ['text-bg-success', 'fa-circle-check', 'Verificado'],
+        'rechazado' => ['text-bg-danger', 'fa-ban', 'Rechazado'],
+        'pendiente' => ['text-bg-warning', 'fa-hourglass-half', 'Pendiente'],
+    ];
+    [$clase, $icono, $texto] = $datos[$estado] ?? $datos['pendiente'];
+    return '<span class="badge ' . $clase . '"><i class="fa-solid ' . $icono . ' me-1"></i>' . $texto . '</span>';
+}
+
 function admin_mensajes(): void
 {
     if (!empty($_SESSION['errors'])) {
@@ -112,6 +124,6 @@ function admin_head(string $titulo): void
     <title><?= admin_e($titulo) ?> · Mappealo Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="../../assets/css/admin.css?v=5">
+    <link rel="stylesheet" href="../../assets/css/admin.css?v=6">
     <?php
 }

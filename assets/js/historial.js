@@ -6,6 +6,7 @@
 
     let reportes = [];
     let miCredibilidad = null;
+    let csrf = '';
     let filtro = 'todos';
     let resaltado = null;
 
@@ -129,6 +130,7 @@
                             <div class="historial-acciones">
                                 <button type="button" class="btn-historial-mapa" data-id="${parseInt(r.id_reporte, 10)}"><i class="fa-solid fa-map-pin"></i> Ver en el mapa</button>
                                 <button type="button" class="btn-historial-detalle" data-id="${parseInt(r.id_reporte, 10)}"><i class="fa-solid fa-comments"></i> Detalle</button>
+                                <button type="button" class="btn-historial-borrar" data-id="${parseInt(r.id_reporte, 10)}" title="Borrar este reporte" aria-label="Borrar este reporte"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     </li>`;
@@ -152,6 +154,35 @@
                 window.abrirDetalleReporte?.(parseInt(b.dataset.id, 10));
             });
         });
+
+        cuerpo.querySelectorAll('.btn-historial-borrar').forEach(b => {
+            b.addEventListener('click', () => borrar(parseInt(b.dataset.id, 10), b));
+        });
+    }
+
+    async function borrar(id, boton) {
+        if (!confirm('¿Borrar este reporte? También se borran sus comentarios, calificaciones y denuncias. No se puede deshacer.')) return;
+
+        boton.disabled = true;
+        try {
+            const respuesta = await fetch('api/borrar_reporte.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf },
+                body: JSON.stringify({ id_reporte: id })
+            });
+            let datos = {};
+            try { datos = await respuesta.json(); } catch (e) { }
+
+            if (!respuesta.ok || datos.status !== 'success') {
+                throw new Error(datos.message || 'No se pudo borrar el reporte.');
+            }
+
+            window.quitarReporteDelMapa?.(id);
+            await abrir();
+        } catch (e) {
+            alert(e.message);
+            boton.disabled = false;
+        }
     }
 
     function verEnMapa(id) {
@@ -203,6 +234,7 @@
 
             reportes = Array.isArray(datos.data) ? datos.data : [];
             miCredibilidad = datos.mi_credibilidad || null;
+            csrf = datos.csrf || '';
             renderizar();
         } catch (e) {
             cuerpo.innerHTML = `<p class="detalle-mensaje error">${escapar(e.message)}</p>`;

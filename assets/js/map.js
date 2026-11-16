@@ -354,6 +354,7 @@ function cargarReportesEnMapa() {
                     const grupoMarcador = obtenerGrupoReporte(claveGrupo, tipoReporte, esDelito);
                     grupoMarcador.addLayer(marker);
                     marcadoresBusqueda.push({
+                        id: parseInt(rep.id_reporte, 10),
                         marker,
                         grupo: grupoMarcador,
                         texto: normalizarBusqueda(`${rep.descripcion || ''} ${rep.nombre_usuario || ''} ${titulo}`)
@@ -400,6 +401,20 @@ function cargarReportesEnMapa() {
 }
 
 const marcadoresBusqueda = [];
+
+window.quitarReporteDelMapa = id => {
+    for (let i = marcadoresBusqueda.length - 1; i >= 0; i--) {
+        const item = marcadoresBusqueda.at(i);
+        if (item.id === id) {
+            item.grupo.removeLayer(item.marker);
+            marcadoresBusqueda.splice(i, 1);
+        }
+    }
+    if (Array.isArray(window.reportesMapa)) {
+        window.reportesMapa = window.reportesMapa.filter(r => parseInt(r.id_reporte, 10) !== id);
+        if (calorActivo) generarMapaCalor(window.reportesMapa);
+    }
+};
 const buscadorMapa = document.getElementById('buscadorMapa');
 const btnLimpiarBusqueda = document.getElementById('btnLimpiarBusqueda');
 const resultadoBusqueda = document.getElementById('resultadoBusqueda');

@@ -35,6 +35,7 @@ try {
         LEFT JOIN tipo_robo tr ON rb.id_tipo_robo = tr.id_tipo_robo
         LEFT JOIN incidente_comunitario ic ON r.id_reporte = ic.id_reporte
         LEFT JOIN tipo_incidente ti ON ic.id_tipo_incidente = ti.id_tipo_incidente
+        WHERE r.estado <> 'rechazado'
         ORDER BY r.fecha_reporte DESC
     ";
 

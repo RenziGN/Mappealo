@@ -55,6 +55,7 @@ try {
         'status' => 'success',
         'total' => count($reportes),
         'mi_credibilidad' => credibilidad_usuario($connection, $idUsuario),
+        'csrf' => csrf_token(),
         'data' => $reportes
     ]);
 
