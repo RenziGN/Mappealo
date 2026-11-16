@@ -1847,3 +1847,60 @@ body.modal-reporte-abierto {
 .leaflet-container .leaflet-control-attribution a {
     color: #70798c;
 }
+
+.marcador-seleccion {
+    background: transparent;
+    border: none;
+}
+
+.marcador-seleccion .seleccion-gota {
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0 4px 6px rgba(0, 14, 64, 0.35));
+    transform-origin: 50% 92%;
+    animation: seleccionCaida 0.35s ease-out;
+}
+
+.marcador-seleccion .seleccion-sombra {
+    fill: #000e40;
+    opacity: 0.2;
+}
+
+@keyframes seleccionCaida {
+    0% {
+        transform: translateY(-14px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.leaflet-tooltip.etiqueta-jurisdiccion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid #e4e7ee;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 14, 64, 0.15);
+    color: #000e40;
+    line-height: 1.2;
+    pointer-events: none;
+}
+
+.leaflet-tooltip.etiqueta-jurisdiccion::before {
+    display: none;
+}
+
+.etiqueta-jurisdiccion strong {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.etiqueta-jurisdiccion span {
+    font-size: 10px;
+    color: #70798c;
+}

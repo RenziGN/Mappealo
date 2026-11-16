@@ -82,6 +82,19 @@ function obtenerGrupoReporte(clave, tipoReporte, esDelito) {
 
 // Marcador temporal de selección
 let seleccionMarker = null;
+
+const seleccionIcon = L.divIcon({
+    className: 'marcador-seleccion',
+    html: `<svg class="seleccion-gota" width="44" height="62" viewBox="0 0 60 84" aria-hidden="true">
+               <ellipse class="seleccion-sombra" cx="30" cy="80" rx="9" ry="3"/>
+               <path d="M30 78 C30 78 8 52 8 32 A22 22 0 1 1 52 32 C52 52 30 78 30 78 Z" fill="#000e40" stroke="#ffffff" stroke-width="3"/>
+               <circle cx="30" cy="31" r="9" fill="#4ec6c0"/>
+               <circle cx="30" cy="31" r="3.5" fill="#000e40"/>
+           </svg>`,
+    iconSize: [44, 62],
+    iconAnchor: [22, 57],
+    popupAnchor: [0, -54]
+});
 window.coordenadasSeleccionadas = null;
 
 function fijarUbicacionReporte(latlng, origen = 'Coordenadas fijadas') {
@@ -93,7 +106,11 @@ function fijarUbicacionReporte(latlng, origen = 'Coordenadas fijadas') {
     if (seleccionMarker) {
         seleccionMarker.setLatLng(latlng);
     } else {
-        seleccionMarker = L.marker(latlng).addTo(map);
+        seleccionMarker = L.marker(latlng, {
+            icon: seleccionIcon,
+            zIndexOffset: 1000,
+            title: 'Ubicación del nuevo reporte'
+        }).addTo(map);
     }
 
     // Actualizar el texto del formulario para que el usuario vea que se fijó la ubicación
