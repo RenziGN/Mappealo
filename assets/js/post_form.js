@@ -76,6 +76,63 @@ document.addEventListener("DOMContentLoaded", () => {
        FECHA Y HORA
     ===================================================== */
 
+    function fechaDesdeIso(iso) {
+        const partes = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+        return partes ? `${partes[3]}/${partes[2]}/${partes[1]}` : "";
+    }
+
+    function isoDesdeFecha(texto) {
+        const partes = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec((texto || "").trim());
+        if (!partes) return null;
+
+        const dia = Number(partes[1]);
+        const mes = Number(partes[2]);
+        const anio = Number(partes[3]);
+        const fecha = new Date(anio, mes - 1, dia);
+
+        if (fecha.getFullYear() !== anio || fecha.getMonth() !== mes - 1 || fecha.getDate() !== dia) {
+            return null;
+        }
+
+        return `${partes[3]}-${partes[2]}-${partes[1]}`;
+    }
+
+    document.querySelectorAll(".campo-fecha").forEach(campo => {
+
+        const texto = campo.querySelector(".fecha-texto");
+        const oculta = campo.querySelector(".fecha-oculta");
+        const boton = campo.querySelector(".btn-calendario");
+
+        texto.addEventListener("input", () => {
+            const numeros = texto.value.replace(/\D/g, "").slice(0, 8);
+            let formateada = numeros.slice(0, 2);
+            if (numeros.length > 2) formateada += "/" + numeros.slice(2, 4);
+            if (numeros.length > 4) formateada += "/" + numeros.slice(4, 8);
+            texto.value = formateada;
+            texto.classList.toggle("fecha-invalida", formateada.length === 10 && !isoDesdeFecha(formateada));
+        });
+
+        boton.addEventListener("click", () => {
+            if (texto.readOnly) return;
+            oculta.value = isoDesdeFecha(texto.value) || "";
+            if (typeof oculta.showPicker === "function") {
+                try {
+                    oculta.showPicker();
+                    return;
+                } catch (e) { }
+            }
+            oculta.focus();
+            oculta.click();
+        });
+
+        oculta.addEventListener("change", () => {
+            if (!oculta.value) return;
+            texto.value = fechaDesdeIso(oculta.value);
+            texto.classList.remove("fecha-invalida");
+        });
+
+    });
+
     const liveCheckboxes =
         document.querySelectorAll(".live-toggle input");
 
@@ -86,7 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
             checkbox.closest(".date-row");
 
         const dateInput =
-            container?.querySelector('input[type="date"]');
+            container?.querySelector(".fecha-texto");
+
+        const botonCalendario =
+            container?.querySelector(".btn-calendario");
 
         const timeInput =
             container?.querySelector('input[type="time"]');
@@ -103,6 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 input.readOnly = activo;
                 input.classList.toggle("en-vivo", activo);
             });
+
+            if (botonCalendario) botonCalendario.disabled = activo;
+            if (dateInput) dateInput.classList.remove("fecha-invalida");
 
             if (!activo) return;
 
@@ -133,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const dosDigitos = n => String(n).padStart(2, "0");
 
             const fecha =
-                `${ahora.getFullYear()}-${dosDigitos(ahora.getMonth() + 1)}-${dosDigitos(ahora.getDate())}`;
+                `${dosDigitos(ahora.getDate())}/${dosDigitos(ahora.getMonth() + 1)}/${ahora.getFullYear()}`;
 
             const hora =
                 `${dosDigitos(ahora.getHours())}:${dosDigitos(ahora.getMinutes())}`;
@@ -361,6 +424,17 @@ publicarButtons.forEach(button => {
             }
 
 
+            if (!isoDesdeFecha(delitoTab.querySelector(".fecha-texto")?.value)) {
+
+                return {
+                    valido: false,
+                    mensaje:
+                        "Ingresá una fecha válida con el formato día/mes/año (por ejemplo, 16/11/2026)."
+                };
+
+            }
+
+
             const descripcion =
                 delitoTab
                     .querySelector("textarea")
@@ -417,6 +491,20 @@ publicarButtons.forEach(button => {
                     valido: false,
                     mensaje:
                         "Agregá una descripción del incidente."
+                };
+
+            }
+
+
+            const fechaComunitario =
+                comunitarioTab.querySelector(".fecha-texto")?.value.trim();
+
+            if (fechaComunitario && !isoDesdeFecha(fechaComunitario)) {
+
+                return {
+                    valido: false,
+                    mensaje:
+                        "Ingresá una fecha válida con el formato día/mes/año (por ejemplo, 16/11/2026)."
                 };
 
             }
@@ -479,7 +567,7 @@ publicarButtons.forEach(button => {
 
 
         const fecha =
-            container.querySelector('input[type="date"]')?.value;
+            isoDesdeFecha(container.querySelector(".fecha-texto")?.value);
 
 
         const hora =
@@ -544,9 +632,7 @@ publicarButtons.forEach(button => {
 
 
         const fecha =
-            container.querySelector(
-                'input[type="date"]'
-            )?.value;
+            isoDesdeFecha(container.querySelector(".fecha-texto")?.value);
 
 
         const hora =
@@ -624,6 +710,8 @@ publicarButtons.forEach(button => {
     document.querySelectorAll(".popup input[type='checkbox'], .popup input[type='radio']").forEach(el => {
         el.checked = false;
     });
+
+    document.querySelectorAll(".popup .fecha-invalida").forEach(el => el.classList.remove("fecha-invalida"));
 
     document.querySelectorAll(".popup .live-toggle input").forEach(el => {
         el.dispatchEvent(new Event("change"));

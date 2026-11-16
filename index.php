@@ -47,7 +47,7 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <link rel="stylesheet" href="assets/css/main.css?v=5">
+    <link rel="stylesheet" href="assets/css/main.css?v=6">
     <link rel="stylesheet" href="assets/css/home.css?v=19">
 
 </head>
@@ -333,10 +333,11 @@ if (!$is_guest && $id_usuario_sesion > 0) {
 
                 <div class="date-row">
 
-                    <input
-                        type="date"
-                        value="2026-08-25"
-                    >
+                    <div class="campo-fecha">
+                        <input type="text" class="fecha-texto" inputmode="numeric" placeholder="dd/mm/aaaa" maxlength="10" autocomplete="off" aria-label="Fecha (día/mes/año)" value="25/08/2026">
+                        <button type="button" class="btn-calendario" title="Elegir en el calendario" aria-label="Elegir la fecha en el calendario"><i class="fa-solid fa-calendar-days"></i></button>
+                        <input type="date" class="fecha-oculta" tabindex="-1" aria-hidden="true">
+                    </div>
 
                     <input
                         type="time"
@@ -624,7 +625,11 @@ if (!$is_guest && $id_usuario_sesion > 0) {
 
                 <div class="date-row">
 
-                    <input type="date">
+                    <div class="campo-fecha">
+                        <input type="text" class="fecha-texto" inputmode="numeric" placeholder="dd/mm/aaaa" maxlength="10" autocomplete="off" aria-label="Fecha (día/mes/año)">
+                        <button type="button" class="btn-calendario" title="Elegir en el calendario" aria-label="Elegir la fecha en el calendario"><i class="fa-solid fa-calendar-days"></i></button>
+                        <input type="date" class="fecha-oculta" tabindex="-1" aria-hidden="true">
+                    </div>
 
                     <input type="time">
 
@@ -759,7 +764,7 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script src="./assets/js/post_form.js"></script>
+    <script src="./assets/js/post_form.js?v=2"></script>
     <script src="./assets/js/map.js"></script>
     <script src="./assets/js/comisarias.js"></script>
     <script src="./assets/js/jurisdicciones.js"></script>
