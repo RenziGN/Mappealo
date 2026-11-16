@@ -65,9 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
        TIPO DE ROBO
     ===================================================== */
 
-    const tipoRobo = document.querySelector(
-        ".delito select"
-    );
+    const tipoRobo = {
+        get value() {
+            return document.querySelector(".delito .incident-card.active")?.dataset.valor || "";
+        }
+    };
 
     const vehicleSection =
         document.querySelector(".subsection");
@@ -87,12 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
         vehicleSection.style.display =
             mostrarVehiculo ? "block" : "none";
     }
-
-
-    tipoRobo?.addEventListener(
-        "change",
-        actualizarCamposRobo
-    );
 
 
     actualizarCamposRobo();
@@ -251,11 +247,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         card.addEventListener("click", () => {
 
-            incidentCards.forEach(c =>
-                c.classList.remove("active")
-            );
+            card.closest(".incident-types")
+                .querySelectorAll(".incident-card")
+                .forEach(c => c.classList.remove("active"));
 
             card.classList.add("active");
+
+            actualizarCamposRobo();
 
         });
 
@@ -643,7 +641,7 @@ publicarButtons.forEach(button => {
 
 
         const tipo =
-            getInput("select")?.value;
+            tipoRobo.value;
 
 
         const fecha =
@@ -1027,6 +1025,8 @@ publicarButtons.forEach(button => {
     document.querySelectorAll(".popup .live-toggle input").forEach(el => {
         el.dispatchEvent(new Event("change"));
     });
+
+    document.querySelectorAll(".popup .tipos-robo .incident-card.active").forEach(el => el.classList.remove("active"));
 
     document.querySelectorAll(".popup .selected").forEach(el => el.classList.remove("selected"));
     document.querySelectorAll(".popup .radio-card.active").forEach(el => el.classList.remove("active"));

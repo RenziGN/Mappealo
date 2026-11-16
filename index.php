@@ -50,8 +50,8 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <link rel="stylesheet" href="assets/css/main.css?v=2">
-    <link rel="stylesheet" href="assets/css/home.css?v=12">
+    <link rel="stylesheet" href="assets/css/main.css?v=4">
+    <link rel="stylesheet" href="assets/css/home.css?v=15">
 
 </head>
 
@@ -154,8 +154,9 @@ if (!$is_guest && $id_usuario_sesion > 0) {
             </div>
 
             <div class="report-box">
-                <button class="btn btn-primary btn-lg shadow rounded-pill px-4 py-2">
-                    <i class="bi bi-plus-lg me-2"></i>  CARGAR REPORTE
+                <button type="button" class="btn btn-cargar-reporte">
+                    <span class="icono-cargar"><i class="bi bi-plus-lg"></i></span>
+                    CARGAR REPORTE
                 </button>
             </div>
 
@@ -296,12 +297,25 @@ if (!$is_guest && $id_usuario_sesion > 0) {
                     <span class="required">*</span>
                 </label>
 
-                 <select>
-                  <option value="">Seleccionar tipo de robo</option>
-                  <option value="Robo a mano armada">Robo a mano armada</option>
-                  <option value="Hurto / Arrebato en vía pública">Hurto / Arrebato en vía pública</option>
-                  <option value="Robo de vehículo / Motochorros">Robo de vehículo / Motochorros</option>
-                 </select>
+                <div class="incident-types tipos-robo">
+                    <button type="button" class="incident-card" data-valor="Robo a mano armada">
+                        <i class="fa-solid fa-gun"></i>
+                        <strong>Robo a mano armada</strong>
+                        <span>Con arma de fuego o blanca, o amenaza directa.</span>
+                    </button>
+
+                    <button type="button" class="incident-card" data-valor="Hurto / Arrebato en vía pública">
+                        <i class="fa-solid fa-person-running"></i>
+                        <strong>Hurto / Arrebato</strong>
+                        <span>Robo al paso en la calle: celular, cartera o mochila.</span>
+                    </button>
+
+                    <button type="button" class="incident-card" data-valor="Robo de vehículo / Motochorros">
+                        <i class="fa-solid fa-motorcycle"></i>
+                        <strong>Vehículo / Motochorros</strong>
+                        <span>Robo de auto, moto o bici, o asalto desde una moto.</span>
+                    </button>
+                </div>
 
                 <small>
                     El tipo de robo será utilizado para ponderar

@@ -1598,3 +1598,109 @@ body.modal-reporte-abierto {
 .drawer-credibilidad.cred-baja .punto {
     background: #f87171;
 }
+
+.marcador-robo {
+    background: transparent;
+    border: none;
+}
+
+.marcador-robo span {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.marcador-robo span::after {
+    content: "";
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #ffffff;
+}
+
+.marcador-robo.robo-armado span {
+    background: #c0392b;
+}
+
+.marcador-robo.robo-hurto span {
+    background: #e67e22;
+}
+
+.marcador-robo.robo-vehiculo span {
+    background: #8e44ad;
+}
+
+.marcador-robo.comunitario-luminaria span {
+    background: #d4a017;
+}
+
+.marcador-robo.comunitario-bache span {
+    background: #2980b9;
+}
+
+.marcador-robo.comunitario-basura span {
+    background: #27ae60;
+}
+
+.report-box .btn-cargar-reporte {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 54px;
+    padding: 0 26px 0 8px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #000e40, #15265c);
+    color: #ffffff;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 0 10px 24px rgba(0, 14, 64, 0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.report-box .btn-cargar-reporte:hover,
+.report-box .btn-cargar-reporte:focus-visible {
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(0, 14, 64, 0.42);
+}
+
+.report-box .btn-cargar-reporte:active {
+    transform: translateY(0);
+}
+
+.report-box .icono-cargar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #4ec6c0;
+    color: #000e40;
+    font-size: 20px;
+    transition: transform 0.2s;
+}
+
+.report-box .btn-cargar-reporte:hover .icono-cargar {
+    transform: rotate(90deg);
+}
+
+@media (max-width: 576px) {
+    .report-box .btn-cargar-reporte {
+        justify-content: center;
+    }
+}

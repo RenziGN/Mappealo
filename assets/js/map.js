@@ -32,6 +32,28 @@ const comunidadIcon = L.icon({
     popupAnchor: [0, -36]
 });
 
+function crearIconoRobo(claseIcono, claseColor) {
+    return L.divIcon({
+        className: `marcador-robo ${claseColor}`,
+        html: `<span><i class="fa-solid ${claseIcono}"></i></span>`,
+        iconSize: [36, 44],
+        iconAnchor: [18, 44],
+        popupAnchor: [0, -42]
+    });
+}
+
+const iconosRobo = {
+    'Robo a mano armada': crearIconoRobo('fa-gun', 'robo-armado'),
+    'Hurto / Arrebato en vía pública': crearIconoRobo('fa-person-running', 'robo-hurto'),
+    'Robo de vehículo / Motochorros': crearIconoRobo('fa-motorcycle', 'robo-vehiculo')
+};
+
+const iconosComunitarios = {
+    'Luminaria rota': crearIconoRobo('fa-lightbulb', 'comunitario-luminaria'),
+    'Bache / Calle anegada': crearIconoRobo('fa-road', 'comunitario-bache'),
+    'Basura acumulada': crearIconoRobo('fa-trash-can', 'comunitario-basura')
+};
+
 const gruposReportes = new Map();
 
 function obtenerGrupoReporte(clave, tipoReporte, esDelito) {
@@ -255,7 +277,9 @@ function cargarReportesEnMapa() {
 
                 response.data.forEach(rep => {
                     const esDelito = rep.categoria === 'delito';
-                    const icono = esDelito ? ladronIcon : comunidadIcon;
+                    const icono = esDelito
+                        ? (iconosRobo[rep.tipo_robo] || ladronIcon)
+                        : (iconosComunitarios[rep.tipo_incidente] || comunidadIcon);
                     const titulo = esDelito 
                         ? (rep.tipo_robo || 'Delito') 
                         : (rep.tipo_incidente || 'Incidente Comunitario');
