@@ -120,10 +120,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function actualizarFechaHora() {
 
-            if (!checkbox.checked) {
-                detenerLive();
-                return;
-            }
+            detenerLive();
+
+            const activo = checkbox.checked;
+
+            [dateInput, timeInput].forEach(input => {
+                if (!input) return;
+                input.readOnly = activo;
+                input.classList.toggle("en-vivo", activo);
+            });
+
+            if (!activo) return;
 
             actualizar();
 
@@ -149,14 +156,13 @@ document.addEventListener("DOMContentLoaded", () => {
         function actualizar() {
 
             const ahora = new Date();
+            const dosDigitos = n => String(n).padStart(2, "0");
 
             const fecha =
-                ahora.toISOString()
-                    .split("T")[0];
+                `${ahora.getFullYear()}-${dosDigitos(ahora.getMonth() + 1)}-${dosDigitos(ahora.getDate())}`;
 
             const hora =
-                ahora.toTimeString()
-                    .substring(0, 5);
+                `${dosDigitos(ahora.getHours())}:${dosDigitos(ahora.getMinutes())}`;
 
             if (dateInput)
                 dateInput.value = fecha;
@@ -1016,6 +1022,10 @@ publicarButtons.forEach(button => {
 
     document.querySelectorAll(".popup input[type='checkbox'], .popup input[type='radio']").forEach(el => {
         el.checked = false;
+    });
+
+    document.querySelectorAll(".popup .live-toggle input").forEach(el => {
+        el.dispatchEvent(new Event("change"));
     });
 
     document.querySelectorAll(".popup .selected").forEach(el => el.classList.remove("selected"));

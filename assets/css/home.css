@@ -1433,3 +1433,168 @@ body.modal-reporte-abierto {
 #btnLimpiarBusqueda {
     cursor: pointer;
 }
+
+.drawer-item.drawer-item-externo {
+    background-color: #fff1f0;
+    color: #c0262d;
+}
+
+.drawer-item.drawer-item-externo:hover {
+    background-color: #ffe3e0;
+    color: #a51d24;
+}
+
+.drawer-item .icono-externo {
+    margin-left: auto;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.cred-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.popup-reporte-resumen + .cred-badge {
+    margin-top: 6px;
+}
+
+.cred-badge.cred-alta {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.cred-badge.cred-media {
+    background: #fff3cd;
+    color: #8a6100;
+}
+
+.cred-badge.cred-baja {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.cred-medidor {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f8f9fb;
+}
+
+.cred-medidor-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.cred-medidor-cabecera > strong {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.cred-medidor-cabecera small {
+    font-size: 12px;
+    color: #adb5bd;
+    font-weight: 600;
+}
+
+.cred-barra {
+    height: 8px;
+    margin-top: 8px;
+    border-radius: 999px;
+    background: #e9ecef;
+    overflow: hidden;
+}
+
+.cred-barra span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.cred-alta .cred-barra span {
+    background: #20a66a;
+}
+
+.cred-media .cred-barra span {
+    background: #f59e0b;
+}
+
+.cred-baja .cred-barra span {
+    background: #ef4444;
+}
+
+.cred-detalle {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.cred-detalle summary {
+    cursor: pointer;
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.cred-detalle ul {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0;
+}
+
+.cred-detalle li {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 3px 0;
+    border-bottom: 1px dashed #e4e7ee;
+}
+
+.cred-detalle li strong.positivo {
+    color: #20a66a;
+}
+
+.cred-detalle li strong.negativo {
+    color: #c0262d;
+}
+
+.cred-detalle p {
+    margin: 4px 0 0;
+}
+
+.drawer-credibilidad {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.drawer-credibilidad .punto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.drawer-credibilidad.cred-alta .punto {
+    background: #4ade80;
+}
+
+.drawer-credibilidad.cred-media .punto {
+    background: #fbbf24;
+}
+
+.drawer-credibilidad.cred-baja .punto {
+    background: #f87171;
+}

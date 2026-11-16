@@ -78,6 +78,32 @@
             </div>`;
     }
 
+    function bloqueCredibilidad(c) {
+        if (!c) return '';
+        const factores = (c.factores || []).map(f => `
+            <li>
+                <span>${escapar(f.texto)}</span>
+                <strong class="${f.base ? '' : (f.puntos > 0 ? 'positivo' : 'negativo')}">${f.base ? '' : (f.puntos > 0 ? '+' : '')}${parseInt(f.puntos, 10)}</strong>
+            </li>`).join('');
+
+        return `
+            <div class="detalle-seccion">
+                <h3>Índice de credibilidad</h3>
+                <div class="cred-medidor cred-${escapar(c.nivel.clave)}">
+                    <div class="cred-medidor-cabecera">
+                        <span class="cred-badge cred-${escapar(c.nivel.clave)}"><i class="fa-solid fa-shield-halved"></i> ${escapar(c.nivel.texto)}</span>
+                        <strong>${parseInt(c.puntaje, 10)}<small>/100</small></strong>
+                    </div>
+                    <div class="cred-barra"><span style="width: ${parseInt(c.puntaje, 10)}%"></span></div>
+                </div>
+                <details class="cred-detalle">
+                    <summary>¿Cómo se calcula?</summary>
+                    <ul>${factores}</ul>
+                    <p class="detalle-gris">Parte de la credibilidad de quien lo publicó (invitado o usuario registrado, y cómo calificaron o denunciaron sus otros reportes) y cambia con las calificaciones y denuncias de este reporte.</p>
+                </details>
+            </div>`;
+    }
+
     function bloqueCalificacion(cal, puede) {
         const resumen = cal.cantidad > 0
             ? `<span class="detalle-estrellas">${estrellas(cal.promedio)}</span>
@@ -176,6 +202,7 @@
                 <li><i class="fa-solid fa-clock"></i> Sucedió: ${formatearFecha(rep.fecha_incidente)}</li>
                 <li><i class="fa-solid fa-user"></i> Publicado por <b>${escapar(rep.nombre_usuario)}</b></li>
             </ul>
+            ${bloqueCredibilidad(datos.credibilidad)}
             ${bloqueCalificacion(datos.calificacion, datos.puede_interactuar)}
             ${bloqueComentarios(datos.comentarios, datos.puede_interactuar)}
             ${datos.puede_interactuar ? bloqueDenuncia(datos.ya_denuncie) : bloqueInvitado()}

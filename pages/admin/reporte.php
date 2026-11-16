@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../config/auth.php';
 requerir_admin();
 require_once __DIR__ . '/../../config/connection.php';
 require_once __DIR__ . '/_nav.php';
+require_once __DIR__ . '/../../config/credibilidad.php';
 
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 
@@ -55,6 +56,9 @@ $comentarios = $consultar("
     WHERE c.id_reporte = :id ORDER BY c.fecha ASC
 ");
 
+$credibilidad = credibilidad_reporte($connection, $id);
+$credibilidadAutor = (int) $reporte['id_usuario'] > 0 ? credibilidad_usuario($connection, (int) $reporte['id_usuario']) : null;
+
 $promedio = $calificaciones ? round(array_sum(array_column($calificaciones, 'valor')) / count($calificaciones), 1) : null;
 $siNo = fn($v) => $v === null ? '-' : ((int) $v ? 'Sí' : 'No');
 ?>
@@ -101,6 +105,40 @@ $siNo = fn($v) => $v === null ? '-' : ((int) $v ? 'Sí' : 'No');
                     <dd class="col-sm-9">Violencia: <?= $siNo($reporte['hubo_violencia']) ?> · Arma de fuego: <?= $siNo($reporte['hubo_arma']) ?> · 2 o más delincuentes: <?= $siNo($reporte['multiples_delincuentes']) ?></dd>
                 <?php endif; ?>
             </dl>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <strong>Índice de credibilidad</strong>
+            <?= admin_credibilidad($credibilidad) ?>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <div class="small text-muted mb-1">Cómo se calcula para este reporte</div>
+                    <ul class="list-unstyled small mb-0">
+                        <?php foreach ($credibilidad['factores'] ?? [] as $f): ?>
+                            <li class="d-flex justify-content-between border-bottom py-1">
+                                <span><?= admin_e($f['texto']) ?></span>
+                                <strong class="<?= !empty($f['base']) ? '' : ($f['puntos'] > 0 ? 'text-success' : 'text-danger') ?>">
+                                    <?= !empty($f['base']) ? '' : ($f['puntos'] > 0 ? '+' : '') ?><?= (int) $f['puntos'] ?>
+                                </strong>
+                            </li>
+                        <?php endforeach; ?>
+                        <li class="d-flex justify-content-between pt-1"><span>Total (entre 0 y 100)</span><strong><?= (int) ($credibilidad['puntaje'] ?? 0) ?></strong></li>
+                    </ul>
+                </div>
+                <div class="col-md-5">
+                    <div class="small text-muted mb-1">Credibilidad actual del autor</div>
+                    <?php if ($credibilidadAutor): ?>
+                        <?= admin_credibilidad($credibilidadAutor) ?>
+                        <div class="small text-muted mt-1"><?= admin_e($reporte['nombre_usuario']) ?>: es el punto de partida de sus próximos reportes.</div>
+                    <?php else: ?>
+                        <span class="small text-muted">Invitado (anónimo): base fija de <?= CRED_BASE_INVITADO ?>. No se calcula historial porque todos los invitados comparten la misma cuenta.</span>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
     </div>
 

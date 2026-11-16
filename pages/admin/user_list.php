@@ -3,6 +3,7 @@ session_start();
 require_once '../../config/connection.php';
 require_once '../../config/auth.php';
 require_once __DIR__ . '/_nav.php';
+require_once '../../config/credibilidad.php';
 
 if (
     !isset($_SESSION['user']) ||
@@ -42,6 +43,7 @@ if (
                     <th>#</th>
                     <th>Usuario</th>
                     <th>Rol</th>
+                    <th>Credibilidad</th>
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
@@ -60,6 +62,7 @@ if (
                             <span class="badge text-bg-success">Usuario</span>
                         <?php endif; ?>
                     </td>
+                    <td><?= admin_credibilidad(credibilidad_usuario($connection, (int) $user['id_usuario'])) ?></td>
                     <td class="text-end text-nowrap">
                         <a href="edit_user.php?id=<?= (int) $user['id_usuario'] ?>" class="btn btn-warning btn-sm">
                             <i class="fa-solid fa-pen"></i> Editar

@@ -7,6 +7,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/credibilidad.php';
 
 $idReporte = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 
@@ -90,6 +91,7 @@ try {
             'mia' => $miCalificacion
         ],
         'comentarios' => $comentarios,
+        'credibilidad' => credibilidad_reporte($connection, $idReporte),
         'ya_denuncie' => $yaDenuncie,
         'puede_interactuar' => $idUsuario !== null,
         'csrf' => csrf_token()

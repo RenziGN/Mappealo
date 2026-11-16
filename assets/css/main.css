@@ -675,6 +675,11 @@ body {
     display: none;
 }
 
+.live-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+
 .switch {
     width: 32px;
     height: 18px;
@@ -684,6 +689,8 @@ body {
     background: #d6dbe3;
 
     position: relative;
+
+    transition: background 0.2s;
 }
 
 .switch::after {
@@ -700,6 +707,27 @@ body {
     background: white;
 
     border-radius: 50%;
+
+    transition: transform 0.2s;
+}
+
+.live-toggle input:checked + .switch {
+    background: var(--verde);
+}
+
+.live-toggle input:checked + .switch::after {
+    transform: translateX(14px);
+}
+
+.live-toggle:has(input:checked) {
+    color: var(--verde);
+    font-weight: 700;
+}
+
+.date-row input.en-vivo {
+    background: #eefaf4;
+    border-color: var(--verde);
+    color: #13734a;
 }
 
 

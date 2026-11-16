@@ -235,6 +235,10 @@ document.getElementById('btnCentrar')?.addEventListener('click', centrarEnUsuari
 
 iniciarGeolocalizacion(false).catch(err => console.info('Ubicación no disponible:', err.message));
 
+function textoNivelCredibilidad(nivel) {
+    return { alta: 'alta', media: 'media', baja: 'baja' }[nivel] || '';
+}
+
 function escaparHtml(texto) {
     return String(texto ?? '').replace(/[&<>"']/g, c => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -288,6 +292,10 @@ function cargarReportesEnMapa() {
                                 <span>${resumenCalificacion}</span>
                                 <span>💬 ${cantidadComentarios}</span>
                             </div>
+                            ${rep.credibilidad !== null && rep.credibilidad !== undefined ? `
+                            <div class="cred-badge cred-${escaparHtml(rep.credibilidad_nivel)}" title="Índice de credibilidad del reporte (0 a 100)">
+                                <i class="fa-solid fa-shield-halved"></i> Credibilidad ${escaparHtml(textoNivelCredibilidad(rep.credibilidad_nivel))} · ${parseInt(rep.credibilidad, 10)}
+                            </div>` : ''}
                             <button type="button" class="btn-ver-reporte" data-reporte-id="${parseInt(rep.id_reporte, 10)}">
                                 Ver comentarios · Calificar
                             </button>

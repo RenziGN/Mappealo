@@ -20,6 +20,16 @@ function admin_estrellas($valor): string
     return str_repeat('★', $n) . str_repeat('☆', 5 - $n);
 }
 
+function admin_credibilidad(?array $cred, bool $conTexto = true): string
+{
+    if (!$cred) {
+        return '<span class="text-muted small">-</span>';
+    }
+    $clase = ['alta' => 'text-bg-success', 'media' => 'text-bg-warning', 'baja' => 'text-bg-danger'][$cred['nivel']['clave']] ?? 'text-bg-secondary';
+    $texto = $conTexto ? admin_e($cred['nivel']['texto']) . ' · ' : '';
+    return '<span class="badge ' . $clase . '" title="Índice de credibilidad (0 a 100)"><i class="fa-solid fa-shield-halved me-1"></i>' . $texto . (int) $cred['puntaje'] . '</span>';
+}
+
 function admin_mensajes(): void
 {
     if (!empty($_SESSION['errors'])) {
@@ -102,6 +112,6 @@ function admin_head(string $titulo): void
     <title><?= admin_e($titulo) ?> · Mappealo Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="../../assets/css/admin.css?v=3">
+    <link rel="stylesheet" href="../../assets/css/admin.css?v=5">
     <?php
 }

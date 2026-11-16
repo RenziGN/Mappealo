@@ -11,6 +11,19 @@ if(!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
+
+$credibilidad_usuario = null;
+$id_usuario_sesion = (int) ($user['id_usuario'] ?? 0);
+if (!$is_guest && $id_usuario_sesion > 0) {
+    try {
+        require_once __DIR__ . '/config/connection.php';
+        require_once __DIR__ . '/config/credibilidad.php';
+        $credibilidad_usuario = credibilidad_usuario($connection, $id_usuario_sesion);
+    } catch (PDOException $e) {
+        $credibilidad_usuario = null;
+    }
+    $user = $_SESSION['user'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -37,8 +50,8 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/home.css?v=10">
+    <link rel="stylesheet" href="assets/css/main.css?v=2">
+    <link rel="stylesheet" href="assets/css/home.css?v=12">
 
 </head>
 
@@ -762,6 +775,12 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     <?= htmlspecialchars($alias_usuario) ?>
                 </h3>
                 <span class="user-role-badge">Usuario verificado</span>
+                <?php if ($credibilidad_usuario): ?>
+                    <span class="drawer-credibilidad cred-<?= htmlspecialchars($credibilidad_usuario['nivel']['clave']) ?>" title="Tu índice de credibilidad. Mirá el detalle en «Tus reportes».">
+                        <span class="punto"></span>
+                        Credibilidad <?= htmlspecialchars($credibilidad_usuario['nivel']['texto']) ?> · <?= (int) $credibilidad_usuario['puntaje'] ?>
+                    </span>
+                <?php endif; ?>
             </div>
         </div>
     <?php else: ?>
@@ -800,6 +819,11 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                 <i class="fa-solid fa-bullhorn"></i>
                 <span>Cargar reporte barrial</span>
             </button>
+            <a href="https://seguridad.gba.gob.ar/#/home" class="drawer-item drawer-item-externo" id="btnDrawerDenunciarDelito" target="_blank" rel="noopener noreferrer" title="Abre el sitio del Ministerio de Seguridad de la Provincia de Buenos Aires en una pestaña nueva">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span>Denunciar delito</span>
+                <i class="fa-solid fa-arrow-up-right-from-square icono-externo"></i>
+            </a>
         </div>
 
         <!-- Capas del Mapa -->

@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $idUsuario = requerir_usuario_registrado_api();
 
 require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/credibilidad.php';
 
 try {
     $stmt = $connection->prepare("
@@ -42,9 +43,18 @@ try {
     $stmt->execute([':u' => $idUsuario]);
     $reportes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    $credibilidades = credibilidad_reportes($connection);
+    foreach ($reportes as &$reporte) {
+        $cred = $credibilidades[(int) $reporte['id_reporte']] ?? null;
+        $reporte['credibilidad'] = $cred['puntaje'] ?? null;
+        $reporte['credibilidad_nivel'] = $cred['nivel']['clave'] ?? null;
+    }
+    unset($reporte);
+
     responder_json(200, [
         'status' => 'success',
         'total' => count($reportes),
+        'mi_credibilidad' => credibilidad_usuario($connection, $idUsuario),
         'data' => $reportes
     ]);
 

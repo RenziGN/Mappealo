@@ -5,6 +5,7 @@
     if (!modal || !cuerpo) return;
 
     let reportes = [];
+    let miCredibilidad = null;
     let filtro = 'todos';
     let resaltado = null;
 
@@ -42,13 +43,40 @@
             </div>`;
     }
 
+    function bloqueMiCredibilidad() {
+        if (!miCredibilidad) return '';
+        const c = miCredibilidad;
+        const factores = (c.factores || []).map(f => `
+            <li>
+                <span>${escapar(f.texto)}</span>
+                <strong class="${f.base ? '' : (f.puntos > 0 ? 'positivo' : 'negativo')}">${f.base ? '' : (f.puntos > 0 ? '+' : '')}${parseInt(f.puntos, 10)}</strong>
+            </li>`).join('');
+
+        return `
+            <div class="cred-medidor cred-${escapar(c.nivel.clave)} mb-3">
+                <div class="cred-medidor-cabecera">
+                    <div>
+                        <span class="detalle-gris">Tu índice de credibilidad</span>
+                        <span class="cred-badge cred-${escapar(c.nivel.clave)} ms-1"><i class="fa-solid fa-shield-halved"></i> ${escapar(c.nivel.texto)}</span>
+                    </div>
+                    <strong>${parseInt(c.puntaje, 10)}<small>/100</small></strong>
+                </div>
+                <div class="cred-barra"><span style="width: ${parseInt(c.puntaje, 10)}%"></span></div>
+                <details class="cred-detalle">
+                    <summary>¿Cómo se calcula?</summary>
+                    <ul>${factores}</ul>
+                    <p class="detalle-gris">Sube cuando califican bien tus reportes y baja si los denuncian o si publicás muchos en poco tiempo. Es el punto de partida de la credibilidad de cada reporte nuevo que publiques.</p>
+                </details>
+            </div>`;
+    }
+
     function renderizar() {
         const delitos = reportes.filter(r => r.categoria === 'delito').length;
         const comunitarios = reportes.filter(r => r.categoria === 'comunitario').length;
         const comentarios = reportes.reduce((t, r) => t + (parseInt(r.cantidad_comentarios, 10) || 0), 0);
 
         if (!reportes.length) {
-            cuerpo.innerHTML = `
+            cuerpo.innerHTML = bloqueMiCredibilidad() + `
                 <div class="historial-vacio">
                     <i class="fa-solid fa-map-location-dot"></i>
                     <strong>Todavía no publicaste reportes</strong>
@@ -64,7 +92,7 @@
 
         const visibles = reportes.filter(r => filtro === 'todos' || r.categoria === filtro);
 
-        cuerpo.innerHTML = `
+        cuerpo.innerHTML = bloqueMiCredibilidad() + `
             <div class="historial-resumen">
                 <div><strong>${reportes.length}</strong><span>Reportes</span></div>
                 <div><strong>${delitos}</strong><span>Delitos</span></div>
@@ -84,7 +112,10 @@
                     <li class="historial-item ${esDelito ? 'delito' : 'comunitario'}">
                         <div class="historial-item-cabecera">
                             <span class="historial-categoria">${esDelito ? 'Delito' : 'Comunitario'}</span>
-                            ${etiquetaEstado(r.estado)}
+                            <span class="d-flex gap-1">
+                                ${r.credibilidad !== null && r.credibilidad !== undefined ? `<span class="cred-badge cred-${escapar(r.credibilidad_nivel)}" title="Credibilidad del reporte"><i class="fa-solid fa-shield-halved"></i> ${parseInt(r.credibilidad, 10)}</span>` : ''}
+                                ${etiquetaEstado(r.estado)}
+                            </span>
                         </div>
                         <strong class="historial-tipo">${escapar(r.tipo || (esDelito ? 'Delito' : 'Incidente comunitario'))}</strong>
                         <p class="historial-descripcion">${escapar(r.descripcion)}</p>
@@ -171,6 +202,7 @@
             }
 
             reportes = Array.isArray(datos.data) ? datos.data : [];
+            miCredibilidad = datos.mi_credibilidad || null;
             renderizar();
         } catch (e) {
             cuerpo.innerHTML = `<p class="detalle-mensaje error">${escapar(e.message)}</p>`;

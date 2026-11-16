@@ -4,6 +4,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/credibilidad.php';
 
 try {
     $query = "
@@ -39,6 +40,14 @@ try {
 
     $stmt = $connection->query($query);
     $reportes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $credibilidades = credibilidad_reportes($connection);
+    foreach ($reportes as &$reporte) {
+        $cred = $credibilidades[(int) $reporte['id_reporte']] ?? null;
+        $reporte['credibilidad'] = $cred['puntaje'] ?? null;
+        $reporte['credibilidad_nivel'] = $cred['nivel']['clave'] ?? null;
+    }
+    unset($reporte);
 
     echo json_encode([
         'status' => 'success',
