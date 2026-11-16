@@ -71,32 +71,67 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const vehicleSection =
-        document.querySelector(".subsection");
-
-
-    function actualizarCamposRobo() {
-
-        if (!tipoRobo || !vehicleSection) return;
-
-        const tipo = tipoRobo.value;
-
-        const mostrarVehiculo =
-            tipo === "Robo de vehículo" ||
-            tipo === "Robo de bicicleta / moto" ||
-            tipo === "Robo de autopartes";
-
-        vehicleSection.style.display =
-            mostrarVehiculo ? "block" : "none";
-    }
-
-
-    actualizarCamposRobo();
-
 
     /* =====================================================
        FECHA Y HORA
     ===================================================== */
+
+    function fechaDesdeIso(iso) {
+        const partes = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+        return partes ? `${partes[3]}/${partes[2]}/${partes[1]}` : "";
+    }
+
+    function isoDesdeFecha(texto) {
+        const partes = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec((texto || "").trim());
+        if (!partes) return null;
+
+        const dia = Number(partes[1]);
+        const mes = Number(partes[2]);
+        const anio = Number(partes[3]);
+        const fecha = new Date(anio, mes - 1, dia);
+
+        if (fecha.getFullYear() !== anio || fecha.getMonth() !== mes - 1 || fecha.getDate() !== dia) {
+            return null;
+        }
+
+        return `${partes[3]}-${partes[2]}-${partes[1]}`;
+    }
+
+    document.querySelectorAll(".campo-fecha").forEach(campo => {
+
+        const texto = campo.querySelector(".fecha-texto");
+        const oculta = campo.querySelector(".fecha-oculta");
+        const boton = campo.querySelector(".btn-calendario");
+
+        texto.addEventListener("input", () => {
+            const numeros = texto.value.replace(/\D/g, "").slice(0, 8);
+            let formateada = numeros.slice(0, 2);
+            if (numeros.length > 2) formateada += "/" + numeros.slice(2, 4);
+            if (numeros.length > 4) formateada += "/" + numeros.slice(4, 8);
+            texto.value = formateada;
+            texto.classList.toggle("fecha-invalida", formateada.length === 10 && !isoDesdeFecha(formateada));
+        });
+
+        boton.addEventListener("click", () => {
+            if (texto.readOnly) return;
+            oculta.value = isoDesdeFecha(texto.value) || "";
+            if (typeof oculta.showPicker === "function") {
+                try {
+                    oculta.showPicker();
+                    return;
+                } catch (e) { }
+            }
+            oculta.focus();
+            oculta.click();
+        });
+
+        oculta.addEventListener("change", () => {
+            if (!oculta.value) return;
+            texto.value = fechaDesdeIso(oculta.value);
+            texto.classList.remove("fecha-invalida");
+        });
+
+    });
 
     const liveCheckboxes =
         document.querySelectorAll(".live-toggle input");
@@ -108,7 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
             checkbox.closest(".date-row");
 
         const dateInput =
-            container?.querySelector('input[type="date"]');
+            container?.querySelector(".fecha-texto");
+
+        const botonCalendario =
+            container?.querySelector(".btn-calendario");
 
         const timeInput =
             container?.querySelector('input[type="time"]');
@@ -125,6 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 input.readOnly = activo;
                 input.classList.toggle("en-vivo", activo);
             });
+
+            if (botonCalendario) botonCalendario.disabled = activo;
+            if (dateInput) dateInput.classList.remove("fecha-invalida");
 
             if (!activo) return;
 
@@ -155,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const dosDigitos = n => String(n).padStart(2, "0");
 
             const fecha =
-                `${ahora.getFullYear()}-${dosDigitos(ahora.getMonth() + 1)}-${dosDigitos(ahora.getDate())}`;
+                `${dosDigitos(ahora.getDate())}/${dosDigitos(ahora.getMonth() + 1)}/${ahora.getFullYear()}`;
 
             const hora =
                 `${dosDigitos(ahora.getHours())}:${dosDigitos(ahora.getMinutes())}`;
@@ -172,35 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "change",
             actualizarFechaHora
         );
-
-    });
-
-
-    /* =====================================================
-       RADIO DE UBICACIÓN
-    ===================================================== */
-
-    const radioCards =
-        document.querySelectorAll(".radio-card");
-
-
-    radioCards.forEach(card => {
-
-        card.addEventListener("click", () => {
-
-            radioCards.forEach(c =>
-                c.classList.remove("active")
-            );
-
-            card.classList.add("active");
-
-            const input =
-                card.querySelector("input");
-
-            if (input)
-                input.checked = true;
-
-        });
 
     });
 
@@ -253,8 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             card.classList.add("active");
 
-            actualizarCamposRobo();
-
         });
 
     });
@@ -301,104 +311,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         actualizarContador();
-
-    });
-
-
-    /* =====================================================
-       UPLOAD DE IMAGEN
-    ===================================================== */
-
-    const uploadButtons =
-        document.querySelectorAll(".upload button");
-
-
-    uploadButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const input =
-                document.createElement("input");
-
-            input.type = "file";
-
-            input.accept =
-                "image/png,image/jpeg,image/webp";
-
-
-            input.addEventListener(
-                "change",
-                () => {
-
-                    const file =
-                        input.files[0];
-
-                    if (!file) return;
-
-
-                    const maxSize =
-                        10 * 1024 * 1024;
-
-
-                    if (file.size > maxSize) {
-
-                        alert(
-                            "La imagen no puede superar los 10 MB."
-                        );
-
-                        return;
-                    }
-
-
-                    const allowedTypes = [
-                        "image/png",
-                        "image/jpeg",
-                        "image/webp"
-                    ];
-
-
-                    if (
-                        !allowedTypes.includes(
-                            file.type
-                        )
-                    ) {
-
-                        alert(
-                            "Formato de imagen no válido."
-                        );
-
-                        return;
-                    }
-
-
-                    const upload =
-                        button.closest(".upload");
-
-
-                    const title =
-                        upload.querySelector("strong");
-
-
-                    title.textContent =
-                        file.name;
-
-
-                    button.textContent =
-                        "Cambiar imagen";
-
-
-                    upload.dataset.file =
-                        file.name;
-
-                    upload._file = file;
-
-                }
-            );
-
-
-            input.click();
-
-        });
 
     });
 
@@ -512,6 +424,17 @@ publicarButtons.forEach(button => {
             }
 
 
+            if (!isoDesdeFecha(delitoTab.querySelector(".fecha-texto")?.value)) {
+
+                return {
+                    valido: false,
+                    mensaje:
+                        "Ingresá una fecha válida con el formato día/mes/año (por ejemplo, 16/11/2026)."
+                };
+
+            }
+
+
             const descripcion =
                 delitoTab
                     .querySelector("textarea")
@@ -573,6 +496,20 @@ publicarButtons.forEach(button => {
             }
 
 
+            const fechaComunitario =
+                comunitarioTab.querySelector(".fecha-texto")?.value.trim();
+
+            if (fechaComunitario && !isoDesdeFecha(fechaComunitario)) {
+
+                return {
+                    valido: false,
+                    mensaje:
+                        "Ingresá una fecha válida con el formato día/mes/año (por ejemplo, 16/11/2026)."
+                };
+
+            }
+
+
             const confirmacion =
                 comunitarioTab
                     .querySelector(
@@ -629,127 +566,18 @@ publicarButtons.forEach(button => {
             delitoTab;
 
 
-        const inputs =
-            container.querySelectorAll(
-                "input, select, textarea"
-            );
-
-
-        const getInput =
-            (selector) =>
-                container.querySelector(selector);
-
-
-        const tipo =
-            tipoRobo.value;
-
-
         const fecha =
-            getInput('input[type="date"]')?.value;
+            isoDesdeFecha(container.querySelector(".fecha-texto")?.value);
 
 
         const hora =
-            getInput('input[type="time"]')?.value;
+            container.querySelector('input[type="time"]')?.value;
 
-
-        const textarea =
-            getInput("textarea");
-
-
-        /* VEHÍCULO */
-
-        const vehicleInputs =
-            vehicleSection
-                ?.querySelectorAll(
-                    "input, select"
-                );
-
-
-        let vehiculo = null;
-
-
-        if (
-            vehicleSection &&
-            vehicleSection.style.display !== "none"
-        ) {
-
-            vehiculo = {
-
-                marca:
-                    vehicleInputs?.[0]?.value || null,
-
-                modelo:
-                    vehicleInputs?.[1]?.value || null,
-
-                color:
-                    vehicleInputs?.[2]?.value || null,
-
-                patente:
-                    vehicleInputs?.[3]?.value || null
-
-            };
-
-        }
-
-
-        /* GRAVEDAD */
 
         const questions =
             container.querySelectorAll(
                 ".question"
             );
-
-
-        const violencia =
-            obtenerRespuesta(
-                questions[0]
-            );
-
-
-        const arma =
-            obtenerRespuesta(
-                questions[1]
-            );
-
-
-        const multiples =
-            obtenerRespuesta(
-                questions[2]
-            );
-
-
-        /* UBICACIÓN */
-
-        const locationInput =
-            container.querySelector(
-                '.field input[placeholder="Calle y altura"]'
-            );
-
-
-        const calles =
-            container.querySelectorAll(
-                '.grid-2 input'
-            );
-
-
-        /* RADIO */
-
-        const radioActivo =
-            container.querySelector(
-                ".radio-card.active strong"
-            );
-
-
-        /* EVIDENCIA */
-
-        const upload =
-            container.querySelector(
-                ".upload"
-            );
-
-
-        const archivo =
-            upload?._file || null;
 
 
         return {
@@ -758,86 +586,30 @@ publicarButtons.forEach(button => {
 
             categoria: "robo",
 
-            tipo_robo: tipo,
-
-            fecha: fecha,
-
-            hora: hora,
+            tipo_robo: tipoRobo.value,
 
             fecha_hora:
                 `${fecha}T${hora}`,
 
-            en_vivo:
-                obtenerLiveStatus(container),
-
-
-            ubicacion: {
-
-                direccion_privada:
-                    locationInput?.value || null,
-
-                entre_calle:
-                    calles?.[0]?.value || null,
-
-                y_calle:
-                    calles?.[1]?.value || null,
-
-                radio_publico:
-                    radioActivo?.textContent || null
-
-            },
-
-
-            vehiculo: vehiculo,
-
-
             gravedad: {
 
                 violencia:
-                    violencia,
+                    obtenerRespuesta(questions[0]),
 
                 arma_fuego:
-                    arma,
+                    obtenerRespuesta(questions[1]),
 
                 multiples_delincuentes:
-                    multiples
+                    obtenerRespuesta(questions[2])
 
             },
 
-
             descripcion:
-                textarea?.value.trim() || "",
+                container.querySelector("textarea")?.value.trim() || "",
 
-
-            evidencia:
-                archivo ? {
-
-                    nombre:
-                        archivo.name,
-
-                    tipo:
-                        archivo.type,
-
-                    tamaño:
-                        archivo.size
-
-                } : null,
-
-
-            contacto: null,
-
-
-            metadata: {
-
-                creado_en:
-                    new Date().toISOString(),
-
-                estado:
-                    "pendiente",
-
-                confiabilidad:
-                    null
-
+            ubicacion: {
+                direccion:
+                    container.querySelector(".direccion-texto")?.value.trim() || ""
             }
 
         };
@@ -865,9 +637,7 @@ publicarButtons.forEach(button => {
 
 
         const fecha =
-            container.querySelector(
-                'input[type="date"]'
-            )?.value;
+            isoDesdeFecha(container.querySelector(".fecha-texto")?.value);
 
 
         const hora =
@@ -883,16 +653,6 @@ publicarButtons.forEach(button => {
                 .trim();
 
 
-        const upload =
-            container.querySelector(
-                ".upload"
-            );
-
-
-        const archivo =
-            upload?._file || null;
-
-
         return {
 
             tipo: "comunitario",
@@ -900,63 +660,17 @@ publicarButtons.forEach(button => {
             incidente:
                 tipo || null,
 
-
-            fecha:
-                fecha || null,
-
-            hora:
-                hora || null,
-
             fecha_hora:
                 fecha && hora
                     ? `${fecha}T${hora}`
                     : null,
 
-
-            en_vivo:
-                obtenerLiveStatus(
-                    container
-                ),
-
-
-            ubicacion: {
-
-                latitud:
-                    null,
-
-                longitud:
-                    null
-
-            },
-
-
             descripcion:
                 descripcion || "",
 
-
-            evidencia:
-                archivo ? {
-
-                    nombre:
-                        archivo.name,
-
-                    tipo:
-                        archivo.type,
-
-                    tamaño:
-                        archivo.size
-
-                } : null,
-
-
-            metadata: {
-
-                creado_en:
-                    new Date().toISOString(),
-
-                estado:
-                    "pendiente"
-
+            ubicacion: {
+                direccion:
+                    container.querySelector(".direccion-texto")?.value.trim() || ""
             }
 
         };
@@ -995,21 +709,6 @@ publicarButtons.forEach(button => {
 
 
     /* =====================================================
-       LIVE STATUS
-    ===================================================== */
-
-    function obtenerLiveStatus(container) {
-
-        return Boolean(
-            container.querySelector(
-                ".live-toggle input:checked"
-            )
-        );
-
-    }
-
-
-    /* =====================================================
        RESET
     ===================================================== */
 
@@ -1022,6 +721,8 @@ publicarButtons.forEach(button => {
         el.checked = false;
     });
 
+    document.querySelectorAll(".popup .fecha-invalida").forEach(el => el.classList.remove("fecha-invalida"));
+
     document.querySelectorAll(".popup .live-toggle input").forEach(el => {
         el.dispatchEvent(new Event("change"));
     });
@@ -1029,7 +730,6 @@ publicarButtons.forEach(button => {
     document.querySelectorAll(".popup .tipos-robo .incident-card.active").forEach(el => el.classList.remove("active"));
 
     document.querySelectorAll(".popup .selected").forEach(el => el.classList.remove("selected"));
-    document.querySelectorAll(".popup .radio-card.active").forEach(el => el.classList.remove("active"));
     
     // Restaurar textos de ubicación
     document.querySelectorAll('.location-box p').forEach(p => {

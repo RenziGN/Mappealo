@@ -38,9 +38,6 @@ if (!$is_guest && $id_usuario_sesion > 0) {
 
     <link
     rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
-    <link 
-    rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -50,7 +47,7 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <link rel="stylesheet" href="assets/css/main.css?v=4">
+    <link rel="stylesheet" href="assets/css/main.css?v=7">
     <link rel="stylesheet" href="assets/css/home.css?v=19">
 
 </head>
@@ -336,10 +333,11 @@ if (!$is_guest && $id_usuario_sesion > 0) {
 
                 <div class="date-row">
 
-                    <input
-                        type="date"
-                        value="2026-08-25"
-                    >
+                    <div class="campo-fecha">
+                        <input type="text" class="fecha-texto" inputmode="numeric" placeholder="dd/mm/aaaa" maxlength="10" autocomplete="off" aria-label="Fecha (día/mes/año)" value="25/08/2026">
+                        <button type="button" class="btn-calendario" title="Elegir en el calendario" aria-label="Elegir la fecha en el calendario"><i class="fa-solid fa-calendar-days"></i></button>
+                        <input type="date" class="fecha-oculta" tabindex="-1" aria-hidden="true">
+                    </div>
 
                     <input
                         type="time"
@@ -401,6 +399,8 @@ if (!$is_guest && $id_usuario_sesion > 0) {
                         Seleccioná una ubicación en el mapa
                         o ingresá una dirección.
                     </p>
+
+                    <input type="text" class="direccion-texto" maxlength="120" autocomplete="off" placeholder="Calle y altura (ej.: Medrano 1150)" aria-label="Calle y altura">
 
                 </div>
 
@@ -627,7 +627,11 @@ if (!$is_guest && $id_usuario_sesion > 0) {
 
                 <div class="date-row">
 
-                    <input type="date">
+                    <div class="campo-fecha">
+                        <input type="text" class="fecha-texto" inputmode="numeric" placeholder="dd/mm/aaaa" maxlength="10" autocomplete="off" aria-label="Fecha (día/mes/año)">
+                        <button type="button" class="btn-calendario" title="Elegir en el calendario" aria-label="Elegir la fecha en el calendario"><i class="fa-solid fa-calendar-days"></i></button>
+                        <input type="date" class="fecha-oculta" tabindex="-1" aria-hidden="true">
+                    </div>
 
                     <input type="time">
 
@@ -679,6 +683,8 @@ if (!$is_guest && $id_usuario_sesion > 0) {
                         La ubicación será visible
                         para otros usuarios.
                     </p>
+
+                    <input type="text" class="direccion-texto" maxlength="120" autocomplete="off" placeholder="Calle y altura (ej.: Medrano 1150)" aria-label="Calle y altura">
 
                 </div>
 
@@ -762,8 +768,8 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script src="./assets/js/post_form.js"></script>
-    <script src="./assets/js/map.js"></script>
+    <script src="./assets/js/post_form.js?v=3"></script>
+    <script src="./assets/js/map.js?v=4"></script>
     <script src="./assets/js/comisarias.js"></script>
     <script src="./assets/js/jurisdicciones.js"></script>
     <script src="./assets/js/reporte_detalle.js"></script>
