@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-09-2026 a las 22:33:59
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 16-11-2026 a las 23:02:38
+-- Versión del servidor: 10.11.16-MariaDB
+-- Versión de PHP: 8.3.36
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -35,13 +35,6 @@ CREATE TABLE `advertencia` (
   `fecha` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `advertencia`
---
-
-INSERT INTO `advertencia` (`id_advertencia`, `id_reporte`, `id_usuario`, `motivo`, `fecha`) VALUES
-(1, 2, 1, 'Revisado por moderador: reclamo vecinal válido.', '2026-09-28 15:30:08');
-
 -- --------------------------------------------------------
 
 --
@@ -61,7 +54,13 @@ CREATE TABLE `comentario` (
 --
 
 INSERT INTO `comentario` (`id_comentario`, `id_reporte`, `id_usuario`, `contenido`, `fecha`) VALUES
-(1, 1, 2, 'Tengan cuidado, a esa misma hora siempre rondan por ahí.', '2026-09-28 15:30:08');
+(5, 26, 1, 'Yo vi el robo en el momento, hubo arma de fuego', '2026-11-15 22:53:52'),
+(6, 34, 3, 'Uff, qué garrón, posta. Yo bajo en esa parada todos los días cuando salgo de cursar y a esa hora está re oscuro. Espero que estés bien, lo material se recupera. Me cuido el doble a partir de ahora.', '2026-11-16 17:03:13'),
+(7, 35, 3, 'Nooo, a mí casi me pasa lo mismo ahí la semana pasada. Re común que te arrebaten en esa esquina, yo ahora ando con el celu en el bolsillo de adelante y chau. Gracias por avisar, sirve un montón.', '2026-11-16 17:03:13'),
+(8, 36, 3, 'Qué bronca, loco. La bici es medio de transporte, no un lujo. Si querés armamos algo con los del barrio para avisar cuando se ven motos dando vueltas, onda grupo de alerta. Fuerza.', '2026-11-16 17:03:13'),
+(9, 37, 3, 'Confirmo, paso por ahí cuando vuelvo del laburo y no se ve nada, parece un bug en producción que nadie arregla jaja. Ojalá la muni lo vea, de noche da miedo.', '2026-11-16 17:03:13'),
+(10, 38, 3, 'Es un cráter eso, no un bache jaja. Lo esquivo con la bici todos los días. Le pongo tres estrellas porque está bien reportado pero ojo que hay otro igual dos cuadras más adelante.', '2026-11-16 17:03:13'),
+(11, 39, 3, 'Tal cual, está re sucio y huele horrible. Creo que el camión no está pasando por esa cuadra. Igual estaría bueno que los vecinos no saquen las bolsas cualquier día, es un tema de todos.', '2026-11-16 17:03:13');
 
 -- --------------------------------------------------------
 
@@ -75,13 +74,6 @@ CREATE TABLE `evidencia` (
   `url_imagen` varchar(255) NOT NULL,
   `fecha` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `evidencia`
---
-
-INSERT INTO `evidencia` (`id_evidencia`, `id_reporte`, `url_imagen`, `fecha`) VALUES
-(1, 2, 'http://localhost/mappealo-api/uploads/luminaria_1.jpg', '2026-09-28 15:30:08');
 
 -- --------------------------------------------------------
 
@@ -99,8 +91,10 @@ CREATE TABLE `incidente_comunitario` (
 --
 
 INSERT INTO `incidente_comunitario` (`id_reporte`, `id_tipo_incidente`) VALUES
-(2, 1),
-(16, 1);
+(37, 1),
+(38, 2),
+(42, 2),
+(39, 3);
 
 -- --------------------------------------------------------
 
@@ -123,19 +117,14 @@ CREATE TABLE `reporte` (
 --
 
 INSERT INTO `reporte` (`id_reporte`, `id_usuario`, `id_ubicacion`, `fecha_reporte`, `fecha_incidente`, `descripcion`, `estado`) VALUES
-(1, 1, 1, '2026-09-28 15:30:08', '2026-08-27 19:30:00', 'Dos sujetos en moto me arrebataron el celular en la parada de colectivo.', 'verificado'),
-(2, 2, 2, '2026-09-28 15:30:08', '2026-08-27 18:00:00', 'Poste de luz sin foco desde hace una semana, zona muy oscura de noche.', 'pendiente'),
-(6, 0, 7, '2026-09-28 15:49:30', '2026-08-25 19:20:00', 'asdsadfsafadfadfafdadfadfaa', 'pendiente'),
-(7, 0, 8, '2026-09-28 15:50:35', '2026-08-25 19:20:00', 'asdasddafafsafafdsadfafdafdafd', 'pendiente'),
-(8, 0, 9, '2026-09-28 15:50:45', '2026-08-25 19:20:00', 'afasfsadfafsafdsafdsadfsadfadasafdfdsasa', 'pendiente'),
-(9, 0, 10, '2026-09-28 16:04:05', '2026-08-25 19:20:00', 'asdassadfsafdsafdaasdsad', 'pendiente'),
-(10, 0, 11, '2026-09-28 16:04:14', '2026-08-25 19:20:00', 'asfafsadfasfdasafdsafafsa', 'pendiente'),
-(11, 0, 12, '2026-09-28 16:04:45', '2026-08-25 19:20:00', 'sadfafdsafsafasfasfda', 'pendiente'),
-(12, 0, 13, '2026-09-28 16:04:53', '2026-08-25 19:20:00', 'asdadsadsadasdsadasdsa', 'pendiente'),
-(13, 0, 14, '2026-09-28 16:05:04', '2026-08-25 19:20:00', 'asdsadsadsadsadsasadsadsa', 'pendiente'),
-(14, 0, 15, '2026-09-28 16:05:31', '2026-08-25 19:20:00', 'asdasdsadsadsadsadsadsad', 'pendiente'),
-(15, 0, 16, '2026-09-28 16:06:07', '2026-08-25 19:20:00', 'asdsafsasadfsafsafafsafaasfsas', 'pendiente'),
-(16, 0, 17, '2026-09-28 16:11:43', '2026-09-28 16:11:00', 'sasdaasafasfafsafsafsafassf', 'pendiente');
+(26, 1, 27, '2026-11-15 22:52:44', '2026-11-15 22:52:00', 'Me robaron en la puerta de mi casa', 'pendiente'),
+(34, 2, 35, '2026-11-16 17:02:56', '2026-11-14 22:40:00', 'Dos pibes en moto me apuntaron con un arma cuando bajaba del colectivo y me sacaron el celu y la billetera. Fue todo en segundos.', 'verificado'),
+(35, 2, 36, '2026-11-16 17:02:58', '2026-11-15 13:15:00', 'Un chabón pasó corriendo y me arrebató el celular de la mano mientras esperaba para cruzar. No me lastimó pero ni lo vi venir.', 'pendiente'),
+(36, 2, 37, '2026-11-16 17:03:00', '2026-11-16 08:05:00', 'Me tiraron de la bici entre dos en una moto y se la llevaron. Quedé con raspones nomás, pero la bici era mi forma de ir a la facu.', 'pendiente'),
+(37, 1, 38, '2026-11-16 17:03:02', '2026-11-13 21:30:00', 'Hace más de una semana que el poste de la esquina no prende y la cuadra queda totalmente a oscuras de noche.', 'pendiente'),
+(38, 1, 39, '2026-11-16 17:03:09', '2026-11-15 10:20:00', 'Se formó un pozo enorme en la mitad de la calle y cuando llueve se llena de agua, ya vi a dos autos clavar la rueda.', 'pendiente'),
+(39, 1, 40, '2026-11-16 17:03:11', '2026-11-16 09:45:00', 'Hay bolsas de basura amontonadas en la esquina hace varios días, los perros las rompen y está todo desparramado por la vereda.', 'pendiente'),
+(42, 1, 43, '2026-11-16 17:12:43', '2026-11-16 21:12:43', 'Increible el tamaño del pozo', 'pendiente');
 
 -- --------------------------------------------------------
 
@@ -156,17 +145,10 @@ CREATE TABLE `robo` (
 --
 
 INSERT INTO `robo` (`id_reporte`, `id_tipo_robo`, `hubo_violencia`, `hubo_arma`, `multiples_delincuentes`) VALUES
-(1, 3, 1, 1, 1),
-(6, 1, 1, 0, 0),
-(7, 1, 1, 0, 0),
-(8, 1, 1, 0, 0),
-(9, 1, 1, 0, 0),
-(10, 3, 1, 0, 0),
-(11, 1, 1, 0, 0),
-(12, 1, 1, 1, 1),
-(13, 1, 1, 1, 0),
-(14, 1, 1, 0, 0),
-(15, 1, 1, 0, 0);
+(26, 2, 1, 1, 1),
+(34, 1, 1, 1, 1),
+(35, 2, 0, 0, 0),
+(36, 3, 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -228,20 +210,15 @@ CREATE TABLE `ubicacion` (
 --
 
 INSERT INTO `ubicacion` (`id_ubicacion`, `latitud`, `longitud`, `direccion`) VALUES
-(1, -34.66220000, -58.67100000, 'Av. Ratti y Olavarría'),
-(2, -34.65850000, -58.66530000, 'Zufriategui 700'),
 (3, -34.66010000, -58.66800000, 'Brandsen y Belgrano'),
-(7, -34.66327367, -58.66157195, 'Ubicación seleccionada en mapa'),
-(8, -34.66455028, -58.66282322, 'Ubicación seleccionada en mapa'),
-(9, -34.66397915, -58.66019832, 'Ubicación seleccionada en mapa'),
-(10, -34.66469444, -58.66100157, 'Ubicación seleccionada en mapa'),
-(11, -34.66333778, -58.66254743, 'Ubicación seleccionada en mapa'),
-(12, -34.66508452, -58.66181680, 'Ubicación seleccionada en mapa'),
-(13, -34.66384165, -58.66119720, 'Ubicación seleccionada en mapa'),
-(14, -34.66373636, -58.66283901, 'Ubicación seleccionada en mapa'),
-(15, -34.66563074, -58.65949972, 'Ubicación seleccionada en mapa'),
-(16, -34.66296605, -58.66626033, 'Ubicación seleccionada en mapa'),
-(17, -34.65936653, -58.66061541, 'Ubicación seleccionada en mapa');
+(27, -34.66056946, -58.66361260, 'Medrano, Ituzaingó'),
+(35, -34.66020000, -58.66710000, 'Avenida Néstor Carlos Kirchner, Ituzaingó'),
+(36, -34.65660000, -58.66520000, 'Juncal, Ituzaingó'),
+(37, -34.66310000, -58.67040000, 'Domingo Olivera, Ituzaingó'),
+(38, -34.65440000, -58.66990000, 'General Miguel Soler 596, Ituzaingó'),
+(39, -34.65870000, -58.67350000, 'Intendente Carlos Ratti 301, Ituzaingó'),
+(40, -34.66190000, -58.66380000, 'Doctor Gelpi, Ituzaingó'),
+(43, -34.65322593, -58.67682822, 'Coronel Lucero, Ituzaingó');
 
 -- --------------------------------------------------------
 
@@ -267,7 +244,8 @@ INSERT INTO `usuario` (`id_usuario`, `nombre_usuario`, `email`, `password`, `fec
 (0, 'invitado', 'invitado@mappealo.com', '$2y$10$z3fz.51.hMuqIG78SWHLruURenP3c2Sjey4qUpPG0Czse.1x63i6u', '2026-09-28 15:30:08', 0, 0),
 (1, 'admin_general', 'admin@mappealo.com', '$2y$10$HDNLcIcbmGdZiLPEhvOsiuRCZy687H4Xvx/wQMG26iyjEi6XAEYxa', '2026-09-28 15:30:08', 1, 1),
 (2, 'carlos_gomez', 'carlos@gmail.com', '$2y$10$F7L9tC.2LT008Cr7KdCYvO6M.izVWOmASOO9ZzgcU5g5nLCThFuW6', '2026-09-28 15:30:08', 1, 0),
-(3, 'mariana_lopez', 'mariana@gmail.com', '$2y$10$BUDWJeha0mcMoPRHQidnYuzYie8xBSnSM2uh0U6JDv3O420dxhjYe', '2026-09-28 15:30:08', 1, 0);
+(3, 'mariana_lopez', 'mariana@gmail.com', '$2y$10$BUDWJeha0mcMoPRHQidnYuzYie8xBSnSM2uh0U6JDv3O420dxhjYe', '2026-09-28 15:30:08', 1, 0),
+(7, 'renzogola2003', 'renzogola2003@gmail.com', '$2y$10$mc2QYrlFJWcwP/54Ex8Wsu/G7iWkKxnTyDLE0dGrmKu6lUOmSDhBO', '2026-11-15 21:09:45', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -288,8 +266,13 @@ CREATE TABLE `valoracion` (
 --
 
 INSERT INTO `valoracion` (`id_valoracion`, `id_reporte`, `id_usuario`, `valor`, `fecha`) VALUES
-(1, 1, 2, 1, '2026-09-28 15:30:08'),
-(2, 2, 1, 1, '2026-09-28 15:30:08');
+(9, 26, 1, 5, '2026-11-15 22:53:37'),
+(10, 34, 3, 5, '2026-11-16 17:03:13'),
+(11, 35, 3, 4, '2026-11-16 17:03:13'),
+(12, 36, 3, 5, '2026-11-16 17:03:13'),
+(13, 37, 3, 4, '2026-11-16 17:03:13'),
+(14, 38, 3, 3, '2026-11-16 17:03:13'),
+(15, 39, 3, 4, '2026-11-16 17:03:13');
 
 --
 -- Índices para tablas volcadas
@@ -381,13 +364,13 @@ ALTER TABLE `valoracion`
 -- AUTO_INCREMENT de la tabla `advertencia`
 --
 ALTER TABLE `advertencia`
-  MODIFY `id_advertencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_advertencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `comentario`
 --
 ALTER TABLE `comentario`
-  MODIFY `id_comentario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_comentario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `evidencia`
@@ -399,7 +382,7 @@ ALTER TABLE `evidencia`
 -- AUTO_INCREMENT de la tabla `reporte`
 --
 ALTER TABLE `reporte`
-  MODIFY `id_reporte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_reporte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_incidente`
@@ -417,19 +400,19 @@ ALTER TABLE `tipo_robo`
 -- AUTO_INCREMENT de la tabla `ubicacion`
 --
 ALTER TABLE `ubicacion`
-  MODIFY `id_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `valoracion`
 --
 ALTER TABLE `valoracion`
-  MODIFY `id_valoracion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_valoracion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Restricciones para tablas volcadas
