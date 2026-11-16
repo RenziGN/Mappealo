@@ -11,12 +11,28 @@ if(!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
+
+$credibilidad_usuario = null;
+$id_usuario_sesion = (int) ($user['id_usuario'] ?? 0);
+if (!$is_guest && $id_usuario_sesion > 0) {
+    try {
+        require_once __DIR__ . '/config/connection.php';
+        require_once __DIR__ . '/config/credibilidad.php';
+        $credibilidad_usuario = credibilidad_usuario($connection, $id_usuario_sesion);
+    } catch (PDOException $e) {
+        $credibilidad_usuario = null;
+    }
+    $user = $_SESSION['user'];
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Home</title>
 
@@ -34,8 +50,8 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/home.css?v=4">
+    <link rel="stylesheet" href="assets/css/main.css?v=4">
+    <link rel="stylesheet" href="assets/css/home.css?v=19">
 
 </head>
 
@@ -54,10 +70,12 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                            <i class="bi bi-list fs-4"></i>
                         </button>
 
-                        <input type="text" class="form-control border-0 ps-1" placeholder="Buscar en Mappealo...">
-                        
+                        <input type="search" id="buscadorMapa" class="form-control border-0 ps-1" placeholder="Buscar en Mappealo..." aria-label="Buscar reportes por descripción, usuario o tipo" autocomplete="off">
+
+                        <span id="resultadoBusqueda" class="resultado-busqueda d-none" role="status" aria-live="polite"></span>
+                        <button type="button" id="btnLimpiarBusqueda" class="input-group-text bg-transparent border-0 d-none" title="Limpiar búsqueda"><i class="bi bi-x-circle-fill text-muted"></i></button>
                         <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-muted"></i></span>
-                        
+
                         <span class="input-group-text bg-transparent border-0 pre-logo-search">
                             <img src="assets/Img/LOGO MAPPEALO 1.png" alt="Mappealo" class="img-search-logo">
                         </span>
@@ -75,6 +93,10 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     
                     <button id="btnFiltroComunidad" class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border">
                         <img src="assets/Img/comunidad.png" alt="Comunidad" class="img-filtro"> Comunidad
+                    </button>
+
+                    <button id="btnFiltroComisarias" class="btn btn-white bg-white btn-sm rounded-pill px-3 shadow-sm border btn-comisarias" title="Comisarías de Ituzaingó">
+                        <i class="fa-solid fa-building-shield"></i> Comisarías
                     </button>
                 </div>
                 <!-- Deslizador de Subtipos de Robos -->
@@ -109,24 +131,32 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     </label>
                 </div>
 
+                <div id="panel-comisarias" class="panel-comisarias d-none">
+                    <div class="panel-comisarias-header">
+                        <div>
+                            <h3>Comisarías cercanas</h3>
+                            <span>Partido de Ituzaingó</span>
+                        </div>
+                        <button type="button" id="btnCerrarComisarias" class="btn-cerrar-panel" title="Cerrar">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <div id="aviso-comisarias" class="aviso-comisarias d-none"></div>
+                    <ul id="lista-comisarias" class="lista-comisarias"></ul>
+                    <label class="subfiltro-item incluir-postas">
+                        <input type="checkbox" id="chkIncluirPostas">
+                        <span>Incluir postas y puestos policiales</span>
+                    </label>
+                    <small class="fuente-datos">Datos: © colaboradores de OpenStreetMap</small>
+                </div>
+
                 
             </div>
 
             <div class="report-box">
-                <button class="btn btn-primary btn-lg shadow rounded-pill px-4 py-2">
-                    <i class="bi bi-plus-lg me-2"></i> REPORTAR ALERTA
-                </button>
-            </div>
-
-            <div class="sidebar-buttons">
-                <button class="btn-circle btn-police" title="Policía">
-                    <img src="assets/Img/policia.png" alt="Policía" class="img-vehiculo">
-                </button>
-                <button class="btn-circle btn-ambulance" title="Ambulancia">
-                    <img src="assets/Img/ambulancia.png" alt="Ambulancia" class="img-vehiculo">
-                </button>
-                <button class="btn-circle btn-fire" title="Bomberos">
-                    <img src="assets/Img/bombero.png" alt="Bomberos" class="img-vehiculo">
+                <button type="button" class="btn btn-cargar-reporte">
+                    <span class="icono-cargar"><i class="bi bi-plus-lg"></i></span>
+                    CARGAR REPORTE
                 </button>
             </div>
 
@@ -134,10 +164,10 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                 <button id="btnCalor" class="btn btn-light shadow-sm">
                     <img src="assets/Img/fuego.png" alt="Calor" class="img-fuego"> Calor
                 </button>
-                <button class="btn btn-light shadow-sm" title="Centrar">
+                <button id="btnCentrar" class="btn btn-light shadow-sm" title="Centrar en mi ubicación">
                     <i class="bi bi-geo-fill me-1"></i> Centrar
                 </button>
-                <button class="btn-circle btn-sos" title="S.O.S Emergencias">
+                <button type="button" id="btnSos" class="btn-circle btn-sos" title="Llamar al 911" aria-label="Llamar al 911 (emergencias)">
                     <i class="bi bi-telephone-fill fs-5"></i>
                 </button>
             </div>
@@ -145,6 +175,44 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
         </main>
 
 <div class="overlay"></div>
+
+<div id="banner-seleccion" class="banner-seleccion d-none">
+    <i class="fa-solid fa-map-pin"></i>
+    <span>Tocá el mapa para marcar la ubicación del reporte</span>
+    <button type="button" id="btnCancelarSeleccion">Cancelar</button>
+</div>
+
+<div id="modal-reporte" class="modal-reporte d-none" role="dialog" aria-modal="true" aria-labelledby="modal-reporte-titulo">
+    <div class="modal-reporte-fondo" data-cerrar-detalle></div>
+    <section class="modal-reporte-caja">
+        <header class="modal-reporte-header">
+            <div>
+                <span id="modal-reporte-categoria" class="modal-reporte-categoria"></span>
+                <h2 id="modal-reporte-titulo">Reporte</h2>
+            </div>
+            <button type="button" class="modal-reporte-cerrar" data-cerrar-detalle title="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+        <div id="modal-reporte-cuerpo" class="modal-reporte-cuerpo"></div>
+    </section>
+</div>
+
+<div id="modal-historial" class="modal-reporte d-none" role="dialog" aria-modal="true" aria-labelledby="modal-historial-titulo">
+    <div class="modal-reporte-fondo" data-cerrar-historial></div>
+    <section class="modal-reporte-caja">
+        <header class="modal-reporte-header">
+            <div>
+                <span class="modal-reporte-categoria historial">Alertas vecinales</span>
+                <h2 id="modal-historial-titulo">Tus reportes</h2>
+            </div>
+            <button type="button" class="modal-reporte-cerrar" data-cerrar-historial title="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+        <div id="modal-historial-cuerpo" class="modal-reporte-cuerpo"></div>
+    </section>
+</div>
 
 
 <!-- ==============================
@@ -229,12 +297,25 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     <span class="required">*</span>
                 </label>
 
-                 <select>
-                  <option value="">Seleccionar tipo de robo</option>
-                  <option value="Robo a mano armada">Robo a mano armada</option>
-                  <option value="Hurto / Arrebato en vía pública">Hurto / Arrebato en vía pública</option>
-                  <option value="Robo de vehículo / Motochorros">Robo de vehículo / Motochorros</option>
-                 </select>
+                <div class="incident-types tipos-robo">
+                    <button type="button" class="incident-card" data-valor="Robo a mano armada">
+                        <i class="fa-solid fa-gun"></i>
+                        <strong>Robo a mano armada</strong>
+                        <span>Con arma de fuego o blanca, o amenaza directa.</span>
+                    </button>
+
+                    <button type="button" class="incident-card" data-valor="Hurto / Arrebato en vía pública">
+                        <i class="fa-solid fa-person-running"></i>
+                        <strong>Hurto / Arrebato</strong>
+                        <span>Robo al paso en la calle: celular, cartera o mochila.</span>
+                    </button>
+
+                    <button type="button" class="incident-card" data-valor="Robo de vehículo / Motochorros">
+                        <i class="fa-solid fa-motorcycle"></i>
+                        <strong>Vehículo / Motochorros</strong>
+                        <span>Robo de auto, moto o bici, o asalto desde una moto.</span>
+                    </button>
+                </div>
 
                 <small>
                     El tipo de robo será utilizado para ponderar
@@ -323,9 +404,14 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
                 </div>
 
-                <button class="map-button">
-                    Seleccionar
-                </button>
+                <div class="location-actions">
+                    <button type="button" class="map-button btn-mi-ubicacion">
+                        <i class="fa-solid fa-location-crosshairs"></i> Mi ubicación
+                    </button>
+                    <button type="button" class="map-button map-button-secundario btn-elegir-en-mapa">
+                        <i class="fa-solid fa-map-pin"></i> Elegir en el mapa
+                    </button>
+                </div>
 
             </div>
 
@@ -596,9 +682,14 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
 
                 </div>
 
-                <button class="map-button">
-                    Seleccionar
-                </button>
+                <div class="location-actions">
+                    <button type="button" class="map-button btn-mi-ubicacion">
+                        <i class="fa-solid fa-location-crosshairs"></i> Mi ubicación
+                    </button>
+                    <button type="button" class="map-button map-button-secundario btn-elegir-en-mapa">
+                        <i class="fa-solid fa-map-pin"></i> Elegir en el mapa
+                    </button>
+                </div>
 
             </div>
 
@@ -673,6 +764,10 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
     
     <script src="./assets/js/post_form.js"></script>
     <script src="./assets/js/map.js"></script>
+    <script src="./assets/js/comisarias.js"></script>
+    <script src="./assets/js/jurisdicciones.js"></script>
+    <script src="./assets/js/reporte_detalle.js"></script>
+    <script src="./assets/js/historial.js"></script>
 
     <!-- Overlay oscuro de fondo -->
 <div id="drawer-overlay" class="drawer-overlay d-none"></div>
@@ -695,6 +790,12 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                     <?= htmlspecialchars($alias_usuario) ?>
                 </h3>
                 <span class="user-role-badge">Usuario verificado</span>
+                <?php if ($credibilidad_usuario): ?>
+                    <span class="drawer-credibilidad cred-<?= htmlspecialchars($credibilidad_usuario['nivel']['clave']) ?>" title="Tu índice de credibilidad. Mirá el detalle en «Tus reportes».">
+                        <span class="punto"></span>
+                        Credibilidad <?= htmlspecialchars($credibilidad_usuario['nivel']['texto']) ?> · <?= (int) $credibilidad_usuario['puntaje'] ?>
+                    </span>
+                <?php endif; ?>
             </div>
         </div>
     <?php else: ?>
@@ -733,6 +834,11 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
                 <i class="fa-solid fa-bullhorn"></i>
                 <span>Cargar reporte barrial</span>
             </button>
+            <a href="https://seguridad.gba.gob.ar/#/home" class="drawer-item drawer-item-externo" id="btnDrawerDenunciarDelito" target="_blank" rel="noopener noreferrer" title="Abre el sitio del Ministerio de Seguridad de la Provincia de Buenos Aires en una pestaña nueva">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span>Denunciar delito</span>
+                <i class="fa-solid fa-arrow-up-right-from-square icono-externo"></i>
+            </a>
         </div>
 
         <!-- Capas del Mapa -->
@@ -782,7 +888,7 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
         <?php if (!empty($user['is_admin']) && !$is_guest): ?>
             <div class="drawer-section">
                 <h4 class="section-title">Administración</h4>
-                <a href="pages/admin/user_list.php" class="drawer-item admin-item">
+                <a href="pages/admin/reportes.php" class="drawer-item admin-item">
                     <i class="fa-solid fa-gear"></i>
                     <span>Panel de Control</span>
                 </a>
@@ -863,10 +969,8 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
   document.getElementById('btnDrawerMisReportes')?.addEventListener('click', (e) => {
       e.preventDefault();
       alternarNavDrawer();
-      if (isGuest) {
-          alert("Al estar como invitado, tus reportes son anónimos. Creá una cuenta o iniciá sesión para administrarlos y seguir su estado.");
-      } else {
-          alert("Próximamente: Historial de tus alertas publicadas.");
+      if (typeof window.abrirHistorialReportes === 'function') {
+          window.abrirHistorialReportes();
       }
   });
 
@@ -881,6 +985,12 @@ $is_guest = isset($user['rol']) && $user['rol'] === 'guest';
           window.toggleCapaJurisdicciones(e.target.checked);
       } else {
           console.log("Capa de jurisdicciones:", e.target.checked);
+      }
+  });
+
+  document.getElementById('btnSos')?.addEventListener('click', () => {
+      if (confirm("¿Llamar al 911 (Policía)?\n\nUsalo solo ante una emergencia real.")) {
+          window.location.href = 'tel:911';
       }
   });
 </script>

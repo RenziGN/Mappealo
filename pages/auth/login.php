@@ -45,17 +45,17 @@
                 <strong>Ocurrieron los siguientes errores:</strong>
                 <ul>
                     <?php foreach ($_SESSION['errors'] as $error): ?>
-                        <li><?php echo $error; ?></li>
-                    <?php endforeach; $_SESSION = [];?>
+                        <li><?php echo htmlspecialchars($error); ?></li>
+                    <?php endforeach; unset($_SESSION['errors']); ?>
                 </ul>
             </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['success']) && !empty($_SESSION['success'])): ?>
             <div class="alert alert-success">
-                <?php echo $_SESSION['success']; ?>
+                <?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
             </div>
-            <?php endif; $_SESSION = []; ?>
+            <?php endif; ?>
 
             <form action="../../handler/auth/login_handler.php" method="POST" id="loginForm">
 

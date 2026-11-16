@@ -65,9 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
        TIPO DE ROBO
     ===================================================== */
 
-    const tipoRobo = document.querySelector(
-        ".delito select"
-    );
+    const tipoRobo = {
+        get value() {
+            return document.querySelector(".delito .incident-card.active")?.dataset.valor || "";
+        }
+    };
 
     const vehicleSection =
         document.querySelector(".subsection");
@@ -87,12 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
         vehicleSection.style.display =
             mostrarVehiculo ? "block" : "none";
     }
-
-
-    tipoRobo?.addEventListener(
-        "change",
-        actualizarCamposRobo
-    );
 
 
     actualizarCamposRobo();
@@ -120,10 +116,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function actualizarFechaHora() {
 
-            if (!checkbox.checked) {
-                detenerLive();
-                return;
-            }
+            detenerLive();
+
+            const activo = checkbox.checked;
+
+            [dateInput, timeInput].forEach(input => {
+                if (!input) return;
+                input.readOnly = activo;
+                input.classList.toggle("en-vivo", activo);
+            });
+
+            if (!activo) return;
 
             actualizar();
 
@@ -149,14 +152,13 @@ document.addEventListener("DOMContentLoaded", () => {
         function actualizar() {
 
             const ahora = new Date();
+            const dosDigitos = n => String(n).padStart(2, "0");
 
             const fecha =
-                ahora.toISOString()
-                    .split("T")[0];
+                `${ahora.getFullYear()}-${dosDigitos(ahora.getMonth() + 1)}-${dosDigitos(ahora.getDate())}`;
 
             const hora =
-                ahora.toTimeString()
-                    .substring(0, 5);
+                `${dosDigitos(ahora.getHours())}:${dosDigitos(ahora.getMinutes())}`;
 
             if (dateInput)
                 dateInput.value = fecha;
@@ -245,11 +247,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         card.addEventListener("click", () => {
 
-            incidentCards.forEach(c =>
-                c.classList.remove("active")
-            );
+            card.closest(".incident-types")
+                .querySelectorAll(".incident-card")
+                .forEach(c => c.classList.remove("active"));
 
             card.classList.add("active");
+
+            actualizarCamposRobo();
 
         });
 
@@ -403,26 +407,18 @@ document.addEventListener("DOMContentLoaded", () => {
        SELECCIONAR UBICACIÓN
     ===================================================== */
 
-    const mapButtons =
-        document.querySelectorAll(".map-button");
-
-
-    mapButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            /*
-             * Acá posteriormente podés abrir
-             * un selector sobre MapLibre,
-             * Leaflet o Google Maps.
-             */
-
-            alert(
-                "Acá se abrirá el selector de ubicación del mapa."
-            );
-
+    document.querySelectorAll(".btn-mi-ubicacion").forEach(button => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.usarUbicacionActualEnReporte?.();
         });
+    });
 
+    document.querySelectorAll(".btn-elegir-en-mapa").forEach(button => {
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.iniciarSeleccionEnMapa?.();
+        });
     });
 
 
@@ -645,7 +641,7 @@ publicarButtons.forEach(button => {
 
 
         const tipo =
-            getInput("select")?.value;
+            tipoRobo.value;
 
 
         const fecha =
@@ -1025,6 +1021,12 @@ publicarButtons.forEach(button => {
     document.querySelectorAll(".popup input[type='checkbox'], .popup input[type='radio']").forEach(el => {
         el.checked = false;
     });
+
+    document.querySelectorAll(".popup .live-toggle input").forEach(el => {
+        el.dispatchEvent(new Event("change"));
+    });
+
+    document.querySelectorAll(".popup .tipos-robo .incident-card.active").forEach(el => el.classList.remove("active"));
 
     document.querySelectorAll(".popup .selected").forEach(el => el.classList.remove("selected"));
     document.querySelectorAll(".popup .radio-card.active").forEach(el => el.classList.remove("active"));

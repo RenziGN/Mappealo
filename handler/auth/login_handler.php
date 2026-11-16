@@ -4,11 +4,9 @@ session_start();
 
 require_once '../../config/connection.php';
 $errors = [];
-$success = false;
-$db_error = "";
 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") { 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
 
@@ -35,26 +33,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($user && password_verify($password, $user['password'])) {
                 session_regenerate_id(true);
                 $_SESSION['user'] = [
-                    'id_usuario' => $user['id_usuario'],
+                    'id_usuario' => (int) $user['id_usuario'],
                     'email' => $user['email'],
-                    'is_admin' => $user['is_admin']
+                    'is_admin' => (int) $user['es_admin']
                 ];
                 header("Location: ../../index.php");
-            } else {
-                $errors[] = "Correo electrónico o contraseña incorrectos.";
-                $_SESSION['errors'] = $errors;
-                header("Location: ../../pages/auth/login.php");
+                exit;
             }
-            exit;
+
+            $errors[] = "Correo electrónico o contraseña incorrectos.";
         } catch (PDOException $e) {
-            $db_error = "Error al consultar la base de datos: " . $e->getMessage();
+            $errors[] = "Error al consultar la base de datos. Intentá nuevamente.";
         }
     }
-
-
-
 }
 
-
-
-?>
+$_SESSION['errors'] = $errors ?: ["Completá el formulario para iniciar sesión."];
+header("Location: ../../pages/auth/login.php");
+exit;

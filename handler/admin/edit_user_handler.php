@@ -73,11 +73,11 @@ if (empty($errors)) {
     try {
 
         $updateSql =
-        "UPDATE users
+        "UPDATE usuario
         SET
             email = :email,
-            is_admin = :is_admin
-        WHERE id = :id";
+            es_admin = :is_admin
+        WHERE id_usuario = :id AND id_usuario <> 0";
 
         $updateStmt =
         $connection->prepare($updateSql);
@@ -90,7 +90,7 @@ if (empty($errors)) {
         $updateStmt->bindValue(
             ':is_admin',
             $isAdmin,
-            PDO::PARAM_BOOL
+            PDO::PARAM_INT
         );
 
         $updateStmt->bindValue(

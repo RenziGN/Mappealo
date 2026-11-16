@@ -1,10 +1,12 @@
 <?php
 session_start();
 require_once '../../config/connection.php';
+require_once '../../config/auth.php';
+require_once __DIR__ . '/_nav.php';
 
 if (
     !isset($_SESSION['user']) ||
-    $_SESSION['user']['is_admin'] === 0
+    empty($_SESSION['user']['is_admin'])
 ) {
     $_SESSION['errors'] = ["Acceso denegado. Solo los administradores pueden acceder a esta página. Hemos cerrado tu sesión por seguridad."];
     header("Location: ../auth/login.php");
@@ -20,8 +22,8 @@ if (
 }
 
 $sql =
-"SELECT * FROM users
-WHERE id = :id";
+"SELECT id_usuario, nombre_usuario, email, es_admin FROM usuario
+WHERE id_usuario = :id AND id_usuario <> 0";
 
 $stmt = $connection->prepare($sql);
 
@@ -47,31 +49,25 @@ if (!$user) {
 <html lang="es">
 
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
-    <title>Editar Usuario</title>
-
-    <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-    rel="stylesheet">
-
+    <?php admin_head('Editar usuario'); ?>
 </head>
 
-<body class="container py-5">
+<body class="admin-body">
+<div class="container py-4">
+
+    <?php admin_nav($connection, 'usuarios'); ?>
+
+    <a href="user_list.php" class="admin-volver mb-3"><i class="fa-solid fa-arrow-left"></i> Volver a usuarios</a>
 
     <div class="row justify-content-center">
 
         <div class="col-md-6">
 
-            <div class="card p-4 shadow">
+            <div class="card p-4">
 
-                <h1 class="mb-4">
+                <h1 class="admin-pagina-titulo mb-4">
 
-                    Editar Usuario
+                    Editar usuario
 
                 </h1>
 
@@ -95,7 +91,7 @@ if (!$user) {
 
                 <?php endif; ?>
 
-                <form method="POST" id="editUserForm" action="../../handler/admin/edit_user_handler.php?id=<?= $id ?>">
+                <form method="POST" id="editUserForm" action="../../handler/admin/edit_user_handler.php?id=<?= (int) $id ?>">
 
                     <div class="mb-3">
 
@@ -123,7 +119,7 @@ if (!$user) {
                         class="form-check-input"
                         id="is_admin"
 
-                        <?= $user['is_admin'] === 1
+                        <?= (int) $user['es_admin'] === 1
                         ? 'checked'
                         : '' ?>>
 
@@ -168,5 +164,6 @@ if (!$user) {
     <script src="../../assets/js/validate_user.js"></script>
     <script src="../../assets/js/check_modified_user.js"></script>
 
+</div>
 </body>
 </html>

@@ -4,6 +4,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/credibilidad.php';
 
 try {
     $query = "
@@ -23,7 +24,10 @@ try {
                 ELSE 'otro'
             END AS categoria,
             tr.nombre AS tipo_robo,
-            ti.nombre AS tipo_incidente
+            ti.nombre AS tipo_incidente,
+            (SELECT ROUND(AVG(v.valor), 1) FROM valoracion v WHERE v.id_reporte = r.id_reporte) AS promedio_calificacion,
+            (SELECT COUNT(*) FROM valoracion v WHERE v.id_reporte = r.id_reporte) AS cantidad_calificaciones,
+            (SELECT COUNT(*) FROM comentario c WHERE c.id_reporte = r.id_reporte) AS cantidad_comentarios
         FROM reporte r
         INNER JOIN usuario u ON r.id_usuario = u.id_usuario
         INNER JOIN ubicacion ub ON r.id_ubicacion = ub.id_ubicacion
@@ -36,6 +40,14 @@ try {
 
     $stmt = $connection->query($query);
     $reportes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $credibilidades = credibilidad_reportes($connection);
+    foreach ($reportes as &$reporte) {
+        $cred = $credibilidades[(int) $reporte['id_reporte']] ?? null;
+        $reporte['credibilidad'] = $cred['puntaje'] ?? null;
+        $reporte['credibilidad_nivel'] = $cred['nivel']['clave'] ?? null;
+    }
+    unset($reporte);
 
     echo json_encode([
         'status' => 'success',

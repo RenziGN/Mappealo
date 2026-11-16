@@ -16,6 +16,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
+map.attributionControl.setPrefix(false);
+
 // Icono personalizado para delito / robo
 const ladronIcon = L.icon({
     iconUrl: 'assets/Img/ladron-icon.png',
@@ -31,6 +33,28 @@ const comunidadIcon = L.icon({
     iconAnchor: [18, 36],
     popupAnchor: [0, -36]
 });
+
+function crearIconoRobo(claseIcono, claseColor) {
+    return L.divIcon({
+        className: `marcador-robo ${claseColor}`,
+        html: `<span><i class="fa-solid ${claseIcono}"></i></span>`,
+        iconSize: [36, 44],
+        iconAnchor: [18, 44],
+        popupAnchor: [0, -42]
+    });
+}
+
+const iconosRobo = {
+    'Robo a mano armada': crearIconoRobo('fa-gun', 'robo-armado'),
+    'Hurto / Arrebato en vía pública': crearIconoRobo('fa-person-running', 'robo-hurto'),
+    'Robo de vehículo / Motochorros': crearIconoRobo('fa-motorcycle', 'robo-vehiculo')
+};
+
+const iconosComunitarios = {
+    'Luminaria rota': crearIconoRobo('fa-lightbulb', 'comunitario-luminaria'),
+    'Bache / Calle anegada': crearIconoRobo('fa-road', 'comunitario-bache'),
+    'Basura acumulada': crearIconoRobo('fa-trash-can', 'comunitario-basura')
+};
 
 const gruposReportes = new Map();
 
@@ -58,30 +82,209 @@ function obtenerGrupoReporte(clave, tipoReporte, esDelito) {
 
 // Marcador temporal de selección
 let seleccionMarker = null;
+
+const seleccionIcon = L.divIcon({
+    className: 'marcador-seleccion',
+    html: `<svg class="seleccion-gota" width="44" height="62" viewBox="0 0 60 84" aria-hidden="true">
+               <ellipse class="seleccion-sombra" cx="30" cy="80" rx="9" ry="3"/>
+               <path d="M30 78 C30 78 8 52 8 32 A22 22 0 1 1 52 32 C52 52 30 78 30 78 Z" fill="#000e40" stroke="#ffffff" stroke-width="3"/>
+               <circle cx="30" cy="31" r="9" fill="#4ec6c0"/>
+               <circle cx="30" cy="31" r="3.5" fill="#000e40"/>
+           </svg>`,
+    iconSize: [44, 62],
+    iconAnchor: [22, 57],
+    popupAnchor: [0, -54]
+});
 window.coordenadasSeleccionadas = null;
 
-// Clic en el mapa para marcar ubicación
-map.on('click', function(e) {
+function fijarUbicacionReporte(latlng, origen = 'Coordenadas fijadas') {
     window.coordenadasSeleccionadas = {
-        lat: e.latlng.lat,
-        lng: e.latlng.lng
+        lat: latlng.lat,
+        lng: latlng.lng
     };
 
-    popup.style.display = "block";
-        overlay.style.display = "block";
-    
     if (seleccionMarker) {
-        seleccionMarker.setLatLng(e.latlng);
+        seleccionMarker.setLatLng(latlng);
     } else {
-        seleccionMarker = L.marker(e.latlng).addTo(map);
+        seleccionMarker = L.marker(latlng, {
+            icon: seleccionIcon,
+            zIndexOffset: 1000,
+            title: 'Ubicación del nuevo reporte'
+        }).addTo(map);
     }
 
     // Actualizar el texto del formulario para que el usuario vea que se fijó la ubicación
     const cajasUbicacion = document.querySelectorAll('.location-box p');
     cajasUbicacion.forEach(p => {
-        p.innerHTML = `<span style="color: #27ae60; font-weight: bold;">✓ Coordenadas fijadas:</span> Lat: ${e.latlng.lat.toFixed(4)}, Lng: ${e.latlng.lng.toFixed(4)}`;
+        p.innerHTML = `<span style="color: #27ae60; font-weight: bold;">✓ ${origen}:</span> Lat: ${latlng.lat.toFixed(4)}, Lng: ${latlng.lng.toFixed(4)}`;
     });
+}
+
+
+let modoSeleccionMapa = false;
+const bannerSeleccion = document.getElementById('banner-seleccion');
+
+function abrirFormularioReporte() {
+    popup.style.display = "block";
+    overlay.style.display = "block";
+}
+
+function iniciarSeleccionEnMapa() {
+    modoSeleccionMapa = true;
+    popup.style.display = "none";
+    overlay.style.display = "none";
+    map.getContainer().classList.add('modo-seleccion');
+    bannerSeleccion?.classList.remove('d-none');
+}
+
+function terminarSeleccionEnMapa() {
+    modoSeleccionMapa = false;
+    map.getContainer().classList.remove('modo-seleccion');
+    bannerSeleccion?.classList.add('d-none');
+    abrirFormularioReporte();
+}
+
+window.iniciarSeleccionEnMapa = iniciarSeleccionEnMapa;
+
+document.getElementById('btnCancelarSeleccion')?.addEventListener('click', terminarSeleccionEnMapa);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modoSeleccionMapa) terminarSeleccionEnMapa();
 });
+
+// Clic en el mapa para marcar ubicación
+map.on('click', function(e) {
+    fijarUbicacionReporte(e.latlng, modoSeleccionMapa ? 'Punto elegido en el mapa' : 'Coordenadas fijadas');
+
+    if (modoSeleccionMapa) {
+        terminarSeleccionEnMapa();
+    } else {
+        abrirFormularioReporte();
+    }
+});
+
+
+let ubicacionActual = null;
+let marcadorUsuario = null;
+let circuloPrecision = null;
+let seguimientoId = null;
+let centradoInicial = false;
+let ultimaUbicacionAvisada = null;
+
+const MENSAJES_ERROR_UBICACION = {
+    1: 'No diste permiso para acceder a tu ubicación. Podés habilitarlo desde el ícono del candado en la barra de direcciones del navegador.',
+    2: 'No se pudo determinar tu ubicación. Revisá que el GPS o la ubicación del dispositivo estén activados.',
+    3: 'Se agotó el tiempo para obtener tu ubicación. Intentá nuevamente.'
+};
+
+function actualizarMarcadorUsuario(posicion) {
+    const { latitude, longitude, accuracy } = posicion.coords;
+    ubicacionActual = L.latLng(latitude, longitude);
+
+    if (!marcadorUsuario) {
+        circuloPrecision = L.circle(ubicacionActual, {
+            radius: accuracy,
+            color: '#1a73e8',
+            weight: 1,
+            fillColor: '#1a73e8',
+            fillOpacity: 0.12,
+            interactive: false
+        }).addTo(map);
+
+        marcadorUsuario = L.circleMarker(ubicacionActual, {
+            radius: 8,
+            color: '#ffffff',
+            weight: 3,
+            fillColor: '#1a73e8',
+            fillOpacity: 1
+        }).addTo(map).bindPopup('<b>Estás aquí</b>');
+    } else {
+        marcadorUsuario.setLatLng(ubicacionActual);
+        circuloPrecision.setLatLng(ubicacionActual).setRadius(accuracy);
+    }
+
+    if (!centradoInicial) {
+        centradoInicial = true;
+        map.setView(ubicacionActual, Math.max(map.getZoom(), 16));
+    }
+
+    if (!ultimaUbicacionAvisada || ultimaUbicacionAvisada.distanceTo(ubicacionActual) > 30) {
+        ultimaUbicacionAvisada = ubicacionActual;
+        document.dispatchEvent(new CustomEvent('ubicacion-actualizada', { detail: ubicacionActual }));
+    }
+}
+
+function iniciarGeolocalizacion(mostrarErrores = false) {
+    return new Promise((resolve, reject) => {
+        if (!('geolocation' in navigator)) {
+            const msg = 'Tu navegador no permite obtener la ubicación.';
+            if (mostrarErrores) alert(msg);
+            reject(new Error(msg));
+            return;
+        }
+
+        if (!window.isSecureContext) {
+            const msg = 'La ubicación solo funciona si la página se abre por HTTPS o desde localhost.';
+            if (mostrarErrores) alert(msg);
+            reject(new Error(msg));
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            posicion => {
+                actualizarMarcadorUsuario(posicion);
+
+                if (seguimientoId === null) {
+                    seguimientoId = navigator.geolocation.watchPosition(
+                        actualizarMarcadorUsuario,
+                        err => console.warn('Seguimiento de ubicación:', err.message),
+                        { enableHighAccuracy: true, maximumAge: 10000 }
+                    );
+                }
+
+                resolve(ubicacionActual);
+            },
+            error => {
+                if (mostrarErrores) {
+                    alert(MENSAJES_ERROR_UBICACION[error.code] || 'No se pudo obtener tu ubicación.');
+                }
+                reject(error);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
+    });
+}
+
+async function centrarEnUsuario() {
+    try {
+        const latlng = ubicacionActual || await iniciarGeolocalizacion(true);
+        map.setView(latlng, Math.max(map.getZoom(), 16));
+        marcadorUsuario?.openPopup();
+    } catch (e) { }
+}
+
+async function usarUbicacionActualEnReporte() {
+    try {
+        const latlng = ubicacionActual || await iniciarGeolocalizacion(true);
+        fijarUbicacionReporte(latlng, 'Tu ubicación actual');
+        map.setView(latlng, Math.max(map.getZoom(), 16));
+    } catch (e) { }
+}
+
+window.usarUbicacionActualEnReporte = usarUbicacionActualEnReporte;
+
+document.getElementById('btnCentrar')?.addEventListener('click', centrarEnUsuario);
+
+iniciarGeolocalizacion(false).catch(err => console.info('Ubicación no disponible:', err.message));
+
+function textoNivelCredibilidad(nivel) {
+    return { alta: 'alta', media: 'media', baja: 'baja' }[nivel] || '';
+}
+
+function escaparHtml(texto) {
+    return String(texto ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+}
 
 // Cargar reportes existentes desde la base de datos
 function cargarReportesEnMapa() {
@@ -93,7 +296,9 @@ function cargarReportesEnMapa() {
 
                 response.data.forEach(rep => {
                     const esDelito = rep.categoria === 'delito';
-                    const icono = esDelito ? ladronIcon : comunidadIcon;
+                    const icono = esDelito
+                        ? (iconosRobo[rep.tipo_robo] || ladronIcon)
+                        : (iconosComunitarios[rep.tipo_incidente] || comunidadIcon);
                     const titulo = esDelito 
                         ? (rep.tipo_robo || 'Delito') 
                         : (rep.tipo_incidente || 'Incidente Comunitario');
@@ -103,17 +308,40 @@ function cargarReportesEnMapa() {
                     const claveGrupo = `${rep.categoria || 'otro'}:${tipoReporte}`;
 
                     const marker = L.marker([parseFloat(rep.latitud), parseFloat(rep.longitud)], { icon: icono });
-                    obtenerGrupoReporte(claveGrupo, tipoReporte, esDelito).addLayer(marker);
+                    const grupoMarcador = obtenerGrupoReporte(claveGrupo, tipoReporte, esDelito);
+                    grupoMarcador.addLayer(marker);
+                    marcadoresBusqueda.push({
+                        marker,
+                        grupo: grupoMarcador,
+                        texto: normalizarBusqueda(`${rep.descripcion || ''} ${rep.nombre_usuario || ''} ${titulo}`)
+                    });
+
+                    const cantidadCalificaciones = parseInt(rep.cantidad_calificaciones, 10) || 0;
+                    const cantidadComentarios = parseInt(rep.cantidad_comentarios, 10) || 0;
+                    const resumenCalificacion = cantidadCalificaciones > 0
+                        ? `⭐ ${escaparHtml(rep.promedio_calificacion)} (${cantidadCalificaciones})`
+                        : '⭐ Sin calificaciones';
 
                     marker.bindPopup(`
-                        <div style="min-width: 170px; font-family: sans-serif;">
+                        <div style="min-width: 190px; font-family: sans-serif;">
                             <span style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: ${esDelito ? '#e74c3c' : '#27ae60'};">
-                                ${rep.categoria}
+                                ${escaparHtml(rep.categoria)}
                             </span>
-                            <h4 style="margin: 4px 0 6px 0; font-size: 14px;">${titulo}</h4>
-                            <p style="margin: 0 0 6px 0; font-size: 12px; color: #333;">${rep.descripcion}</p>
-                            <small style="color: #666; font-size: 11px;">📍 ${rep.direccion || 'Sin dirección'}</small><br>
-                            <small style="color: #666; font-size: 11px;">👤 Por: <b>${rep.nombre_usuario}</b></small>
+                            <h4 style="margin: 4px 0 6px 0; font-size: 14px;">${escaparHtml(titulo)}</h4>
+                            <p style="margin: 0 0 6px 0; font-size: 12px; color: #333;">${escaparHtml(rep.descripcion)}</p>
+                            <small style="color: #666; font-size: 11px;">📍 ${escaparHtml(rep.direccion || 'Sin dirección')}</small><br>
+                            <small style="color: #666; font-size: 11px;">👤 Por: <b>${escaparHtml(rep.nombre_usuario)}</b></small>
+                            <div class="popup-reporte-resumen">
+                                <span>${resumenCalificacion}</span>
+                                <span>💬 ${cantidadComentarios}</span>
+                            </div>
+                            ${rep.credibilidad !== null && rep.credibilidad !== undefined ? `
+                            <div class="cred-badge cred-${escaparHtml(rep.credibilidad_nivel)}" title="Índice de credibilidad del reporte (0 a 100)">
+                                <i class="fa-solid fa-shield-halved"></i> Credibilidad ${escaparHtml(textoNivelCredibilidad(rep.credibilidad_nivel))} · ${parseInt(rep.credibilidad, 10)}
+                            </div>` : ''}
+                            <button type="button" class="btn-ver-reporte" data-reporte-id="${parseInt(rep.id_reporte, 10)}">
+                                Ver comentarios · Calificar
+                            </button>
                         </div>
                     `);
                 });
@@ -121,10 +349,89 @@ function cargarReportesEnMapa() {
                 if (calorActivo) {
                     generarMapaCalor(window.reportesMapa);
                 }
+
+                aplicarBusqueda(buscadorMapa?.value || '');
             }
         })
         .catch(err => console.error("Error al cargar reportes:", err));
 }
+
+const marcadoresBusqueda = [];
+const buscadorMapa = document.getElementById('buscadorMapa');
+const btnLimpiarBusqueda = document.getElementById('btnLimpiarBusqueda');
+const resultadoBusqueda = document.getElementById('resultadoBusqueda');
+let temporizadorBusqueda = null;
+
+function normalizarBusqueda(texto) {
+    return String(texto || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function aplicarBusqueda(consulta) {
+    const palabras = normalizarBusqueda(consulta).split(' ').filter(Boolean);
+    const coincidencias = [];
+
+    marcadoresBusqueda.forEach(item => {
+        const coincide = palabras.every(p => item.texto.includes(p));
+
+        if (coincide) {
+            coincidencias.push(item.marker);
+            if (!item.grupo.hasLayer(item.marker)) item.grupo.addLayer(item.marker);
+        } else if (item.grupo.hasLayer(item.marker)) {
+            item.grupo.removeLayer(item.marker);
+        }
+    });
+
+    btnLimpiarBusqueda?.classList.toggle('d-none', palabras.length === 0);
+
+    if (resultadoBusqueda) {
+        if (palabras.length === 0) {
+            resultadoBusqueda.classList.add('d-none');
+        } else {
+            resultadoBusqueda.classList.remove('d-none');
+            resultadoBusqueda.classList.toggle('sin-resultados', coincidencias.length === 0);
+            resultadoBusqueda.textContent = coincidencias.length === 0
+                ? 'Sin resultados'
+                : `${coincidencias.length} ${coincidencias.length === 1 ? 'resultado' : 'resultados'}`;
+            resultadoBusqueda.title = coincidencias.length === 0
+                ? 'No hay reportes que coincidan con la búsqueda.'
+                : 'Presioná Enter para ver los resultados en el mapa.';
+        }
+    }
+
+    return coincidencias;
+}
+
+buscadorMapa?.addEventListener('input', () => {
+    clearTimeout(temporizadorBusqueda);
+    temporizadorBusqueda = setTimeout(() => aplicarBusqueda(buscadorMapa.value), 150);
+});
+
+buscadorMapa?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(temporizadorBusqueda);
+        const coincidencias = aplicarBusqueda(buscadorMapa.value);
+        if (coincidencias.length === 1) {
+            map.setView(coincidencias[0].getLatLng(), 18);
+        } else if (coincidencias.length > 1) {
+            map.fitBounds(L.latLngBounds(coincidencias.map(m => m.getLatLng())), { padding: [60, 60], maxZoom: 17 });
+        }
+    } else if (e.key === 'Escape' && buscadorMapa.value) {
+        buscadorMapa.value = '';
+        aplicarBusqueda('');
+    }
+});
+
+btnLimpiarBusqueda?.addEventListener('click', () => {
+    buscadorMapa.value = '';
+    aplicarBusqueda('');
+    buscadorMapa.focus();
+});
 
 cargarReportesEnMapa();
 

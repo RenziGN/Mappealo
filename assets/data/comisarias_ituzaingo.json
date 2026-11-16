@@ -1,0 +1,251 @@
+{
+ "partido": "Ituzaingó",
+ "provincia": "Buenos Aires",
+ "fuente": "OpenStreetMap (© colaboradores de OpenStreetMap, licencia ODbL). Descargado el 15/11/2026.",
+ "limite": [
+  [
+   -34.634711,
+   -58.729162
+  ],
+  [
+   -34.685862,
+   -58.667403
+  ],
+  [
+   -34.638796,
+   -58.655628
+  ],
+  [
+   -34.632888,
+   -58.653624
+  ],
+  [
+   -34.630654,
+   -58.653729
+  ],
+  [
+   -34.630101,
+   -58.654002
+  ],
+  [
+   -34.62931,
+   -58.65493
+  ],
+  [
+   -34.605148,
+   -58.684406
+  ],
+  [
+   -34.603103,
+   -58.682126
+  ],
+  [
+   -34.593987,
+   -58.693486
+  ],
+  [
+   -34.596027,
+   -58.696656
+  ],
+  [
+   -34.596719,
+   -58.698465
+  ],
+  [
+   -34.597524,
+   -58.702263
+  ],
+  [
+   -34.597837,
+   -58.70299
+  ],
+  [
+   -34.598843,
+   -58.704268
+  ],
+  [
+   -34.601847,
+   -58.709348
+  ],
+  [
+   -34.60283,
+   -58.710147
+  ],
+  [
+   -34.605591,
+   -58.713933
+  ],
+  [
+   -34.606995,
+   -58.716256
+  ],
+  [
+   -34.607797,
+   -58.716983
+  ],
+  [
+   -34.609386,
+   -58.717806
+  ],
+  [
+   -34.61028,
+   -58.71873
+  ],
+  [
+   -34.613366,
+   -58.719823
+  ],
+  [
+   -34.615982,
+   -58.720991
+  ],
+  [
+   -34.618663,
+   -58.723059
+  ],
+  [
+   -34.619801,
+   -58.723664
+  ],
+  [
+   -34.623635,
+   -58.724085
+  ],
+  [
+   -34.624545,
+   -58.723651
+  ],
+  [
+   -34.62683,
+   -58.723858
+  ],
+  [
+   -34.627799,
+   -58.724316
+  ],
+  [
+   -34.629446,
+   -58.724463
+  ],
+  [
+   -34.629894,
+   -58.724682
+  ],
+  [
+   -34.630915,
+   -58.726548
+  ],
+  [
+   -34.631318,
+   -58.726829
+  ],
+  [
+   -34.633071,
+   -58.726975
+  ],
+  [
+   -34.633409,
+   -58.727222
+  ],
+  [
+   -34.63433,
+   -58.728257
+  ],
+  [
+   -34.634711,
+   -58.729162
+  ]
+ ],
+ "dependencias": [
+  {
+   "id": "node/2104720458",
+   "nombre": "Comisaría Ituzaingó 1°",
+   "tipo": "comisaria",
+   "lat": -34.6572843,
+   "lng": -58.6682795,
+   "direccion": "Olazábal 899",
+   "telefono": null,
+   "operador": "Policía de la Provincia de Buenos Aires"
+  },
+  {
+   "id": "way/821804661",
+   "nombre": "Comisaría Ituzaingó 2°",
+   "tipo": "comisaria",
+   "lat": -34.641255,
+   "lng": -58.66816,
+   "direccion": "Lavalleja 750",
+   "telefono": "+54 11 4624 4941; +54 11 4623 4423",
+   "operador": "Policía de la Provincia de Buenos Aires"
+  },
+  {
+   "id": "way/818615998",
+   "nombre": "Comisaría Ituzaingó 3°",
+   "tipo": "comisaria",
+   "lat": -34.6199259,
+   "lng": -58.6780172,
+   "direccion": "Gobernador Guillermo Udaondo 2550",
+   "telefono": "+54 11 4621 0444",
+   "operador": "Policía de la Provincia de Buenos Aires"
+  },
+  {
+   "id": "way/821935902",
+   "nombre": "Comisaría Ituzaingó 4°",
+   "tipo": "comisaria",
+   "lat": -34.647661,
+   "lng": -58.7052564,
+   "direccion": "Portugal 2850",
+   "telefono": "+54 11 4621 0006; +54 11 4481 3299",
+   "operador": "Policía de la Provincia de Buenos Aires"
+  },
+  {
+   "id": "node/1990969517",
+   "nombre": "Destacamento Seguridad Vial Buen Ayre II",
+   "tipo": "posta",
+   "lat": -34.615236,
+   "lng": -58.7189273,
+   "direccion": null,
+   "telefono": null,
+   "operador": "Policia de la Provincia de Buenos Aires"
+  },
+  {
+   "id": "node/3379591193",
+   "nombre": "Posta Policial (Policía Comunal)",
+   "tipo": "posta",
+   "lat": -34.6102699,
+   "lng": -58.7147492,
+   "direccion": null,
+   "telefono": null,
+   "operador": "Policía Comunal de Ituzaingó"
+  },
+  {
+   "id": "node/8984371939",
+   "nombre": "Posta Policial",
+   "tipo": "posta",
+   "lat": -34.6283529,
+   "lng": -58.6910077,
+   "direccion": null,
+   "telefono": null,
+   "operador": null
+  },
+  {
+   "id": "node/5063137085",
+   "nombre": "Puesto de control policial",
+   "tipo": "posta",
+   "lat": -34.6007679,
+   "lng": -58.6991518,
+   "direccion": null,
+   "telefono": null,
+   "operador": "Policía de la Provincia de Buenos Aires"
+  },
+  {
+   "id": "node/6746295236",
+   "nombre": "Puesto policial De La Tradición",
+   "tipo": "posta",
+   "lat": -34.6033918,
+   "lng": -58.6824975,
+   "direccion": "De La Tradición",
+   "telefono": null,
+   "operador": "Policía de la Provincia de Buenos Aires"
+  }
+ ]
+}

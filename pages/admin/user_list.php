@@ -1,16 +1,19 @@
 <?php
 session_start();
 require_once '../../config/connection.php';
+require_once '../../config/auth.php';
+require_once __DIR__ . '/_nav.php';
+require_once '../../config/credibilidad.php';
 
 if (
     !isset($_SESSION['user']) ||
-    $_SESSION['user']['is_admin'] === 0
+    empty($_SESSION['user']['is_admin'])
 ) {
     $_SESSION['errors'] = ["Acceso denegado. Solo los administradores pueden acceder a esta página. Hemos cerrado tu sesión por seguridad."];
     header("Location: ../auth/login.php");
     exit;
 }else{
-    $sql = "SELECT * FROM users";
+    $sql = "SELECT id_usuario, nombre_usuario, email, es_admin FROM usuario WHERE id_usuario <> 0 ORDER BY id_usuario";
 
     $stmt = $connection->prepare($sql);
 
@@ -23,114 +26,57 @@ if (
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Usuarios</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?php admin_head('Usuarios'); ?>
 </head>
+<body class="admin-body">
+<div class="container py-4">
 
-<body class="container py-5">
+    <?php admin_nav($connection, 'usuarios'); ?>
+    <?php admin_mensajes(); ?>
 
-    <div class="d-flex
-    justify-content-between
-    align-items-center
-    mb-4">
+    <p class="text-muted small"><?= count($users) ?> usuario(s) registrado(s).</p>
 
-        <h1>Lista de Usuarios</h1>
-
-        <a
-        href="../../index.php"
-        class="btn btn-outline-primary">
-
-            Volver al Inicio
-
-        </a>
-
-    </div>
-
-    <?php if (isset($_SESSION['errors'])  && !empty($_SESSION['errors'])): ?>
-    <div class="alert alert-danger">
-        <strong>Ocurrieron los siguientes errores:</strong>
-        <ul>
-            <?php foreach ($_SESSION['errors'] as $error): ?>
-                <li><?php echo $error; ?></li>
-            <?php endforeach; $_SESSION = [];?>
-        </ul>
-    </div>
-    <?php endif; ?>
-
-    <?php if (isset($_SESSION['success']) && !empty($_SESSION['success'])): ?>
-    <div class="alert alert-success">
-        <?php echo $_SESSION['success']; ?>
-    </div>
-    <?php endif; ?>
-
-    <table class="table table-bordered">
-
-        <thead>
-
-            <tr>
-
-                <th>ID</th>
-
-                <th>Email</th>
-
-                <th>Admin</th>
-
-                <th>Acciones</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            <?php foreach($users as $user): ?>
-
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
                 <tr>
-
-                    <td>
-                        <?= $user['id'] ?>
-                    </td>
-
-                    <td>
-                        <?= htmlspecialchars($user['email']) ?>
-                    </td>
-
-                    <td>
-
-                        <?= $user['is_admin']
-                        ? 'Sí'
-                        : 'No' ?>
-
-                    </td>
-
-                    <td>
-
-                        <a
-                        href="edit_user.php?id=<?= $user['id'] ?>"
-                        class="btn btn-warning btn-sm">
-
-                            Editar
-
-                        </a>
-
-                        <a
-                        href="../../handler/admin/delete_user_handler.php?id=<?= $user['id'] ?>"
-                        class="btn btn-danger btn-sm">
-
-                            Eliminar
-
-                        </a>
-
-                    </td>
-
+                    <th>#</th>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Credibilidad</th>
+                    <th class="text-end">Acciones</th>
                 </tr>
-
+            </thead>
+            <tbody>
+            <?php foreach ($users as $user): ?>
+                <tr>
+                    <td><?= (int) $user['id_usuario'] ?></td>
+                    <td>
+                        <strong><?= htmlspecialchars($user['nombre_usuario']) ?></strong>
+                        <div class="small text-muted"><?= htmlspecialchars($user['email']) ?></div>
+                    </td>
+                    <td>
+                        <?php if ($user['es_admin']): ?>
+                            <span class="badge text-bg-dark"><i class="fa-solid fa-shield-halved me-1"></i>Administrador</span>
+                        <?php else: ?>
+                            <span class="badge text-bg-success">Usuario</span>
+                        <?php endif; ?>
+                    </td>
+                    <td><?= admin_credibilidad(credibilidad_usuario($connection, (int) $user['id_usuario'])) ?></td>
+                    <td class="text-end text-nowrap">
+                        <a href="edit_user.php?id=<?= (int) $user['id_usuario'] ?>" class="btn btn-warning btn-sm">
+                            <i class="fa-solid fa-pen"></i> Editar
+                        </a>
+                        <a href="../../handler/admin/delete_user_handler.php?id=<?= (int) $user['id_usuario'] ?>" class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Eliminar al usuario <?= htmlspecialchars(addslashes($user['email']), ENT_QUOTES) ?>? También se borran sus reportes, comentarios y calificaciones.');">
+                            <i class="fa-solid fa-trash"></i> Eliminar
+                        </a>
+                    </td>
+                </tr>
             <?php endforeach; ?>
-
-        </tbody>
-
-    </table>
-
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>

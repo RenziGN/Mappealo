@@ -5,10 +5,10 @@ require_once '../../config/connection.php';
 
 if (
     !isset($_SESSION['user']) ||
-    $_SESSION['user']['is_admin'] === 0
+    empty($_SESSION['user']['is_admin'])
 ) {
     $_SESSION['errors'] = ["Acceso denegado. Solo los administradores pueden acceder a esta página. Hemos cerrado tu sesión por seguridad."];
-    header("Location: ../auth/login.php");
+    header("Location: ../../pages/auth/login.php");
     exit;
 }else{
 
@@ -23,13 +23,13 @@ if (
 }
 
 try {
-    $sql = "DELETE FROM users WHERE id = :id";
+    $sql = "DELETE FROM usuario WHERE id_usuario = :id AND id_usuario <> 0";
     $stmt = $connection->prepare($sql);
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
 
+    $_SESSION['success'] = "Usuario ID: " . (int) $id . " | Eliminado exitosamente.";
     header("Location: ../../pages/admin/user_list.php");
-    $_SESSION['success'] = "Usuario ID: " . $id . " | Eliminado exitosamente.";
     exit;
 
 } catch (PDOException $e) {
