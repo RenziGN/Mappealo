@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../config/auth.php';
 requerir_admin();
 
 require_once __DIR__ . '/../../config/connection.php';
+require_once __DIR__ . '/../../config/reportes.php';
 
 function volver_a(string $destino): void
 {
@@ -39,32 +40,31 @@ if ($id === false) {
 try {
     switch ($accion) {
         case 'borrar_reporte':
-            $connection->beginTransaction();
-
-            $stmt = $connection->prepare("SELECT id_ubicacion FROM reporte WHERE id_reporte = :id FOR UPDATE");
-            $stmt->execute([':id' => $id]);
-            $idUbicacion = $stmt->fetchColumn();
-
-            if ($idUbicacion === false) {
-                $connection->rollBack();
+            if (!borrar_reporte($connection, $id)) {
                 $_SESSION['errors'] = ["El reporte #$id ya no existe."];
                 break;
             }
 
-            $connection->prepare("DELETE FROM reporte WHERE id_reporte = :id")->execute([':id' => $id]);
-
-            $stmt = $connection->prepare("SELECT 1 FROM reporte WHERE id_ubicacion = :u LIMIT 1");
-            $stmt->execute([':u' => $idUbicacion]);
-            if (!$stmt->fetchColumn()) {
-                $connection->prepare("DELETE FROM ubicacion WHERE id_ubicacion = :u")->execute([':u' => $idUbicacion]);
-            }
-
-            $connection->commit();
             $_SESSION['success'] = "Reporte #$id eliminado, junto con sus comentarios, calificaciones y denuncias.";
 
             if (preg_match('#/pages/admin/reporte\.php#', $volver)) {
                 $volver = '../../pages/admin/reportes.php';
             }
+            break;
+
+        case 'cambiar_estado':
+            $estado = $_POST['estado'] ?? '';
+
+            if (!in_array($estado, ESTADOS_REPORTE, true)) {
+                $_SESSION['errors'] = ["Estado inválido."];
+                break;
+            }
+
+            $stmt = $connection->prepare("UPDATE reporte SET estado = :e WHERE id_reporte = :id");
+            $stmt->execute([':e' => $estado, ':id' => $id]);
+
+            $textos = ['pendiente' => 'vuelve a estar pendiente', 'verificado' => 'quedó verificado', 'rechazado' => 'quedó rechazado y ya no se muestra en el mapa'];
+            $_SESSION['success'] = "El reporte #$id " . $textos[$estado] . ".";
             break;
 
         case 'descartar_denuncias':

@@ -550,3 +550,22 @@ a.admin-stat:hover {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
+.admin-revision {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px dashed var(--borde);
+    border-radius: 14px;
+    background: #f9fafc;
+}
+
+.admin-body .btn-success {
+    --bs-btn-bg: var(--verde);
+    --bs-btn-border-color: var(--verde);
+    --bs-btn-hover-bg: #178a57;
+    --bs-btn-hover-border-color: #178a57;
+}

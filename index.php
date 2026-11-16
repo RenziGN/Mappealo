@@ -48,7 +48,7 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <link rel="stylesheet" href="assets/css/main.css?v=7">
-    <link rel="stylesheet" href="assets/css/home.css?v=19">
+    <link rel="stylesheet" href="assets/css/home.css?v=20">
 
 </head>
 
@@ -769,11 +769,11 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="./assets/js/post_form.js?v=3"></script>
-    <script src="./assets/js/map.js?v=4"></script>
+    <script src="./assets/js/map.js?v=5"></script>
     <script src="./assets/js/comisarias.js"></script>
     <script src="./assets/js/jurisdicciones.js"></script>
     <script src="./assets/js/reporte_detalle.js"></script>
-    <script src="./assets/js/historial.js"></script>
+    <script src="./assets/js/historial.js?v=2"></script>
 
     <!-- Overlay oscuro de fondo -->
 <div id="drawer-overlay" class="drawer-overlay d-none"></div>
