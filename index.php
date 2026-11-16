@@ -47,7 +47,7 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <link rel="stylesheet" href="assets/css/main.css?v=6">
+    <link rel="stylesheet" href="assets/css/main.css?v=7">
     <link rel="stylesheet" href="assets/css/home.css?v=19">
 
 </head>
@@ -400,6 +400,8 @@ if (!$is_guest && $id_usuario_sesion > 0) {
                         o ingresá una dirección.
                     </p>
 
+                    <input type="text" class="direccion-texto" maxlength="120" autocomplete="off" placeholder="Calle y altura (ej.: Medrano 1150)" aria-label="Calle y altura">
+
                 </div>
 
                 <div class="location-actions">
@@ -682,6 +684,8 @@ if (!$is_guest && $id_usuario_sesion > 0) {
                         para otros usuarios.
                     </p>
 
+                    <input type="text" class="direccion-texto" maxlength="120" autocomplete="off" placeholder="Calle y altura (ej.: Medrano 1150)" aria-label="Calle y altura">
+
                 </div>
 
                 <div class="location-actions">
@@ -764,8 +768,8 @@ if (!$is_guest && $id_usuario_sesion > 0) {
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script src="./assets/js/post_form.js?v=2"></script>
-    <script src="./assets/js/map.js"></script>
+    <script src="./assets/js/post_form.js?v=3"></script>
+    <script src="./assets/js/map.js?v=4"></script>
     <script src="./assets/js/comisarias.js"></script>
     <script src="./assets/js/jurisdicciones.js"></script>
     <script src="./assets/js/reporte_detalle.js"></script>

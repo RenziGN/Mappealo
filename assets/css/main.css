@@ -1128,3 +1128,25 @@ body {
     border-color: var(--rojo);
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
+
+.popup .location-box .direccion-texto {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: #ffffff;
+    font-size: 13px;
+    color: var(--texto);
+}
+
+.popup .location-box .direccion-texto:focus {
+    outline: none;
+    border-color: var(--primario);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.popup .location-box .direccion-texto.falta-altura {
+    border-color: #f59e0b;
+    background: #fffbeb;
+}

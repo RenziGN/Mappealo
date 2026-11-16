@@ -605,7 +605,12 @@ publicarButtons.forEach(button => {
             },
 
             descripcion:
-                container.querySelector("textarea")?.value.trim() || ""
+                container.querySelector("textarea")?.value.trim() || "",
+
+            ubicacion: {
+                direccion:
+                    container.querySelector(".direccion-texto")?.value.trim() || ""
+            }
 
         };
 
@@ -661,7 +666,12 @@ publicarButtons.forEach(button => {
                     : null,
 
             descripcion:
-                descripcion || ""
+                descripcion || "",
+
+            ubicacion: {
+                direccion:
+                    container.querySelector(".direccion-texto")?.value.trim() || ""
+            }
 
         };
 

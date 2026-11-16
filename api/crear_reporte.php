@@ -14,6 +14,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 require_once __DIR__ . '/../config/connection.php';
+require_once __DIR__ . '/../config/direccion.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -37,6 +38,13 @@ try {
         exit;
     }
 
+    $lat = $input['latitud'] ?? -34.6658;
+    $lng = $input['longitud'] ?? -58.6649;
+    $dirEscrita = trim(preg_replace('/\s+/u', ' ', (string) ($input['ubicacion']['direccion'] ?? '')));
+    $dir = $dirEscrita !== ''
+        ? mb_substr($dirEscrita, 0, 120)
+        : (direccion_desde_coordenadas((float) $lat, (float) $lng) ?? DIRECCION_POR_DEFECTO);
+
     $connection->beginTransaction();
 
     if ($esInvitado) {
@@ -55,9 +63,6 @@ try {
     }
 
     //  Insertar en tabla: ubicacion
-    $lat = $input['latitud'] ?? -34.6658;
-    $lng = $input['longitud'] ?? -58.6649;
-    $dir = $input['ubicacion']['direccion_privada'] ?? 'Ubicación seleccionada en mapa';
 
     $stmtUb = $connection->prepare("
         INSERT INTO ubicacion (latitud, longitud, direccion) 

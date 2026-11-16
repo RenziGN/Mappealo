@@ -97,7 +97,7 @@ const seleccionIcon = L.divIcon({
 });
 window.coordenadasSeleccionadas = null;
 
-function fijarUbicacionReporte(latlng, origen = 'Coordenadas fijadas') {
+function fijarUbicacionReporte(latlng, origen = 'Ubicación') {
     window.coordenadasSeleccionadas = {
         lat: latlng.lat,
         lng: latlng.lng
@@ -115,10 +115,53 @@ function fijarUbicacionReporte(latlng, origen = 'Coordenadas fijadas') {
 
     // Actualizar el texto del formulario para que el usuario vea que se fijó la ubicación
     const cajasUbicacion = document.querySelectorAll('.location-box p');
-    cajasUbicacion.forEach(p => {
-        p.innerHTML = `<span style="color: #27ae60; font-weight: bold;">✓ ${origen}:</span> Lat: ${latlng.lat.toFixed(4)}, Lng: ${latlng.lng.toFixed(4)}`;
+    const mostrar = texto => cajasUbicacion.forEach(p => {
+        p.innerHTML = `<span style="color: #27ae60; font-weight: bold;">✓ ${escaparHtml(origen)}:</span> ${texto}`;
     });
+    const coordenadas = `Lat: ${latlng.lat.toFixed(4)}, Lng: ${latlng.lng.toFixed(4)}`;
+
+    const camposDireccion = document.querySelectorAll('.location-box .direccion-texto');
+    const completarCampos = valor => camposDireccion.forEach(campo => {
+        campo.value = valor;
+        campo.classList.toggle('falta-altura', !/\d/.test(valor.split(',')[0]));
+    });
+    const aviso = '<span style="color: #b45309;">· falta la altura: escribila abajo si la sabés.</span>';
+
+    mostrar('<span style="color: #70798c;">buscando la dirección…</span>');
+    completarCampos('');
+
+    const busqueda = ++busquedaDireccion;
+    fetch(`api/direccion.php?lat=${encodeURIComponent(latlng.lat)}&lng=${encodeURIComponent(latlng.lng)}`)
+        .then(res => res.json())
+        .then(datos => {
+            if (busqueda !== busquedaDireccion) return;
+            if (datos.status === 'success' && datos.direccion) {
+                const conAltura = /\d/.test(datos.direccion.split(',')[0]);
+                mostrar(escaparHtml(datos.direccion) + (conAltura ? '' : ' ' + aviso));
+                completarCampos(datos.direccion);
+                seleccionMarker?.getElement()?.setAttribute('title', datos.direccion);
+            } else {
+                mostrar(coordenadas + ' ' + aviso.replace('falta la altura', 'no se encontró la dirección'));
+            }
+        })
+        .catch(() => {
+            if (busqueda === busquedaDireccion) {
+                mostrar(coordenadas + ' ' + aviso.replace('falta la altura', 'no se encontró la dirección'));
+            }
+        });
 }
+
+document.querySelectorAll('.location-box .direccion-texto').forEach(campo => {
+    campo.addEventListener('input', () => {
+        const valor = campo.value;
+        document.querySelectorAll('.location-box .direccion-texto').forEach(otro => {
+            if (otro !== campo) otro.value = valor;
+            otro.classList.toggle('falta-altura', valor.trim() !== '' && !/\d/.test(valor.split(',')[0]));
+        });
+    });
+});
+
+let busquedaDireccion = 0;
 
 
 let modoSeleccionMapa = false;
@@ -153,7 +196,7 @@ document.addEventListener('keydown', (e) => {
 
 // Clic en el mapa para marcar ubicación
 map.on('click', function(e) {
-    fijarUbicacionReporte(e.latlng, modoSeleccionMapa ? 'Punto elegido en el mapa' : 'Coordenadas fijadas');
+    fijarUbicacionReporte(e.latlng, modoSeleccionMapa ? 'Punto elegido en el mapa' : 'Ubicación');
 
     if (modoSeleccionMapa) {
         terminarSeleccionEnMapa();
