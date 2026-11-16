@@ -71,28 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const vehicleSection =
-        document.querySelector(".subsection");
-
-
-    function actualizarCamposRobo() {
-
-        if (!tipoRobo || !vehicleSection) return;
-
-        const tipo = tipoRobo.value;
-
-        const mostrarVehiculo =
-            tipo === "Robo de vehículo" ||
-            tipo === "Robo de bicicleta / moto" ||
-            tipo === "Robo de autopartes";
-
-        vehicleSection.style.display =
-            mostrarVehiculo ? "block" : "none";
-    }
-
-
-    actualizarCamposRobo();
-
 
     /* =====================================================
        FECHA Y HORA
@@ -177,35 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       RADIO DE UBICACIÓN
-    ===================================================== */
-
-    const radioCards =
-        document.querySelectorAll(".radio-card");
-
-
-    radioCards.forEach(card => {
-
-        card.addEventListener("click", () => {
-
-            radioCards.forEach(c =>
-                c.classList.remove("active")
-            );
-
-            card.classList.add("active");
-
-            const input =
-                card.querySelector("input");
-
-            if (input)
-                input.checked = true;
-
-        });
-
-    });
-
-
-    /* =====================================================
        PREGUNTAS SI / NO
     ===================================================== */
 
@@ -253,8 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             card.classList.add("active");
 
-            actualizarCamposRobo();
-
         });
 
     });
@@ -301,104 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         actualizarContador();
-
-    });
-
-
-    /* =====================================================
-       UPLOAD DE IMAGEN
-    ===================================================== */
-
-    const uploadButtons =
-        document.querySelectorAll(".upload button");
-
-
-    uploadButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const input =
-                document.createElement("input");
-
-            input.type = "file";
-
-            input.accept =
-                "image/png,image/jpeg,image/webp";
-
-
-            input.addEventListener(
-                "change",
-                () => {
-
-                    const file =
-                        input.files[0];
-
-                    if (!file) return;
-
-
-                    const maxSize =
-                        10 * 1024 * 1024;
-
-
-                    if (file.size > maxSize) {
-
-                        alert(
-                            "La imagen no puede superar los 10 MB."
-                        );
-
-                        return;
-                    }
-
-
-                    const allowedTypes = [
-                        "image/png",
-                        "image/jpeg",
-                        "image/webp"
-                    ];
-
-
-                    if (
-                        !allowedTypes.includes(
-                            file.type
-                        )
-                    ) {
-
-                        alert(
-                            "Formato de imagen no válido."
-                        );
-
-                        return;
-                    }
-
-
-                    const upload =
-                        button.closest(".upload");
-
-
-                    const title =
-                        upload.querySelector("strong");
-
-
-                    title.textContent =
-                        file.name;
-
-
-                    button.textContent =
-                        "Cambiar imagen";
-
-
-                    upload.dataset.file =
-                        file.name;
-
-                    upload._file = file;
-
-                }
-            );
-
-
-            input.click();
-
-        });
 
     });
 
@@ -629,127 +478,18 @@ publicarButtons.forEach(button => {
             delitoTab;
 
 
-        const inputs =
-            container.querySelectorAll(
-                "input, select, textarea"
-            );
-
-
-        const getInput =
-            (selector) =>
-                container.querySelector(selector);
-
-
-        const tipo =
-            tipoRobo.value;
-
-
         const fecha =
-            getInput('input[type="date"]')?.value;
+            container.querySelector('input[type="date"]')?.value;
 
 
         const hora =
-            getInput('input[type="time"]')?.value;
+            container.querySelector('input[type="time"]')?.value;
 
-
-        const textarea =
-            getInput("textarea");
-
-
-        /* VEHÍCULO */
-
-        const vehicleInputs =
-            vehicleSection
-                ?.querySelectorAll(
-                    "input, select"
-                );
-
-
-        let vehiculo = null;
-
-
-        if (
-            vehicleSection &&
-            vehicleSection.style.display !== "none"
-        ) {
-
-            vehiculo = {
-
-                marca:
-                    vehicleInputs?.[0]?.value || null,
-
-                modelo:
-                    vehicleInputs?.[1]?.value || null,
-
-                color:
-                    vehicleInputs?.[2]?.value || null,
-
-                patente:
-                    vehicleInputs?.[3]?.value || null
-
-            };
-
-        }
-
-
-        /* GRAVEDAD */
 
         const questions =
             container.querySelectorAll(
                 ".question"
             );
-
-
-        const violencia =
-            obtenerRespuesta(
-                questions[0]
-            );
-
-
-        const arma =
-            obtenerRespuesta(
-                questions[1]
-            );
-
-
-        const multiples =
-            obtenerRespuesta(
-                questions[2]
-            );
-
-
-        /* UBICACIÓN */
-
-        const locationInput =
-            container.querySelector(
-                '.field input[placeholder="Calle y altura"]'
-            );
-
-
-        const calles =
-            container.querySelectorAll(
-                '.grid-2 input'
-            );
-
-
-        /* RADIO */
-
-        const radioActivo =
-            container.querySelector(
-                ".radio-card.active strong"
-            );
-
-
-        /* EVIDENCIA */
-
-        const upload =
-            container.querySelector(
-                ".upload"
-            );
-
-
-        const archivo =
-            upload?._file || null;
 
 
         return {
@@ -758,87 +498,26 @@ publicarButtons.forEach(button => {
 
             categoria: "robo",
 
-            tipo_robo: tipo,
-
-            fecha: fecha,
-
-            hora: hora,
+            tipo_robo: tipoRobo.value,
 
             fecha_hora:
                 `${fecha}T${hora}`,
 
-            en_vivo:
-                obtenerLiveStatus(container),
-
-
-            ubicacion: {
-
-                direccion_privada:
-                    locationInput?.value || null,
-
-                entre_calle:
-                    calles?.[0]?.value || null,
-
-                y_calle:
-                    calles?.[1]?.value || null,
-
-                radio_publico:
-                    radioActivo?.textContent || null
-
-            },
-
-
-            vehiculo: vehiculo,
-
-
             gravedad: {
 
                 violencia:
-                    violencia,
+                    obtenerRespuesta(questions[0]),
 
                 arma_fuego:
-                    arma,
+                    obtenerRespuesta(questions[1]),
 
                 multiples_delincuentes:
-                    multiples
+                    obtenerRespuesta(questions[2])
 
             },
 
-
             descripcion:
-                textarea?.value.trim() || "",
-
-
-            evidencia:
-                archivo ? {
-
-                    nombre:
-                        archivo.name,
-
-                    tipo:
-                        archivo.type,
-
-                    tamaño:
-                        archivo.size
-
-                } : null,
-
-
-            contacto: null,
-
-
-            metadata: {
-
-                creado_en:
-                    new Date().toISOString(),
-
-                estado:
-                    "pendiente",
-
-                confiabilidad:
-                    null
-
-            }
+                container.querySelector("textarea")?.value.trim() || ""
 
         };
 
@@ -883,16 +562,6 @@ publicarButtons.forEach(button => {
                 .trim();
 
 
-        const upload =
-            container.querySelector(
-                ".upload"
-            );
-
-
-        const archivo =
-            upload?._file || null;
-
-
         return {
 
             tipo: "comunitario",
@@ -900,64 +569,13 @@ publicarButtons.forEach(button => {
             incidente:
                 tipo || null,
 
-
-            fecha:
-                fecha || null,
-
-            hora:
-                hora || null,
-
             fecha_hora:
                 fecha && hora
                     ? `${fecha}T${hora}`
                     : null,
 
-
-            en_vivo:
-                obtenerLiveStatus(
-                    container
-                ),
-
-
-            ubicacion: {
-
-                latitud:
-                    null,
-
-                longitud:
-                    null
-
-            },
-
-
             descripcion:
-                descripcion || "",
-
-
-            evidencia:
-                archivo ? {
-
-                    nombre:
-                        archivo.name,
-
-                    tipo:
-                        archivo.type,
-
-                    tamaño:
-                        archivo.size
-
-                } : null,
-
-
-            metadata: {
-
-                creado_en:
-                    new Date().toISOString(),
-
-                estado:
-                    "pendiente"
-
-            }
+                descripcion || ""
 
         };
 
@@ -995,21 +613,6 @@ publicarButtons.forEach(button => {
 
 
     /* =====================================================
-       LIVE STATUS
-    ===================================================== */
-
-    function obtenerLiveStatus(container) {
-
-        return Boolean(
-            container.querySelector(
-                ".live-toggle input:checked"
-            )
-        );
-
-    }
-
-
-    /* =====================================================
        RESET
     ===================================================== */
 
@@ -1029,7 +632,6 @@ publicarButtons.forEach(button => {
     document.querySelectorAll(".popup .tipos-robo .incident-card.active").forEach(el => el.classList.remove("active"));
 
     document.querySelectorAll(".popup .selected").forEach(el => el.classList.remove("selected"));
-    document.querySelectorAll(".popup .radio-card.active").forEach(el => el.classList.remove("active"));
     
     // Restaurar textos de ubicación
     document.querySelectorAll('.location-box p').forEach(p => {
