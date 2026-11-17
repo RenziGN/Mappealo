@@ -1,0 +1,341 @@
+/* Formulario "Nuevo reporte" adaptado a cada tamaño de pantalla
+   y campos con letra de 16 px para que el celular no haga zoom al tocarlos */
+
+@media (max-width: 1024px) {
+    input,
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+}
+
+/* En todos los tamaños: el encabezado y las pestañas quedan fijos
+   y el contenido se desplaza; "Publicar" queda al final del formulario */
+.popup[style*="display: block"] {
+    display: flex !important;
+}
+
+.popup {
+    flex-direction: column;
+    overflow: hidden !important;
+}
+
+.popup .popup-header,
+.popup .tabs {
+    flex-shrink: 0;
+}
+
+.popup .form-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.popup .form-actions {
+    position: static !important;
+    padding-top: 12px !important;
+    padding-bottom: 18px !important;
+}
+
+/* Recuadro de ubicación: ícono y texto arriba, botones abajo a lo ancho */
+.popup .location-box {
+    display: grid !important;
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 12px;
+    align-items: start;
+}
+
+.popup .location-box > div:nth-child(2) {
+    min-width: 0;
+}
+
+.popup .location-box .direccion-texto {
+    width: 100%;
+}
+
+.popup .location-box .location-actions {
+    grid-column: 1 / -1;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0 !important;
+}
+
+.popup .location-box .map-button {
+    width: 100%;
+    min-height: 44px;
+    white-space: nowrap;
+}
+
+/* Compu: tarjeta centrada que entra en la pantalla */
+@media (min-width: 1025px) {
+    .popup {
+        width: min(720px, calc(100vw - 48px)) !important;
+        max-height: min(88vh, 900px) !important;
+    }
+}
+
+/* Tablet: tarjeta centrada más angosta y alta */
+@media (min-width: 577px) and (max-width: 1024px) {
+    .popup {
+        width: min(640px, calc(100vw - 48px)) !important;
+        max-height: 90dvh !important;
+        border-radius: 22px !important;
+    }
+
+    .popup .form-actions button {
+        height: 50px;
+    }
+}
+
+/* Celular: hoja que sube desde abajo y ocupa la pantalla */
+@media (max-width: 576px) {
+
+    @keyframes subir-hoja {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    .popup {
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: calc(100dvh - 12px - env(safe-area-inset-top, 0px)) !important;
+        max-height: calc(100dvh - 12px - env(safe-area-inset-top, 0px)) !important;
+        border-radius: 24px 24px 0 0 !important;
+        animation: subir-hoja 0.25s ease-out;
+    }
+
+    .popup .popup-header {
+        padding: 18px 18px 14px !important;
+        position: relative;
+    }
+
+    .popup .popup-header::before {
+        content: "";
+        position: absolute;
+        top: 7px;
+        left: 50%;
+        width: 40px;
+        height: 4px;
+        margin-left: -20px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.35);
+    }
+
+    .popup .popup-header h1 {
+        font-size: 21px !important;
+        margin: 2px 0 0 !important;
+    }
+
+    .popup .popup-header p {
+        display: none;
+    }
+
+    .popup .tabs .tab {
+        min-height: 50px;
+    }
+
+    .popup .form-content {
+        padding: 16px 16px 0 !important;
+    }
+
+    .popup .section-title {
+        margin-bottom: 12px !important;
+    }
+
+    .popup .section-title h2 {
+        font-size: 16px !important;
+    }
+
+    /* Tipos de reporte: tarjetas compactas con el ícono a la izquierda */
+    .popup .incident-card {
+        display: grid !important;
+        grid-template-columns: 42px 1fr;
+        column-gap: 12px;
+        align-items: center;
+        text-align: left;
+        padding: 11px 14px !important;
+        min-height: 64px;
+    }
+
+    .popup .incident-card i {
+        grid-row: span 2;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #eef3ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px !important;
+        margin: 0 !important;
+    }
+
+    .popup .incident-card.active i {
+        background: #1a56db;
+        color: #ffffff !important;
+    }
+
+    .popup .incident-card strong {
+        margin: 0 !important;
+        font-size: 14.5px !important;
+        align-self: end;
+    }
+
+    .popup .incident-card span {
+        font-size: 12px !important;
+        line-height: 1.35;
+        align-self: start;
+    }
+
+    /* Fecha y hora en una fila; "En vivo" debajo */
+    .popup .date-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 118px;
+        gap: 8px !important;
+    }
+
+    .popup .date-row input[type="time"],
+    .popup .campo-fecha .fecha-texto {
+        height: 50px !important;
+    }
+
+    .popup .date-row .live-toggle {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        padding: 8px 2px;
+    }
+
+    /* Botones grandes para el pulgar */
+    .popup .map-button {
+        min-height: 46px;
+    }
+
+    .popup .yes-no button {
+        min-width: 58px !important;
+        height: 42px !important;
+        font-size: 14px !important;
+    }
+
+    .popup .form-actions {
+        margin: 14px 0 0 !important;
+        padding: 4px 0 calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .popup .form-actions button {
+        height: 50px;
+        flex: 1;
+    }
+
+    .popup .form-actions .publicar {
+        flex: 1.6;
+    }
+}
+
+/* Celular acostado (pantalla baja): todo el alto disponible */
+@media (max-height: 500px) and (orientation: landscape) {
+    .popup {
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+        animation: none;
+    }
+
+    .popup .popup-header {
+        padding: 10px calc(18px + env(safe-area-inset-right, 0px)) 10px calc(18px + env(safe-area-inset-left, 0px)) !important;
+    }
+
+    .popup .popup-header .brand,
+    .popup .popup-header p {
+        display: none;
+    }
+
+    .popup .popup-header h1 {
+        font-size: 18px !important;
+        margin: 0 !important;
+    }
+}
+
+/* Opción "Publicar como anónimo" */
+.popup .opcion-anonimo {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 16px 0 12px;
+    padding: 12px 14px;
+    border: 1px solid #e4e7ee;
+    border-radius: 14px;
+    background: #f8f9fc;
+    cursor: pointer;
+    user-select: none;
+}
+
+.popup .opcion-anonimo input {
+    display: none;
+}
+
+.popup .opcion-anonimo .interruptor {
+    flex-shrink: 0;
+    position: relative;
+    width: 40px;
+    height: 22px;
+    margin-top: 2px;
+    border-radius: 20px;
+    background: #d6dbe3;
+    transition: background 0.2s;
+}
+
+.popup .opcion-anonimo .interruptor::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform 0.2s;
+}
+
+.popup .opcion-anonimo input:checked + .interruptor {
+    background: #000e40;
+}
+
+.popup .opcion-anonimo input:checked + .interruptor::after {
+    transform: translateX(18px);
+}
+
+.popup .opcion-anonimo:has(input:checked) {
+    border-color: #000e40;
+    background: #eef1f8;
+}
+
+.popup .opcion-anonimo-texto strong {
+    display: block;
+    font-size: 14px;
+    color: #000e40;
+}
+
+.popup .opcion-anonimo-texto strong i {
+    margin-right: 4px;
+}
+
+.popup .opcion-anonimo-texto small {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #6c757d;
+}

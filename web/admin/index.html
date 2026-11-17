@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1b4d">
+    <title>Panel · Mappealo Admin</title>
+    <link rel="icon" href="../assets/Img/LOGO%20MAPPEALO%201.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha384-PPIZEGYM1v8zp5Py7UjFb79S58UeqCL9pYVnVPURKEqvioPROaVAJKKLzvH2rDnI" crossorigin="anonymous">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=3">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/datos.js"></script>
+</head>
+<body class="admin-body">
+<div class="container py-4">
+
+    <header class="admin-hero">
+        <div class="admin-hero-marca">
+            <img src="../assets/Img/LOGO%20MAPPEALO%201.png" alt="Mappealo" class="admin-hero-logo">
+            <div>
+                <span class="admin-hero-brand">MAPPEALO</span>
+                <h1>Panel de administración</h1>
+                <span class="admin-hero-usuario"><i class="fa-solid fa-circle-user me-1"></i><span id="adminUsuario"></span></span>
+            </div>
+        </div>
+        <div class="admin-hero-acciones">
+            <a href="../index.html" class="btn-hero-mapa"><i class="fa-solid fa-map"></i> Volver al mapa</a>
+            <a href="../login.html" class="btn-hero-salir" id="btnSalir"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
+        </div>
+    </header>
+
+    <nav>
+        <ul class="admin-tabs" id="pestanas">
+            <li><a href="#reportes" data-pestana="reportes"><i class="fa-solid fa-map-location-dot"></i> Reportes</a></li>
+            <li><a href="#denuncias" data-pestana="denuncias"><i class="fa-solid fa-flag"></i> Denuncias <span class="badge-tab d-none" id="contadorDenuncias"></span></a></li>
+            <li><a href="#comentarios" data-pestana="comentarios"><i class="fa-solid fa-comments"></i> Comentarios</a></li>
+            <li><a href="#calificaciones" data-pestana="calificaciones"><i class="fa-solid fa-star"></i> Calificaciones</a></li>
+            <li><a href="#usuarios" data-pestana="usuarios"><i class="fa-solid fa-users"></i> Usuarios</a></li>
+        </ul>
+    </nav>
+
+    <div id="mensajes"></div>
+    <main id="contenido"><p class="text-muted">Cargando...</p></main>
+</div>
+
+<script src="../assets/js/admin.js?v=2"></script>
+</body>
+</html>

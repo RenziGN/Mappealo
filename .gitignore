@@ -1,1 +1,4 @@
 config/secretos.php
+
+# Local Netlify folder
+.netlify

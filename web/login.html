@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1b4d">
+    <title>Iniciar sesión · Mappealo</title>
+    <link rel="icon" href="assets/Img/LOGO%20MAPPEALO%201.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/auth.css?v=3">
+</head>
+
+<body>
+
+    <div class="auth-container">
+
+        <div class="auth-card">
+            <div class="logo-container">
+                <img src="assets/Img/LOGO MAPPEALO 1.png" alt="Logo Mappealo" class="auth-logo">
+            </div>
+
+            <h1 class="auth-title">Iniciar Sesión</h1>
+            <p class="auth-subtitle">Ingrese a su cuenta</p>
+
+            <div id="mensaje" class="alert d-none" role="alert"></div>
+
+            <form id="loginForm" novalidate>
+                <div class="campo-trampa" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+                    <label for="sitio_web">No completar</label>
+                    <input type="text" name="sitio_web" id="sitio_web" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="email">Email</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input name="email" id="email" type="email" class="form-control custom-input" placeholder="Email" autocomplete="email" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="password">Contraseña</label>
+                    <div class="input-group-custom">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input name="password" id="password" type="password" class="form-control custom-input" placeholder="Contraseña" autocomplete="current-password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn custom-btn w-100">Iniciar sesión</button>
+
+                <button type="button" id="btnInvitado" class="btn btn-outline-secondary w-100 mt-2">
+                    <i class="bi bi-person-bounding-box me-2"></i>
+                    Ingresar como Invitado
+                </button>
+            </form>
+
+            <p class="bottom-text mt-4">
+                ¿No tienes una cuenta?
+                <a href="registro.html">Registrarse</a>
+            </p>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/datos.js"></script>
+    <script src="assets/js/acceso.js"></script>
+
+</body>
+</html>
